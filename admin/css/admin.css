@@ -386,6 +386,59 @@ body {
     vertical-align: middle;
 }
 
+/* NUEVO: Estilos para las notas */
+.notes-cell {
+    max-width: 200px;
+    position: relative;
+}
+
+.notes-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    color: var(--dark-color);
+}
+
+.notes-cell:hover .notes-text {
+    white-space: normal;
+    word-wrap: break-word;
+    background: var(--white-color);
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+    position: absolute;
+    z-index: 1000;
+    min-width: 200px;
+    max-width: 300px;
+}
+
+/* NUEVO: Centrar botones de acciones en la tabla */
+.table td:last-child {
+    text-align: center;
+}
+
+.table td:last-child .btn {
+    margin: 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+}
+
+.table td:last-child .btn i {
+    font-size: 0.875rem;
+}
+
+/* Mejorar el hover del botón de eliminar */
+.btn-danger.btn-sm:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
 /* ===== STATUS BADGES ===== */
 .status-badge {
     padding: 0.25rem 0.75rem;

@@ -64,9 +64,6 @@
             <div class="nav-right">
                 <div class="admin-info">
                     <span class="admin-name">Admin</span>
-                    <button class="btn btn-outline-primary btn-sm" onclick="adminApp.logout()">
-                        <i class="fas fa-sign-out-alt"></i> Salir
-                    </button>
                 </div>
             </div>
         </nav>
@@ -149,14 +146,8 @@
 
                 <div class="filters-row mb-4">
                     <div class="row g-3">
-
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <input type="date" class="form-control" id="dateFilter" placeholder="Filtrar por fecha">
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="barberFilter">
-                                <option value="">Todos los barberos</option>
-                            </select>
                         </div>
                         <div class="col-md-6">
                             <div class="d-flex align-items-center justify-content-between">
@@ -184,6 +175,8 @@
                                         <th>Fecha</th>
                                         <th>Hora</th>
                                         <th>Barbero</th>
+                                        <th>Notas</th>
+                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody id="bookingsTableBody">

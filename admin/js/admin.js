@@ -68,6 +68,32 @@ const adminAPI = {
             console.error('❌ Error obteniendo estadísticas:', error);
             throw error;
         }
+    },
+
+    // NUEVA FUNCIÓN: Eliminar reserva
+    async deleteBooking(bookingId) {
+        try {
+            console.log('️ Eliminando reserva:', bookingId);
+            console.log(' URL del backend:', BACKEND_URL);
+            
+            const response = await fetch(`${BACKEND_URL}/api/bookings/${bookingId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('✅ Reserva eliminada exitosamente:', result);
+            return result;
+        } catch (error) {
+            console.error('❌ Error eliminando reserva:', error);
+            throw error;
+        }
     }
 };
 
@@ -100,15 +126,10 @@ const adminApp = {
             });
         });
 
-        // Filters
+        // Filtro por fecha
         const dateFilter = document.getElementById('dateFilter');
-        const barberFilter = document.getElementById('barberFilter');
-
         if (dateFilter) {
             dateFilter.addEventListener('change', () => this.filterBookings());
-        }
-        if (barberFilter) {
-            barberFilter.addEventListener('change', () => this.filterBookings());
         }
     },
 
@@ -226,7 +247,6 @@ const adminApp = {
             // Obtener reservas del backend
             const bookings = await adminAPI.getBookings();
             this.renderBookingsTable(bookings);
-            this.populateBarberFilter(bookings);
             this.updateFilteredTotalRevenue(bookings);
             
         } catch (error) {
@@ -243,7 +263,7 @@ const adminApp = {
         if (bookings.length === 0) {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="6" class="text-center text-muted">
+                    <td colspan="8" class="text-center text-muted">
                         No hay reservas registradas
                     </td>
                 </tr>
@@ -269,6 +289,21 @@ const adminApp = {
                 <td>${this.formatDate(booking.date)}</td>
                 <td>${booking.time}</td>
                 <td>${booking.barber.name}</td>
+                <td>
+                    ${booking.notes ? 
+                        `<div class="notes-cell" title="${booking.notes}">
+                            <span class="notes-text">${booking.notes}</span>
+                        </div>` : 
+                        '<span class="text-muted">Sin notas</span>'
+                    }
+                </td>
+                <td>
+                    <button class="btn btn-danger btn-sm" 
+                            onclick="adminApp.deleteBooking('${booking._id}', '${booking.client.name}')"
+                            title="Eliminar reserva">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
             </tr>
         `).join('');
 
@@ -276,42 +311,65 @@ const adminApp = {
     },
 
     // Filtrar reservas
-    filterBookings() {
+    async filterBookings() {
         const dateFilter = document.getElementById('dateFilter').value;
-        const barberFilter = document.getElementById('barberFilter').value;
 
-        // Por ahora, recargar todas las reservas
-        // En el futuro se puede implementar filtrado en el backend
-        this.loadBookings();
+        try {
+            // Obtener todas las reservas del backend
+            const allBookings = await adminAPI.getBookings();
+            
+            // Aplicar filtro por fecha
+            let filteredBookings = allBookings;
+
+            if (dateFilter) {
+                filteredBookings = filteredBookings.filter(booking => 
+                    booking.date === dateFilter
+                );
+            }
+
+            // Renderizar tabla con reservas filtradas
+            this.renderBookingsTable(filteredBookings);
+            this.updateFilteredTotalRevenue(filteredBookings);
+            
+            // Mostrar mensaje de resultados
+            const resultsMessage = `Mostrando ${filteredBookings.length} reserva${filteredBookings.length !== 1 ? 's' : ''}`;
+            this.showToast(resultsMessage, 'info');
+            
+        } catch (error) {
+            console.error('❌ Error filtrando reservas:', error);
+            this.showToast('Error aplicando filtros', 'error');
+        }
     },
 
     // Limpiar filtros
-    clearFilters() {
+    async clearFilters() {
         document.getElementById('dateFilter').value = '';
-        document.getElementById('barberFilter').value = '';
-        this.loadBookings();
+        
+        try {
+            // Recargar todas las reservas
+            await this.loadBookings();
+            this.showToast('Filtros limpiados', 'info');
+        } catch (error) {
+            console.error('❌ Error limpiando filtros:', error);
+            this.showToast('Error limpiando filtros', 'error');
+        }
     },
 
-    // Poblar filtro de barberos
-    populateBarberFilter(bookings) {
-        const barberFilter = document.getElementById('barberFilter');
-        if (!barberFilter) return;
-
-        const barbers = [...new Set(bookings.map(b => b.barber.id))];
-        const barberOptions = barbers.map(barberId => {
-            const barber = bookings.find(b => b.barber.id === barberId).barber;
-            return `<option value="${barberId}">${barber.name}</option>`;
-        }).join('');
-
-        barberFilter.innerHTML = '<option value="">Todos los barberos</option>' + barberOptions;
-    },
+    // Eliminar función populateBarberFilter ya que no se necesita
+    // populateBarberFilter(bookings) {
+    //     // Esta función ya no se necesita
+    // },
 
     // Actualizar total de ingresos filtrados
     updateFilteredTotalRevenue(bookings) {
         const totalRevenueElement = document.getElementById('filteredTotalRevenue');
         if (!totalRevenueElement) return;
 
-        const totalRevenue = bookings.reduce((sum, booking) => sum + booking.service.price, 0);
+        // Calcular total solo de reservas confirmadas
+        const totalRevenue = bookings
+            .filter(booking => booking.status === 'confirmed')
+            .reduce((sum, booking) => sum + booking.service.price, 0);
+            
         totalRevenueElement.textContent = `$${totalRevenue.toLocaleString()}`;
     },
 
@@ -389,13 +447,6 @@ const adminApp = {
         });
     },
 
-    logout() {
-        if (confirm('¿Estás seguro de que quieres salir?')) {
-            this.showToast('Sesión cerrada', 'info');
-            // Aquí se redirigiría al login
-        }
-    },
-
     // Utilidades
     formatDate(dateString) {
         // CORREGIR: Crear la fecha correctamente para evitar problemas de zona horaria
@@ -429,6 +480,33 @@ const adminApp = {
             }).showToast();
         } else {
             alert(message);
+        }
+    },
+
+    // NUEVA FUNCIÓN: Eliminar reserva
+    async deleteBooking(bookingId, clientName) {
+        // Confirmar eliminación
+        const confirmMessage = `¿Estás seguro de que quieres eliminar la reserva de ${clientName}?\n\nEsta acción no se puede deshacer.`;
+        
+        if (!confirm(confirmMessage)) {
+            return;
+        }
+
+        try {
+            this.showToast('Eliminando reserva...', 'info');
+            
+            // Eliminar del backend
+            await adminAPI.deleteBooking(bookingId);
+            
+            // Recargar datos
+            await this.loadDashboard();
+            await this.loadBookings();
+            
+            this.showToast(`✅ Reserva de ${clientName} eliminada exitosamente`, 'success');
+            
+        } catch (error) {
+            console.error('❌ Error eliminando reserva:', error);
+            this.showToast(`Error eliminando reserva: ${error.message}`, 'error');
         }
     }
 };

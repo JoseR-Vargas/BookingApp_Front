@@ -343,9 +343,18 @@ const bookingApp = {
         }
 
         try {
-            const isAvailable = await bookingAPI.checkAvailability(selectedDate, selectedTime, selectedBarber.id);
+            // Obtener todas las reservas y verificar manualmente
+            const bookings = await bookingAPI.getBookings();
             
-            if (!isAvailable) {
+            // Verificar si ya existe una reserva para esta fecha, hora y barbero
+            const existingBooking = bookings.find(booking => 
+                booking.date === selectedDate && 
+                booking.time === selectedTime && 
+                booking.barber.id === selectedBarber.id &&
+                booking.status === 'confirmed'
+            );
+
+            if (existingBooking) {
                 this.showToast(`❌ Lo sentimos, ${selectedBarber.name} ya tiene una reserva para ${selectedDate} a las ${selectedTime}. Por favor selecciona otra hora o barbero.`, 'error');
                 return false;
             }
@@ -851,30 +860,6 @@ const bookingAPI = {
         } catch (error) {
             console.error('❌ Error obteniendo reservas:', error);
             throw error;
-        }
-    },
-
-    // NUEVA FUNCIÓN: Verificar disponibilidad
-    async checkAvailability(date, time, barberId) {
-        try {
-            console.log(' Verificando disponibilidad...');
-            console.log(' Fecha:', date);
-            console.log(' Hora:', time);
-            console.log(' Barbero:', barberId);
-            
-            const response = await fetch(`${BACKEND_URL}/api/bookings/availability?date=${date}&time=${time}&barberId=${barberId}`);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const result = await response.json();
-            console.log('✅ Resultado de disponibilidad:', result);
-            return result.available;
-        } catch (error) {
-            console.error('❌ Error verificando disponibilidad:', error);
-            // En caso de error, asumir que no está disponible por seguridad
-            return false;
         }
     }
 };

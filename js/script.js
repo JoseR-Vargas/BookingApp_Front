@@ -309,12 +309,13 @@ const bookingApp = {
         const timeSelect = document.getElementById('appointmentTime');
         if (!timeSelect) return;
 
-        // Corregir el problema de fecha corrida - usar la misma lógica que en updateServiceInfo
+        // CORREGIR: Usar la fecha directamente sin restar 1 al mes
         const [year, month, day] = date.split('-');
-        const selectedDate = new Date(year, month - 1, day); // month - 1 porque los meses van de 0-11
-        const isWeekend = selectedDate.getDay() === 0; // Domingo
+        // Crear la fecha usando UTC para evitar problemas de zona horaria
+        const selectedDate = new Date(Date.UTC(year, month - 1, day));
+        const isWeekend = selectedDate.getUTCDay() === 0; // Domingo
         
-        console.log(` Fecha seleccionada: ${date}, Día de la semana: ${selectedDate.getDay()}, Es domingo: ${isWeekend}`);
+        console.log(` Fecha seleccionada: ${date}, Día de la semana: ${selectedDate.getUTCDay()}, Es domingo: ${isWeekend}`);
         
         if (isWeekend) {
             timeSelect.innerHTML = '<option value="">Domingo cerrado</option>';
@@ -335,15 +336,17 @@ const bookingApp = {
         const container = document.getElementById('selectedServiceInfo');
         if (!container || !selectedService) return;
 
-        // Corregir el problema de fecha corrida
+        // CORREGIR: Usar la fecha directamente sin restar 1 al mes
         const dateText = selectedDate ? (() => {
             const [year, month, day] = selectedDate.split('-');
-            const date = new Date(year, month - 1, day); // month - 1 porque los meses van de 0-11
+            // Crear la fecha usando UTC para evitar problemas de zona horaria
+            const date = new Date(Date.UTC(year, month - 1, day));
             return date.toLocaleDateString('es-ES', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
-                day: 'numeric'
+                day: 'numeric',
+                timeZone: 'UTC' // Usar UTC para evitar problemas de zona horaria
             });
         })() : 'No seleccionada';
 
@@ -498,6 +501,10 @@ const bookingApp = {
         this.showLoadingModal('Procesando tu reserva...');
         
         try {
+            // CORREGIR: Asegurar que la fecha se envíe correctamente
+            const [year, month, day] = selectedDate.split('-');
+            const bookingDate = new Date(Date.UTC(year, month - 1, day));
+            
             // Preparar datos de la reserva
             const bookingData = {
                 client: {
@@ -516,11 +523,14 @@ const bookingApp = {
                     id: selectedBarber.id,
                     name: selectedBarber.name
                 },
-                date: selectedDate,
+                date: selectedDate, // Enviar la fecha original en formato YYYY-MM-DD
                 time: selectedTime,
                 notes: formData.notes,
                 status: 'confirmed'
             };
+
+            console.log('📅 Fecha que se enviará al backend:', selectedDate);
+            console.log('📅 Fecha procesada:', bookingDate.toISOString().split('T')[0]);
 
             // Enviar al backend
             const result = await bookingAPI.createBooking(bookingData);

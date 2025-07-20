@@ -70,33 +70,49 @@ body {
     display: none;
 }
 
+/* ===== SIDEBAR NAVIGATION ===== */
 .sidebar-nav {
     padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .nav-list {
     list-style: none;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .nav-item {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .nav-link {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.75rem;
-    padding: 0.75rem 1.5rem;
+    padding: 0.75rem 1rem;
     color: var(--secondary-color);
     text-decoration: none;
     transition: var(--transition);
     border-left: 3px solid transparent;
+    width: 90%;
+    border-radius: var(--border-radius);
+    text-align: center;
 }
 
 .nav-link:hover {
     background-color: rgba(0, 123, 255, 0.1);
     color: var(--primary-color);
     border-left-color: var(--primary-color);
+    transform: translateX(5px);
 }
 
 .nav-link.active {
@@ -108,10 +124,76 @@ body {
 .nav-link i {
     width: 20px;
     text-align: center;
+    font-size: 1.1rem;
+}
+
+.nav-link span {
+    font-weight: 500;
+    font-size: 0.95rem;
 }
 
 .sidebar.collapsed .nav-link span {
     display: none;
+}
+
+.sidebar.collapsed .nav-link {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 0;
+    justify-content: center;
+}
+
+.sidebar.collapsed .nav-link i {
+    font-size: 1.2rem;
+}
+
+/* Responsive adjustments for sidebar */
+@media (max-width: 768px) {
+    .sidebar-nav {
+        padding: 1.5rem 0;
+    }
+    
+    .nav-item {
+        margin-bottom: 1rem;
+    }
+    
+    .nav-link {
+        width: 85%;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+    
+    .nav-link i {
+        font-size: 1.2rem;
+    }
+    
+    .nav-link span {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .sidebar-nav {
+        padding: 2rem 0;
+    }
+    
+    .nav-item {
+        margin-bottom: 1.5rem;
+    }
+    
+    .nav-link {
+        width: 80%;
+        padding: 1.2rem;
+    }
+    
+    .nav-link i {
+        font-size: 1.3rem;
+    }
+    
+    .nav-link span {
+        font-size: 1.1rem;
+    }
 }
 
 /* ===== MAIN CONTENT ===== */

@@ -398,7 +398,11 @@ const adminApp = {
 
     // Utilidades
     formatDate(dateString) {
-        return new Date(dateString).toLocaleDateString('es-ES', {
+        // CORREGIR: Crear la fecha correctamente para evitar problemas de zona horaria
+        const [year, month, day] = dateString.split('-');
+        const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        
+        return date.toLocaleDateString('es-ES', {
             weekday: 'short',
             year: 'numeric',
             month: 'short',

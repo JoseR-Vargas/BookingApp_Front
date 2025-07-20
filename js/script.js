@@ -683,15 +683,18 @@ if (typeof bootstrap !== 'undefined') {
   });
 }
 
-// ===== CONFIGURACIÓN DEL BACKEND LOCAL =====
-const BACKEND_URL = 'http://localhost:3000';
+// ===== CONFIGURACIÓN DEL BACKEND (LOCAL Y PRODUCCIÓN) =====
+const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:3000' 
+    : 'https://bookingapp-back-iul0.onrender.com';
 
-// ===== FUNCIONES DE FETCH PARA BACKEND LOCAL =====
+// ===== FUNCIONES DE FETCH PARA BACKEND =====
 const bookingAPI = {
     // Crear nueva reserva
     async createBooking(bookingData) {
         try {
             console.log('📤 Enviando reserva al backend:', bookingData);
+            console.log(' URL del backend:', BACKEND_URL);
             
             const response = await fetch(`${BACKEND_URL}/api/bookings`, {
                 method: 'POST',
@@ -718,6 +721,7 @@ const bookingAPI = {
     async getBookings() {
         try {
             console.log('📥 Obteniendo reservas del backend...');
+            console.log(' URL del backend:', BACKEND_URL);
             
             const response = await fetch(`${BACKEND_URL}/api/bookings`);
             

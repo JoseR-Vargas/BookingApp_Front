@@ -4,15 +4,18 @@ const ADMIN_CONFIG = {
     ITEMS_PER_PAGE: 10
 };
 
-// ===== CONFIGURACIÓN DEL BACKEND LOCAL =====
-const BACKEND_URL = 'http://localhost:3000';
+// ===== CONFIGURACIÓN DEL BACKEND (LOCAL Y PRODUCCIÓN) =====
+const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:3000' 
+    : 'https://bookingapp-back-iul0.onrender.com';
 
-// ===== FUNCIONES DE FETCH PARA BACKEND LOCAL =====
+// ===== FUNCIONES DE FETCH PARA BACKEND =====
 const adminAPI = {
     // Obtener todas las reservas
     async getBookings() {
         try {
             console.log('📥 Obteniendo reservas del backend...');
+            console.log(' URL del backend:', BACKEND_URL);
             
             const response = await fetch(`${BACKEND_URL}/api/bookings`);
             
@@ -32,6 +35,9 @@ const adminAPI = {
     // Obtener estadísticas
     async getStatistics() {
         try {
+            console.log('📊 Obteniendo estadísticas del backend...');
+            console.log(' URL del backend:', BACKEND_URL);
+            
             const response = await fetch(`${BACKEND_URL}/api/bookings/statistics`);
             
             if (!response.ok) {
@@ -39,6 +45,7 @@ const adminAPI = {
             }
 
             const stats = await response.json();
+            console.log('✅ Estadísticas obtenidas:', stats);
             return stats;
         } catch (error) {
             console.error('❌ Error obteniendo estadísticas:', error);

@@ -1,8 +1,3 @@
-/**
- * Barbería Premium - Sistema de Reserva de Citas
- * Principios: DRY, SOLID, YAGNI
- * Autor: JRVN Dev
- */
 
 // ===== CONFIGURACIÓN GLOBAL =====
 const CONFIG = {
@@ -15,6 +10,37 @@ const CONFIG = {
     TOAST_DURATION: 3000
 };
 
+// ===== BARBEROS DISPONIBLES =====
+const BARBERS = [
+    {
+        id: 'carlos-rodriguez',
+        name: 'Carlos Rodríguez',
+        specialty: 'Cortes modernos y barbas',
+        experience: '8 años',
+        rating: 4.9,
+        avatar: 'fas fa-user-tie',
+        available: true
+    },
+    {
+        id: 'miguel-silva',
+        name: 'Miguel Silva',
+        specialty: 'Cortes clásicos y diseño',
+        experience: '5 años',
+        rating: 4.8,
+        avatar: 'fas fa-user-tie',
+        available: true
+    },
+    {
+        id: 'alejandro-martinez',
+        name: 'Alejandro Martínez',
+        specialty: 'Cortes de moda y coloración',
+        experience: '6 años',
+        rating: 4.7,
+        avatar: 'fas fa-user-tie',
+        available: true
+    }
+];
+
 // ===== SERVICIOS DISPONIBLES =====
 const SERVICES = [
     {
@@ -23,7 +49,7 @@ const SERVICES = [
         description: 'Corte profesional adaptado a tu estilo personal',
         price: 450,
         duration: 45,
-        barber: 'Carlos Rodríguez',
+        barbers: ['carlos-rodriguez', 'miguel-silva', 'alejandro-martinez'],
         icon: 'fas fa-cut'
     },
     {
@@ -32,7 +58,7 @@ const SERVICES = [
         description: 'Diseño y arreglo completo de barba',
         price: 250,
         duration: 30,
-        barber: 'Miguel Silva',
+        barbers: ['carlos-rodriguez', 'miguel-silva', 'alejandro-martinez'], // Agregar Alejandro
         icon: 'fas fa-user-tie'
     },
     {
@@ -41,7 +67,7 @@ const SERVICES = [
         description: 'Corte de cabello y arreglo de barba completo',
         price: 650,
         duration: 60,
-        barber: 'Carlos Rodríguez',
+        barbers: ['carlos-rodriguez', 'miguel-silva', 'alejandro-martinez'], // Agregar Alejandro
         icon: 'fas fa-cut'
     }
 ];
@@ -51,6 +77,7 @@ let currentStep = 1;
 let selectedService = null;
 let selectedDate = null;
 let selectedTime = null;
+let selectedBarber = null;
 
 // ===== APLICACIÓN PRINCIPAL =====
 const bookingApp = {
@@ -80,7 +107,7 @@ const bookingApp = {
                         <i class="fas fa-clock me-1"></i>${service.duration} minutos
                     </div>
                     <div class="mt-3">
-                        <small class="text-muted">Barbero: ${service.barber}</small>
+                        <small class="text-muted">Barbero: ${service.barbers.map(barberId => BARBERS.find(b => b.id === barberId)?.name).join(', ')}</small>
                     </div>
                 </div>
             </div>
@@ -161,7 +188,7 @@ const bookingApp = {
                      data-service-name="${service.name}" 
                      data-service-price="${service.price}"
                      data-service-duration="${service.duration}"
-                     data-service-barber="${service.barber}">
+                     data-service-barbers="${service.barbers.join(',')}">
                     <i class="${service.icon}"></i>
                     <h5>${service.name}</h5>
                     <p>${service.description}</p>
@@ -169,7 +196,7 @@ const bookingApp = {
                     <div class="duration">
                         <i class="fas fa-clock me-1"></i>${service.duration} minutos
                     </div>
-                    <small class="text-muted">Barbero: ${service.barber}</small>
+                    <small class="text-muted">Barberos: ${service.barbers.map(barberId => BARBERS.find(b => b.id === barberId)?.name).join(', ')}</small>
                 </div>
             </div>
         `).join('');
@@ -195,7 +222,7 @@ const bookingApp = {
                     name: card.dataset.serviceName,
                     price: parseInt(card.dataset.servicePrice),
                     duration: parseInt(card.dataset.serviceDuration),
-                    barber: card.dataset.serviceBarber
+                    barbers: card.dataset.serviceBarbers.split(',')
                 };
 
                 this.showToast(`✅ Servicio seleccionado: ${selectedService.name}`, 'success');
@@ -219,13 +246,75 @@ const bookingApp = {
         this.updateServiceInfo();
     },
 
+    // Cargar barberos disponibles para el servicio seleccionado
+    loadAvailableBarbers() {
+        const container = document.getElementById('barbersContainer');
+        if (!container || !selectedService) return;
+
+        const availableBarbers = BARBERS.filter(barber => 
+            selectedService.barbers.includes(barber.id)
+        );
+
+        const barbersHTML = availableBarbers.map(barber => `
+            <div class="col-md-6 col-lg-4">
+                <div class="barber-selection-card" 
+                     data-barber-id="${barber.id}" 
+                     data-barber-name="${barber.name}">
+                    <div class="barber-avatar">
+                        <i class="${barber.avatar}"></i>
+                    </div>
+                    <h6 class="barber-name">${barber.name}</h6>
+                    <p class="barber-specialty">${barber.specialty}</p>
+                    <div class="barber-info">
+                        <small class="text-muted">
+                            <i class="fas fa-star text-warning"></i> ${barber.rating}
+                        </small>
+                        <small class="text-muted ms-2">
+                            <i class="fas fa-clock"></i> ${barber.experience}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        container.innerHTML = barbersHTML;
+        this.setupBarberSelection();
+    },
+
+    // Configurar selección de barberos
+    setupBarberSelection() {
+        const cards = document.querySelectorAll('.barber-selection-card');
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                // Remover selección anterior
+                cards.forEach(c => c.classList.remove('selected'));
+                
+                // Seleccionar nueva tarjeta
+                card.classList.add('selected');
+                
+                // Guardar barbero seleccionado
+                selectedBarber = {
+                    id: card.dataset.barberId,
+                    name: card.dataset.barberName
+                };
+
+                this.showToast(`✅ Barbero seleccionado: ${selectedBarber.name}`, 'success');
+                this.updateServiceInfo();
+            });
+        });
+    },
+
     // Cargar horarios disponibles
     loadAvailableTimes(date) {
         const timeSelect = document.getElementById('appointmentTime');
         if (!timeSelect) return;
 
-        const selectedDate = new Date(date);
+        // Corregir el problema de fecha corrida - usar la misma lógica que en updateServiceInfo
+        const [year, month, day] = date.split('-');
+        const selectedDate = new Date(year, month - 1, day); // month - 1 porque los meses van de 0-11
         const isWeekend = selectedDate.getDay() === 0; // Domingo
+        
+        console.log(` Fecha seleccionada: ${date}, Día de la semana: ${selectedDate.getDay()}, Es domingo: ${isWeekend}`);
         
         if (isWeekend) {
             timeSelect.innerHTML = '<option value="">Domingo cerrado</option>';
@@ -246,18 +335,25 @@ const bookingApp = {
         const container = document.getElementById('selectedServiceInfo');
         if (!container || !selectedService) return;
 
-        const dateText = selectedDate ? new Date(selectedDate).toLocaleDateString('es-ES', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        }) : 'No seleccionada';
+        // Corregir el problema de fecha corrida
+        const dateText = selectedDate ? (() => {
+            const [year, month, day] = selectedDate.split('-');
+            const date = new Date(year, month - 1, day); // month - 1 porque los meses van de 0-11
+            return date.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        })() : 'No seleccionada';
+
+        const barberText = selectedBarber ? selectedBarber.name : 'No seleccionado';
 
         container.innerHTML = `
             <div class="row">
                 <div class="col-md-6">
                     <strong>Servicio:</strong> ${selectedService.name}<br>
-                    <strong>Barbero:</strong> ${selectedService.barber}<br>
+                    <strong>Barbero:</strong> ${barberText}<br>
                     <strong>Precio:</strong> $${selectedService.price.toLocaleString()}
                 </div>
                 <div class="col-md-6">
@@ -306,6 +402,10 @@ const bookingApp = {
                 }
                 if (!selectedTime) {
                     this.showToast('Por favor selecciona una hora', 'error');
+                    return false;
+                }
+                if (!selectedBarber) {
+                    this.showToast('Por favor selecciona un barbero', 'error');
                     return false;
                 }
                 break;
@@ -381,12 +481,13 @@ const bookingApp = {
     // Cargar datos según el paso
     loadStepData() {
         if (currentStep === 2) {
+            this.loadAvailableBarbers();
             this.updateServiceInfo();
         }
     },
 
-    // Enviar reserva
-    submitBooking() {
+    // Enviar reserva al backend
+    async submitBooking() {
         const formData = this.getFormData();
         
         if (!formData) {
@@ -396,20 +497,46 @@ const bookingApp = {
 
         this.showLoadingModal('Procesando tu reserva...');
         
-        // Simular envío al backend
-        setTimeout(() => {
+        try {
+            // Preparar datos de la reserva
+            const bookingData = {
+                client: {
+                    name: formData.name,
+                    id: formData.id,
+                    email: formData.email,
+                    phone: formData.phone
+                },
+                service: {
+                    id: selectedService.id,
+                    name: selectedService.name,
+                    price: selectedService.price,
+                    duration: selectedService.duration
+                },
+                barber: {
+                    id: selectedBarber.id,
+                    name: selectedBarber.name
+                },
+                date: selectedDate,
+                time: selectedTime,
+                notes: formData.notes,
+                status: 'confirmed'
+            };
+
+            // Enviar al backend
+            const result = await bookingAPI.createBooking(bookingData);
+            
             this.hideLoadingModal();
             this.showToast('✅ ¡Reserva confirmada! Te enviaremos un email con los detalles.', 'success');
             this.closeModal();
             
-            // Aquí se enviarían los datos al backend
-            console.log('📤 Datos de reserva:', {
-                service: selectedService,
-                date: selectedDate,
-                time: selectedTime,
-                client: formData
-            });
-        }, 2000);
+            console.log('📤 Reserva enviada al backend:', bookingData);
+            console.log('✅ Respuesta del backend:', result);
+            
+        } catch (error) {
+            this.hideLoadingModal();
+            console.error('❌ Error enviando reserva:', error);
+            this.showToast(`Error al procesar la reserva: ${error.message}`, 'error');
+        }
     },
 
     // Obtener datos del formulario
@@ -444,18 +571,68 @@ const bookingApp = {
     // Ocultar modal de carga
     hideLoadingModal() {
         const modal = document.getElementById('loadingModal');
-        if (modal && typeof bootstrap !== 'undefined') {
-            const bsModal = bootstrap.Modal.getInstance(modal);
-            if (bsModal) bsModal.hide();
+        if (modal) {
+            // Forzar cierre del modal
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
+            modal.removeAttribute('aria-modal');
+            modal.removeAttribute('role');
+            
+            // Remover clases del body
+            document.body.classList.remove('modal-open');
+            document.body.style.paddingRight = '';
+            document.body.style.overflow = '';
+            
+            // Remover backdrop
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => backdrop.remove());
+            
+            // Intentar con Bootstrap si está disponible
+            if (typeof bootstrap !== 'undefined') {
+                try {
+                    const bsModal = bootstrap.Modal.getInstance(modal);
+                    if (bsModal) {
+                        bsModal.dispose();
+                    }
+                } catch (error) {
+                    console.log('Modal ya cerrado');
+                }
+            }
+            
+            console.log('✅ Modal de carga cerrado');
         }
     },
 
     // Cerrar modal de reserva
     closeModal() {
         const modal = document.getElementById('bookingModal');
-        if (modal && typeof bootstrap !== 'undefined') {
-            const bsModal = bootstrap.Modal.getInstance(modal);
-            if (bsModal) bsModal.hide();
+        if (modal) {
+            // Intentar con Bootstrap 5
+            if (typeof bootstrap !== 'undefined') {
+                const bsModal = bootstrap.Modal.getInstance(modal);
+                if (bsModal) {
+                    bsModal.hide();
+                } else {
+                    // Si no hay instancia, crear una nueva y ocultarla
+                    const newModal = new bootstrap.Modal(modal);
+                    newModal.hide();
+                }
+            }
+            
+            // Fallback: ocultar directamente
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+            document.body.classList.remove('modal-open');
+            
+            // Remover backdrop
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+            
+            // Remover padding del body
+            document.body.style.paddingRight = '';
         }
     },
 
@@ -465,6 +642,7 @@ const bookingApp = {
         selectedService = null;
         selectedDate = null;
         selectedTime = null;
+        selectedBarber = null;
         
         // Limpiar formulario
         const form = document.getElementById('clientForm');
@@ -504,6 +682,58 @@ if (typeof bootstrap !== 'undefined') {
     document.querySelectorAll('.modal-backdrop').forEach(e => e.remove());
   });
 }
+
+// ===== CONFIGURACIÓN DEL BACKEND LOCAL =====
+const BACKEND_URL = 'http://localhost:3000';
+
+// ===== FUNCIONES DE FETCH PARA BACKEND LOCAL =====
+const bookingAPI = {
+    // Crear nueva reserva
+    async createBooking(bookingData) {
+        try {
+            console.log('📤 Enviando reserva al backend:', bookingData);
+            
+            const response = await fetch(`${BACKEND_URL}/api/bookings`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bookingData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('✅ Reserva creada exitosamente:', result);
+            return result;
+        } catch (error) {
+            console.error('❌ Error creando reserva:', error);
+            throw error;
+        }
+    },
+
+    // Obtener todas las reservas
+    async getBookings() {
+        try {
+            console.log('📥 Obteniendo reservas del backend...');
+            
+            const response = await fetch(`${BACKEND_URL}/api/bookings`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const bookings = await response.json();
+            console.log('✅ Reservas obtenidas:', bookings);
+            return bookings;
+        } catch (error) {
+            console.error('❌ Error obteniendo reservas:', error);
+            throw error;
+        }
+    }
+};
 
 // ===== FUNCIONES DE UTILIDAD =====
 
@@ -545,3 +775,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ===== EXPORTAR PARA USO EXTERNO =====
 window.bookingApp = bookingApp;
+window.bookingAPI = bookingAPI;

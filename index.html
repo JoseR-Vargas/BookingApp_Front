@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barbería Premium - Reserva de Citas</title>
-    
+
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+
     <!-- Toastify CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="./css/styles.css">
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -24,7 +26,8 @@
             <a class="navbar-brand fw-bold fs-3" href="#">
                 <i class="fas fa-cut text-primary me-2"></i>Barbería Premium
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -48,18 +51,16 @@
             <div class="row align-items-center min-vh-100">
                 <div class="col-lg-6">
                     <h1 class="display-4 fw-bold mb-4 text-white">
-                        Tu estilo, nuestra 
+                        Tu estilo, nuestra
                         <span class="text-warning">pasión</span>
                     </h1>
                     <p class="lead mb-4 text-white-50">
-                        Reserva tu cita en nuestra barbería profesional. 
+                        Reserva tu cita en nuestra barbería profesional.
                         Cortes modernos, barbas perfectas y atención personalizada.
                     </p>
                     <div class="d-flex flex-wrap gap-3 mb-4">
-                        <button
-                          class="btn btn-light btn-lg px-4 py-3"
-                          onclick="bookingApp.openModal()">
-                          <i class="fas fa-calendar-check me-2"></i>Reservar Ahora
+                        <button class="btn btn-light btn-lg px-4 py-3" onclick="bookingApp.openModal()">
+                            <i class="fas fa-calendar-check me-2"></i>Reservar Ahora
                         </button>
                         <a href="tel:+59898115693" class="btn btn-outline-light btn-lg px-4 py-3">
                             <i class="fas fa-phone me-2"></i>+598 98 115 693
@@ -82,7 +83,7 @@
                 <h2 class="display-5 fw-bold mb-3">Nuestros Servicios</h2>
                 <p class="lead text-muted">Servicios profesionales para el caballero moderno</p>
             </div>
-            
+
             <div class="row g-4" id="serviciosContainer">
                 <!-- Los servicios se cargarán dinámicamente -->
             </div>
@@ -206,14 +207,31 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold">Fecha de la Cita</label>
-                                    <input type="date" class="form-control form-control-lg" id="appointmentDate" 
-                                           min="" required aria-label="Fecha de la cita">
+                                    <input type="date" class="form-control form-control-lg" id="appointmentDate" min=""
+                                        required aria-label="Fecha de la cita">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold">Hora Disponible</label>
-                                    <select class="form-select form-select-lg" id="appointmentTime" required aria-label="Hora de la cita">
+                                    <select class="form-select form-select-lg" id="appointmentTime" required
+                                        aria-label="Hora de la cita">
                                         <option value="">Selecciona una fecha primero</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Elige tu Barbero</label>
+                                    <div id="barbersContainer" class="row g-3">
+                                        <!-- Los barberos se cargarán aquí -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Elige tu Barbero</label>
+                                    <div id="barbersContainer" class="row g-3">
+                                        <!-- Los barberos se cargarán aquí -->
+                                    </div>
                                 </div>
                             </div>
                             <div class="mt-3">
@@ -238,32 +256,33 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Nombre Completo *</label>
-                                        <input type="text" class="form-control form-control-lg" id="clientName" required 
-                                               placeholder="Tu nombre completo" aria-label="Nombre completo">
+                                        <input type="text" class="form-control form-control-lg" id="clientName" required
+                                            placeholder="Tu nombre completo" aria-label="Nombre completo">
                                         <div class="invalid-feedback">Por favor ingresa tu nombre completo</div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Cédula *</label>
-                                        <input type="text" class="form-control form-control-lg" id="clientId" required 
-                                               placeholder="Tu número de cédula" aria-label="Número de cédula">
+                                        <input type="text" class="form-control form-control-lg" id="clientId" required
+                                            placeholder="Tu número de cédula" aria-label="Número de cédula">
                                         <div class="invalid-feedback">Por favor ingresa tu cédula</div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Email *</label>
-                                        <input type="email" class="form-control form-control-lg" id="email" required 
-                                               placeholder="tu@email.com" aria-label="Dirección de email">
+                                        <input type="email" class="form-control form-control-lg" id="email" required
+                                            placeholder="tu@email.com" aria-label="Dirección de email">
                                         <div class="invalid-feedback">Por favor ingresa un email válido</div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Teléfono *</label>
-                                        <input type="tel" class="form-control form-control-lg" id="phone" required 
-                                               placeholder="+598 98 115 693" aria-label="Número de teléfono">
+                                        <input type="tel" class="form-control form-control-lg" id="phone" required
+                                            placeholder="+598 98 115 693" aria-label="Número de teléfono">
                                         <div class="invalid-feedback">Por favor ingresa tu teléfono</div>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label fw-semibold">Notas (Opcional)</label>
-                                        <textarea class="form-control" id="notes" rows="3" 
-                                                  placeholder="Cualquier comentario especial..." aria-label="Notas adicionales"></textarea>
+                                        <textarea class="form-control" id="notes" rows="3"
+                                            placeholder="Cualquier comentario especial..."
+                                            aria-label="Notas adicionales"></textarea>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-check">
@@ -291,16 +310,19 @@
         </div>
     </div>
 
-    <!-- Loading Modal -->
-    <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <!-- Modal de Carga -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-body text-center py-5">
-                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                <div class="modal-body text-center">
+                    <div class="spinner-border text-primary mb-3" role="status">
                         <span class="visually-hidden">Cargando...</span>
                     </div>
                     <h5 id="loadingText">Procesando tu reserva...</h5>
-                    <p class="text-muted mb-0" id="loadingSubtext">Por favor espera un momento</p>
+                    <p class="text-muted">Por favor espera un momento</p>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('loadingModal').style.display='none'">
+                        Cerrar
+                    </button>
                 </div>
             </div>
         </div>
@@ -309,8 +331,9 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    
+
     <!-- Custom JavaScript -->
     <script src="./js/script.js"></script>
 </body>
+
 </html>

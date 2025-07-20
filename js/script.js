@@ -299,6 +299,10 @@ const bookingApp = {
                 };
 
                 this.showToast(`✅ Barbero seleccionado: ${selectedBarber.name}`, 'success');
+                
+                // NUEVO: Actualizar horarios disponibles para este barbero
+                this.updateAvailableTimesForBarber();
+                
                 this.updateServiceInfo();
             });
         });
@@ -309,13 +313,14 @@ const bookingApp = {
         const timeSelect = document.getElementById('appointmentTime');
         if (!timeSelect) return;
 
-        // CORREGIR: Usar la fecha directamente sin restar 1 al mes
+        // SIMPLIFICAR: Usar la fecha directamente sin conversiones complejas
         const [year, month, day] = date.split('-');
-        // Crear la fecha usando UTC para evitar problemas de zona horaria
-        const selectedDate = new Date(Date.UTC(year, month - 1, day));
-        const isWeekend = selectedDate.getUTCDay() === 0; // Domingo
+        // Crear fecha en zona horaria local para evitar problemas
+        const selectedDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        const isWeekend = selectedDate.getDay() === 0; // Domingo
         
-        console.log(` Fecha seleccionada: ${date}, Día de la semana: ${selectedDate.getUTCDay()}, Es domingo: ${isWeekend}`);
+        console.log(` Fecha seleccionada: ${date}, Día de la semana: ${selectedDate.getDay()}, Es domingo: ${isWeekend}`);
+        console.log(`📅 Fecha creada: ${selectedDate.toDateString()}`);
         
         if (isWeekend) {
             timeSelect.innerHTML = '<option value="">Domingo cerrado</option>';
@@ -329,6 +334,83 @@ const bookingApp = {
         }
 
         timeSelect.innerHTML = '<option value="">Selecciona una hora</option>' + times.join('');
+    },
+
+    // NUEVA FUNCIÓN: Verificar disponibilidad antes de permitir la reserva
+    async checkBookingAvailability() {
+        if (!selectedDate || !selectedTime || !selectedBarber) {
+            return true; // Si no hay datos completos, no verificar
+        }
+
+        try {
+            const isAvailable = await bookingAPI.checkAvailability(selectedDate, selectedTime, selectedBarber.id);
+            
+            if (!isAvailable) {
+                this.showToast(`❌ Lo sentimos, ${selectedBarber.name} ya tiene una reserva para ${selectedDate} a las ${selectedTime}. Por favor selecciona otra hora o barbero.`, 'error');
+                return false;
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('❌ Error verificando disponibilidad:', error);
+            this.showToast('Error verificando disponibilidad. Por favor intenta de nuevo.', 'error');
+            return false;
+        }
+    },
+
+    // NUEVA FUNCIÓN: Actualizar horarios disponibles según barbero seleccionado
+    async updateAvailableTimesForBarber() {
+        if (!selectedDate || !selectedBarber) return;
+
+        const timeSelect = document.getElementById('appointmentTime');
+        if (!timeSelect) return;
+
+        // Mostrar loading
+        timeSelect.innerHTML = '<option value="">Verificando disponibilidad...</option>';
+
+        try {
+            // Obtener todas las reservas para la fecha y barbero
+            const bookings = await bookingAPI.getBookings();
+            const bookedTimes = bookings
+                .filter(booking => 
+                    booking.date === selectedDate && 
+                    booking.barber.id === selectedBarber.id &&
+                    booking.status !== 'cancelled'
+                )
+                .map(booking => booking.time);
+
+            console.log('📅 Horas reservadas para este barbero:', bookedTimes);
+
+            // Generar todas las horas disponibles
+            const [year, month, day] = selectedDate.split('-');
+            const selectedDateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+            const isWeekend = selectedDateObj.getDay() === 0;
+
+            if (isWeekend) {
+                timeSelect.innerHTML = '<option value="">Domingo cerrado</option>';
+                return;
+            }
+
+            const times = [];
+            for (let hour = CONFIG.BUSINESS_HOURS.start; hour < CONFIG.BUSINESS_HOURS.end; hour++) {
+                const timeString = hour.toString().padStart(2, '0') + ':00';
+                
+                // Verificar si la hora está disponible
+                const isAvailable = !bookedTimes.includes(timeString);
+                
+                if (isAvailable) {
+                    times.push(`<option value="${timeString}">${timeString}</option>`);
+                } else {
+                    times.push(`<option value="${timeString}" disabled>${timeString} - Ocupado</option>`);
+                }
+            }
+
+            timeSelect.innerHTML = '<option value="">Selecciona una hora</option>' + times.join('');
+            
+        } catch (error) {
+            console.error('❌ Error actualizando horarios:', error);
+            timeSelect.innerHTML = '<option value="">Error cargando horarios</option>';
+        }
     },
 
     // Actualizar información del servicio seleccionado
@@ -498,12 +580,18 @@ const bookingApp = {
             return;
         }
 
+        // NUEVA VALIDACIÓN: Verificar disponibilidad antes de enviar
+        const isAvailable = await this.checkBookingAvailability();
+        if (!isAvailable) {
+            return; // No continuar si no está disponible
+        }
+
         this.showLoadingModal('Procesando tu reserva...');
         
         try {
-            // CORREGIR: Asegurar que la fecha se envíe correctamente
+            // SIMPLIFICAR: Usar la fecha directamente sin conversiones complejas
             const [year, month, day] = selectedDate.split('-');
-            const bookingDate = new Date(Date.UTC(year, month - 1, day));
+            const bookingDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
             
             // Preparar datos de la reserva
             const bookingData = {
@@ -529,8 +617,9 @@ const bookingApp = {
                 status: 'confirmed'
             };
 
+            console.log('📅 Fecha original seleccionada:', selectedDate);
+            console.log(' Fecha procesada:', bookingDate.toDateString());
             console.log('📅 Fecha que se enviará al backend:', selectedDate);
-            console.log('📅 Fecha procesada:', bookingDate.toISOString().split('T')[0]);
 
             // Enviar al backend
             const result = await bookingAPI.createBooking(bookingData);
@@ -539,7 +628,7 @@ const bookingApp = {
             this.showToast('✅ ¡Reserva confirmada! Te enviaremos un email con los detalles.', 'success');
             this.closeModal();
             
-            console.log('📤 Reserva enviada al backend:', bookingData);
+            console.log(' Reserva enviada al backend:', bookingData);
             console.log('✅ Respuesta del backend:', result);
             
         } catch (error) {
@@ -762,6 +851,30 @@ const bookingAPI = {
         } catch (error) {
             console.error('❌ Error obteniendo reservas:', error);
             throw error;
+        }
+    },
+
+    // NUEVA FUNCIÓN: Verificar disponibilidad
+    async checkAvailability(date, time, barberId) {
+        try {
+            console.log(' Verificando disponibilidad...');
+            console.log(' Fecha:', date);
+            console.log(' Hora:', time);
+            console.log(' Barbero:', barberId);
+            
+            const response = await fetch(`${BACKEND_URL}/api/bookings/availability?date=${date}&time=${time}&barberId=${barberId}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('✅ Resultado de disponibilidad:', result);
+            return result.available;
+        } catch (error) {
+            console.error('❌ Error verificando disponibilidad:', error);
+            // En caso de error, asumir que no está disponible por seguridad
+            return false;
         }
     }
 };

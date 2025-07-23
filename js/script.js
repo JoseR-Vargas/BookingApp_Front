@@ -79,6 +79,9 @@ let selectedDate = null;
 let selectedTime = null;
 let selectedBarber = null;
 
+// Agregar variable para controlar estado de envío
+let isSubmitting = false;
+
 // ===== APLICACIÓN PRINCIPAL =====
 const bookingApp = {
     // Inicializar la aplicación
@@ -147,9 +150,9 @@ const bookingApp = {
     setupDateValidation() {
         const dateInput = document.getElementById('appointmentDate');
         if (dateInput) {
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            dateInput.min = tomorrow.toISOString().split('T')[0];
+            const today = new Date();
+            // Permitir reservas desde hoy mismo
+            dateInput.min = today.toISOString().split('T')[0];
         }
     },
 
@@ -566,6 +569,11 @@ const bookingApp = {
         if (btnNext) {
             if (currentStep === 3) {
                 btnNext.innerHTML = '<i class="fas fa-check me-2"></i>Confirmar Reserva';
+                // DESHABILITAR SI SE ESTÁ ENVIANDO
+                btnNext.disabled = isSubmitting;
+                if (isSubmitting) {
+                    btnNext.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+                }
             } else {
                 btnNext.innerHTML = 'Siguiente <i class="fas fa-arrow-right ms-2"></i>';
             }
@@ -582,6 +590,12 @@ const bookingApp = {
 
     // Enviar reserva al backend
     async submitBooking() {
+        // PREVENIR MÚLTIPLES ENVÍOS
+        if (isSubmitting) {
+            console.log('⏳ Ya se está procesando una reserva...');
+            return;
+        }
+
         const formData = this.getFormData();
         
         if (!formData) {
@@ -595,6 +609,8 @@ const bookingApp = {
             return; // No continuar si no está disponible
         }
 
+        // MARCAR COMO ENVIANDO
+        isSubmitting = true;
         this.showLoadingModal('Procesando tu reserva...');
         
         try {
@@ -644,6 +660,9 @@ const bookingApp = {
             this.hideLoadingModal();
             console.error('❌ Error enviando reserva:', error);
             this.showToast(`Error al procesar la reserva: ${error.message}`, 'error');
+        } finally {
+            // RESETEAR ESTADO DE ENVÍO
+            isSubmitting = false;
         }
     },
 

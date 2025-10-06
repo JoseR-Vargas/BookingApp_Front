@@ -797,7 +797,9 @@ const bookingApp = {
                 duration: CONFIG.TOAST_DURATION,
                 gravity: "top",
                 position: "right",
-                backgroundColor: colors[type] || colors.info,
+                style: {
+                    background: colors[type] || colors.info
+                },
                 stopOnFocus: true
             }).showToast();
         } else {

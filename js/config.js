@@ -1,18 +1,21 @@
 // ===== CONFIGURACIÓN CENTRALIZADA =====
 const APP_CONFIG = {
     BACKEND_URL: (() => {
-        const isProduction = window.location.hostname === 'bookingappservice.netlify.app' 
+        const isProduction = window.location.hostname === 'bookingappservice.netlify.app';
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        
+
         console.log('🌍 Hostname actual:', window.location.hostname);
-        console.log('🏭 Es producción:', isProduction);
+        console.log('� Es producción:', isProduction);
         console.log('💻 Es localhost:', isLocalhost);
-        
+
         if (isProduction) {
-            return 'https://bookingapp-back-iul0.onrender.com';
+            // Actualizado para coincidir con la URL de Render desplegada
+            return 'https://bookingapp-back-um0l.onrender.com';
         } else if (isLocalhost) {
             return 'http://localhost:3000';
-        } 
+        }
+        // Fallback: si no coincide producción ni localhost, usar localhost
+        return 'http://localhost:3000';
     })(),
     
     BUSINESS_HOURS: {

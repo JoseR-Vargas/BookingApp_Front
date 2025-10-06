@@ -821,12 +821,12 @@ const BACKEND_URL = (() => {
     console.log(' Es localhost:', isLocalhost);
     
     if (isProduction) {
-        return 'https://bookingapp-back-iul0.onrender.com';
+        return 'https://bookingapp-back-9nx7.onrender.com/';
     } else if (isLocalhost) {
         return 'http://localhost:3000';
     } else {
         // Fallback para otros dominios
-        return 'https://bookingapp-back-iul0.onrender.com';
+        return 'https://bookingapp-back-9nx7.onrender.com/';
     }
 })();
 

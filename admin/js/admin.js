@@ -1,30 +1,13 @@
 // ===== CONFIGURACIÓN GLOBAL =====
-const ADMIN_CONFIG = {
+const ADMIN_CONFIG = window.APP_CONFIG || {
     TOAST_DURATION: 3000,
     ITEMS_PER_PAGE: 10
 };
 
-// ===== CONFIGURACIÓN DEL BACKEND (LOCAL Y PRODUCCIÓN) =====
-const BACKEND_URL = (() => {
-    // Detectar si estamos en producción (Netlify) o desarrollo local
-    const isProduction = window.location.hostname === 'booking-app-d3v.netlify.app';
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    
-    console.log(' Hostname actual:', window.location.hostname);
-    console.log('🏭 Es producción:', isProduction);
-    console.log(' Es localhost:', isLocalhost);
-    
-    if (isProduction) {
-        return 'https://bookingapp-back-iul0.onrender.com';
-    } else if (isLocalhost) {
-        return 'http://localhost:3000';
-    } else {
-        // Fallback para otros dominios
-        return 'https://bookingapp-back-iul0.onrender.com';
-    }
-})();
+const BACKEND_URL = window.APP_CONFIG?.BACKEND_URL || 'http://localhost:3000';
 
 console.log('🚀 URL del backend configurada:', BACKEND_URL);
+
 
 // ===== FUNCIONES DE FETCH PARA BACKEND =====
 const adminAPI = {

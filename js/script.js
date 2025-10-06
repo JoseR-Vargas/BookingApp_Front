@@ -1,14 +1,17 @@
 
 // ===== CONFIGURACIÓN GLOBAL =====
-const CONFIG = {
+const CONFIG = window.APP_CONFIG || {
     BUSINESS_HOURS: {
         start: 9,
         end: 17,
-        interval: 60 // minutos
+        interval: 60
     },
     CANCELLATION_HOURS: 5,
     TOAST_DURATION: 3000
 };
+
+const BACKEND_URL = window.APP_CONFIG?.BACKEND_URL || 'http://localhost:3000';
+
 
 // ===== BARBEROS DISPONIBLES =====
 const BARBERS = [
@@ -809,26 +812,6 @@ if (typeof bootstrap !== 'undefined') {
     document.querySelectorAll('.modal-backdrop').forEach(e => e.remove());
   });
 }
-
-// ===== CONFIGURACIÓN DEL BACKEND (LOCAL Y PRODUCCIÓN) =====
-const BACKEND_URL = (() => {
-    // Detectar si estamos en producción (Netlify) o desarrollo local
-    const isProduction = window.location.hostname === 'booking-app-d3v.netlify.app';
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    
-    console.log(' Hostname actual:', window.location.hostname);
-    console.log('🏭 Es producción:', isProduction);
-    console.log(' Es localhost:', isLocalhost);
-    
-    if (isProduction) {
-        return 'https://bookingapp-back-9nx7.onrender.com/';
-    } else if (isLocalhost) {
-        return 'http://localhost:3000';
-    } else {
-        // Fallback para otros dominios
-        return 'https://bookingapp-back-9nx7.onrender.com/';
-    }
-})();
 
 console.log('🚀 URL del backend configurada:', BACKEND_URL);
 

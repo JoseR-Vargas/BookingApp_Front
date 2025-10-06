@@ -12,9 +12,7 @@ const APP_CONFIG = {
             return 'https://bookingapp-back-iul0.onrender.com';
         } else if (isLocalhost) {
             return 'http://localhost:3000';
-        } else {
-            return 'https://bookingapp-back-iul0.onrender.com';
-        }
+        } 
     })(),
     
     BUSINESS_HOURS: {

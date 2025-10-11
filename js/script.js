@@ -3,8 +3,12 @@
 const CONFIG = window.APP_CONFIG || {
     BUSINESS_HOURS: {
         start: 9,
-        end: 17,
-        interval: 60
+        end: 20,
+        interval: 60,
+        lunchBreak: {
+            start: 13,
+            end: 14
+        }
     },
     CANCELLATION_HOURS: 5,
     TOAST_DURATION: 3000
@@ -13,32 +17,32 @@ const CONFIG = window.APP_CONFIG || {
 const BACKEND_URL = window.APP_CONFIG?.BACKEND_URL || 'http://localhost:3000';
 
 
-// ===== BARBEROS DISPONIBLES =====
-const BARBERS = [
+// ===== PROFESIONALES DISPONIBLES =====
+const PROFESSIONALS = [
     {
-        id: 'carlos-rodriguez',
-        name: 'Carlos Rodríguez',
-        specialty: 'Cortes modernos y barbas',
-        experience: '8 años',
+        id: 'cesar-viloria',
+        name: 'Cesar Viloria',
+        specialty: 'Barbero',
+        experience: '11 años',
         rating: 4.9,
         avatar: 'fas fa-user-tie',
         available: true
     },
     {
-        id: 'miguel-silva',
-        name: 'Miguel Silva',
-        specialty: 'Cortes clásicos y diseño',
-        experience: '5 años',
-        rating: 4.8,
-        avatar: 'fas fa-user-tie',
+        id: 'andrea-velasquez',
+        name: 'Andrea Velasquez',
+        specialty: 'Especialista en Cejas, Pestañas y Depilación',
+        experience: '6 años',
+        rating: 5.0,
+        avatar: 'fas fa-user',
         available: true
     },
     {
-        id: 'alejandro-martinez',
-        name: 'Alejandro Martínez',
-        specialty: 'Cortes de moda y coloración',
-        experience: '6 años',
-        rating: 4.7,
+        id: 'random',
+        name: 'Random',
+        specialty: 'General',
+        experience: '5 años',
+        rating: 4.9,
         avatar: 'fas fa-user-tie',
         available: true
     }
@@ -48,31 +52,179 @@ const BARBERS = [
 const SERVICES = [
     {
         id: 'corte-cabello',
-        name: 'Corte de Cabello',
+        name: 'Corte comun (Barbería)',
         description: 'Corte profesional adaptado a tu estilo personal',
         price: 450,
         duration: 45,
-        barbers: ['carlos-rodriguez', 'miguel-silva', 'alejandro-martinez'],
+        professionals: ['cesar-viloria', 'random'],
         icon: 'fas fa-cut'
     },
     {
         id: 'barba',
-        name: 'Arreglo de Barba',
+        name: 'Arreglo de Barba (Barbería)',
         description: 'Diseño y arreglo completo de barba',
         price: 250,
         duration: 30,
-        barbers: ['carlos-rodriguez', 'miguel-silva', 'alejandro-martinez'], // Agregar Alejandro
+        professionals: ['cesar-viloria', 'random'],
         icon: 'fas fa-user-tie'
     },
     {
-        id: 'corte-barba',
-        name: 'Corte + Barba',
+        id: 'corte-degrade',
+        name: 'Corte degrade (Barbería)',
         description: 'Corte de cabello y arreglo de barba completo',
-        price: 650,
+        price: 700,
         duration: 60,
-        barbers: ['carlos-rodriguez', 'miguel-silva', 'alejandro-martinez'], // Agregar Alejandro
+        professionals: ['cesar-viloria', 'random'],
         icon: 'fas fa-cut'
-    }
+    },
+    {
+        id: 'cejas-barberia',
+        name: 'Cejas (Barbería)',
+        description: 'Diseño y arreglo de cejas masculinas',
+        price: 200,
+        duration: 20,
+        professionals: ['cesar-viloria', 'random'],
+        icon: 'fas fa-eye'
+    },
+
+
+        {
+        id: 'mechas-platinado',
+        name: 'Mechas / Platinado (Barbería)',
+        description: 'Mechas o platinado profesional para hombre',
+        price: 1000,
+        duration: 90,
+        professionals: ['cesar-viloria', 'random'],
+        icon: 'fas fa-spray-can'
+    },
+
+
+
+    {
+        id: 'cejas',
+        name: 'Perfilado de Cejas (Estetica)',
+        description: 'Diseño y arreglo profesional de cejas',
+        price: 300,
+        duration: 30,
+        professionals: ['andrea-velasquez'],
+        icon: 'fas fa-eye'
+    },
+    {
+        id: 'pestanas',
+        name: 'Lifting de Pestañas (Estetica)',
+        description: 'Tratamiento profesional de pestañas',
+        price: 400,
+        duration: 45,
+        professionals: ['andrea-velasquez'],
+        icon: 'fas fa-eye-dropper'
+    },
+    {
+        id: 'depilacion',
+        name: 'Depilación Facial (Estetica)',
+        description: 'Servicio profesional de depilación',
+        price: 350,
+        duration: 40,
+        professionals: ['andrea-velasquez'],
+        icon: 'fas fa-spa'
+    },
+
+
+ {
+        id: 'perfilado-henna',
+        name: 'Perfilado con Henna (Estetica)',
+        description: 'Perfilado de cejas con tinte de henna natural',
+        price: 450,
+        duration: 40,
+        professionals: ['andrea-velasquez'],
+        icon: 'fas fa-paint-brush'
+    },
+
+    {
+        id: 'laminado-cejas',
+        name: 'Laminado de Cejas (Estetica)',
+        description: 'Tratamiento de laminado para cejas perfectas',
+        price: 600,
+        duration: 50,
+        professionals: ['andrea-velasquez'],
+        icon: 'fas fa-magic'
+    },
+    {
+        id: 'pestanas-express',
+        name: 'Pestañas Express (Estetica)',
+        description: 'Tratamiento rápido de pestañas',
+        price: 350,
+        duration: 30,
+        professionals: ['andrea-velasquez'],
+        icon: 'fas fa-bolt'
+    },
+    {
+        id: 'hydrogloss',
+        name: 'Hydrogloss (Estetica)',
+        description: 'Tratamiento de brillo e hidratación labial',
+        price: 500,
+        duration: 35,
+        professionals: ['andrea-velasquez'],
+        icon: 'fas fa-kiss'
+    },
+
+
+
+    {
+        id: 'corte-cabello-peluqueria',
+        name: 'Corte de Cabello (Peluquería)',
+        description: 'Corte de cabello femenino profesional',
+        price: 500,
+        duration: 60,
+        professionals: ['random'],
+        icon: 'fas fa-cut'
+    },
+    {
+        id: 'secado-cabello',
+        name: 'Secado de Cabello (Peluquería)',
+        description: 'Secado y peinado profesional',
+        price: 350,
+        duration: 45,
+        professionals: ['random'],
+        icon: 'fas fa-wind'
+    },
+    {
+        id: 'mechas',
+        name: 'Mechas (Peluquería)',
+        description: 'Aplicación de mechas para resaltar tu cabello',
+        price: 1200,
+        duration: 120,
+        professionals: ['random'],
+        icon: 'fas fa-paint-brush'
+    },
+    {
+        id: 'balayage',
+        name: 'Balayage (Peluquería)',
+        description: 'Técnica de coloración degradada natural',
+        price: 1500,
+        duration: 150,
+        professionals: ['random'],
+        icon: 'fas fa-palette'
+    },
+    {
+        id: 'progresivo-alisado',
+        name: 'Progresivo o Alisado (Peluquería)',
+        description: 'Tratamiento de alisado permanente',
+        price: 2000,
+        duration: 180,
+        professionals: ['random'],
+        icon: 'fas fa-grip-lines'
+    },
+    {
+        id: 'hidrataciones',
+        name: 'Hidrataciones (Peluquería)',
+        description: 'Tratamiento profundo de hidratación capilar',
+        price: 800,
+        duration: 90,
+        professionals: ['random'],
+        icon: 'fas fa-droplet'
+    },
+
+   
 ];
 
 // ===== ESTADO GLOBAL =====
@@ -80,7 +232,7 @@ let currentStep = 1;
 let selectedService = null;
 let selectedDate = null;
 let selectedTime = null;
-let selectedBarber = null;
+let selectedProfessional = null;
 
 // Agregar variable para controlar estado de envío
 let isSubmitting = false;
@@ -113,11 +265,12 @@ const bookingApp = {
                         <i class="fas fa-clock me-1"></i>${service.duration} minutos
                     </div>
                     <div class="mt-3">
-                        <small class="text-muted">Barbero: ${service.barbers.map(barberId => BARBERS.find(b => b.id === barberId)?.name).join(', ')}</small>
+                        <small class="text-muted">Profesional: ${service.professionals.map(profId => PROFESSIONALS.find(p => p.id === profId)?.name).join(', ')}</small>
                     </div>
                 </div>
             </div>
         `).join('');
+
 
         container.innerHTML = servicesHTML;
     },
@@ -194,7 +347,7 @@ const bookingApp = {
                      data-service-name="${service.name}" 
                      data-service-price="${service.price}"
                      data-service-duration="${service.duration}"
-                     data-service-barbers="${service.barbers.join(',')}">
+                     data-service-professionals="${service.professionals.join(',')}">
                     <i class="${service.icon}"></i>
                     <h5>${service.name}</h5>
                     <p>${service.description}</p>
@@ -202,7 +355,7 @@ const bookingApp = {
                     <div class="duration">
                         <i class="fas fa-clock me-1"></i>${service.duration} minutos
                     </div>
-                    <small class="text-muted">Barberos: ${service.barbers.map(barberId => BARBERS.find(b => b.id === barberId)?.name).join(', ')}</small>
+                    <small class="text-muted">Profesionales: ${service.professionals.map(profId => PROFESSIONALS.find(p => p.id === profId)?.name).join(', ')}</small>
                 </div>
             </div>
         `).join('');
@@ -228,7 +381,7 @@ const bookingApp = {
                     name: card.dataset.serviceName,
                     price: parseInt(card.dataset.servicePrice),
                     duration: parseInt(card.dataset.serviceDuration),
-                    barbers: card.dataset.serviceBarbers.split(',')
+                    professionals: card.dataset.serviceProfessionals.split(',')
                 };
 
                 this.showToast(`✅ Servicio seleccionado: ${selectedService.name}`, 'success');
@@ -252,43 +405,43 @@ const bookingApp = {
         this.updateServiceInfo();
     },
 
-    // Cargar barberos disponibles para el servicio seleccionado
-    loadAvailableBarbers() {
+    // Cargar profesionales disponibles para el servicio seleccionado
+    loadAvailableProfessionals() {
         const container = document.getElementById('barbersContainer');
         if (!container || !selectedService) return;
 
-        const availableBarbers = BARBERS.filter(barber => 
-            selectedService.barbers.includes(barber.id)
+        const availableProfessionals = PROFESSIONALS.filter(professional => 
+            selectedService.professionals.includes(professional.id)
         );
 
-        const barbersHTML = availableBarbers.map(barber => `
+        const professionalsHTML = availableProfessionals.map(professional => `
             <div class="col-md-6 col-lg-4">
                 <div class="barber-selection-card" 
-                     data-barber-id="${barber.id}" 
-                     data-barber-name="${barber.name}">
+                     data-professional-id="${professional.id}" 
+                     data-professional-name="${professional.name}">
                     <div class="barber-avatar">
-                        <i class="${barber.avatar}"></i>
+                        <i class="${professional.avatar}"></i>
                     </div>
-                    <h6 class="barber-name">${barber.name}</h6>
-                    <p class="barber-specialty">${barber.specialty}</p>
+                    <h6 class="barber-name">${professional.name}</h6>
+                    <p class="barber-specialty">${professional.specialty}</p>
                     <div class="barber-info">
                         <small class="text-muted">
-                            <i class="fas fa-star text-warning"></i> ${barber.rating}
+                            <i class="fas fa-star text-warning"></i> ${professional.rating}
                         </small>
                         <small class="text-muted ms-2">
-                            <i class="fas fa-clock"></i> ${barber.experience}
+                            <i class="fas fa-clock"></i> ${professional.experience}
                         </small>
                     </div>
                 </div>
             </div>
         `).join('');
 
-        container.innerHTML = barbersHTML;
-        this.setupBarberSelection();
+        container.innerHTML = professionalsHTML;
+        this.setupProfessionalSelection();
     },
 
-    // Configurar selección de barberos
-    setupBarberSelection() {
+    // Configurar selección de profesionales
+    setupProfessionalSelection() {
         const cards = document.querySelectorAll('.barber-selection-card');
         cards.forEach(card => {
             card.addEventListener('click', () => {
@@ -298,16 +451,16 @@ const bookingApp = {
                 // Seleccionar nueva tarjeta
                 card.classList.add('selected');
                 
-                // Guardar barbero seleccionado
-                selectedBarber = {
-                    id: card.dataset.barberId,
-                    name: card.dataset.barberName
+                // Guardar profesional seleccionado
+                selectedProfessional = {
+                    id: card.dataset.professionalId,
+                    name: card.dataset.professionalName
                 };
 
-                this.showToast(`✅ Barbero seleccionado: ${selectedBarber.name}`, 'success');
+                this.showToast(`✅ Profesional seleccionado: ${selectedProfessional.name}`, 'success');
                 
-                // NUEVO: Actualizar horarios disponibles para este barbero
-                this.updateAvailableTimesForBarber();
+                // Actualizar horarios disponibles para este profesional
+                this.updateAvailableTimesForProfessional();
                 
                 this.updateServiceInfo();
             });
@@ -323,18 +476,27 @@ const bookingApp = {
         const [year, month, day] = date.split('-');
         // Crear fecha en zona horaria local para evitar problemas
         const selectedDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-        const isWeekend = selectedDate.getDay() === 0; // Domingo
+        const dayOfWeek = selectedDate.getDay();
+        const isSunday = dayOfWeek === 0; // Domingo
+        const isSaturday = dayOfWeek === 6; // Sábado
         
-        console.log(` Fecha seleccionada: ${date}, Día de la semana: ${selectedDate.getDay()}, Es domingo: ${isWeekend}`);
+        console.log(` Fecha seleccionada: ${date}, Día de la semana: ${dayOfWeek}, Es domingo: ${isSunday}, Es sábado: ${isSaturday}`);
         console.log(`📅 Fecha creada: ${selectedDate.toDateString()}`);
         
-        if (isWeekend) {
+        if (isSunday) {
             timeSelect.innerHTML = '<option value="">Domingo cerrado</option>';
             return;
         }
 
+        // Determinar hora de cierre según el día
+        const closingHour = isSaturday ? 18 : CONFIG.BUSINESS_HOURS.end; // Sábados hasta las 18:00
+        
         const times = [];
-        for (let hour = CONFIG.BUSINESS_HOURS.start; hour < CONFIG.BUSINESS_HOURS.end; hour++) {
+        for (let hour = CONFIG.BUSINESS_HOURS.start; hour < closingHour; hour++) {
+            // Saltar hora de almuerzo
+            if (hour >= CONFIG.BUSINESS_HOURS.lunchBreak.start && hour < CONFIG.BUSINESS_HOURS.lunchBreak.end) {
+                continue;
+            }
             const timeString = hour.toString().padStart(2, '0') + ':00';
             times.push(`<option value="${timeString}">${timeString}</option>`);
         }
@@ -342,26 +504,25 @@ const bookingApp = {
         timeSelect.innerHTML = '<option value="">Selecciona una hora</option>' + times.join('');
     },
 
-    // NUEVA FUNCIÓN: Verificar disponibilidad antes de permitir la reserva
+    // Verificar disponibilidad antes de permitir la reserva
     async checkBookingAvailability() {
-        if (!selectedDate || !selectedTime || !selectedBarber) {
+        if (!selectedDate || !selectedTime || !selectedProfessional) {
             return true; // Si no hay datos completos, no verificar
         }
 
         try {
-            // Obtener todas las reservas y verificar manualmente
             const bookings = await bookingAPI.getBookings();
             
-            // Verificar si ya existe una reserva para esta fecha, hora y barbero
+            // Verificar si ya existe una reserva para esta fecha, hora y profesional
             const existingBooking = bookings.find(booking => 
                 booking.date === selectedDate && 
                 booking.time === selectedTime && 
-                booking.barber.id === selectedBarber.id &&
+                booking.professional.id === selectedProfessional.id &&
                 booking.status === 'confirmed'
             );
 
             if (existingBooking) {
-                this.showToast(`❌ Lo sentimos, ${selectedBarber.name} ya tiene una reserva para ${selectedDate} a las ${selectedTime}. Por favor selecciona otra hora o barbero.`, 'error');
+                this.showToast(`❌ Lo sentimos, ${selectedProfessional.name} ya tiene una reserva para ${selectedDate} a las ${selectedTime}. Por favor selecciona otra hora o profesional.`, 'error');
                 return false;
             }
             
@@ -373,44 +534,49 @@ const bookingApp = {
         }
     },
 
-    // NUEVA FUNCIÓN: Actualizar horarios disponibles según barbero seleccionado
-    async updateAvailableTimesForBarber() {
-        if (!selectedDate || !selectedBarber) return;
+    // Actualizar horarios disponibles según profesional seleccionado
+    async updateAvailableTimesForProfessional() {
+        if (!selectedDate || !selectedProfessional) return;
 
         const timeSelect = document.getElementById('appointmentTime');
         if (!timeSelect) return;
 
-        // Mostrar loading
         timeSelect.innerHTML = '<option value="">Verificando disponibilidad...</option>';
 
         try {
-            // Obtener todas las reservas para la fecha y barbero
             const bookings = await bookingAPI.getBookings();
             const bookedTimes = bookings
                 .filter(booking => 
                     booking.date === selectedDate && 
-                    booking.barber.id === selectedBarber.id &&
+                    booking.professional.id === selectedProfessional.id &&
                     booking.status !== 'cancelled'
                 )
                 .map(booking => booking.time);
 
-            console.log('📅 Horas reservadas para este barbero:', bookedTimes);
+            console.log('📅 Horas reservadas para este profesional:', bookedTimes);
 
-            // Generar todas las horas disponibles
             const [year, month, day] = selectedDate.split('-');
             const selectedDateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-            const isWeekend = selectedDateObj.getDay() === 0;
+            const dayOfWeek = selectedDateObj.getDay();
+            const isSunday = dayOfWeek === 0;
+            const isSaturday = dayOfWeek === 6;
 
-            if (isWeekend) {
+            if (isSunday) {
                 timeSelect.innerHTML = '<option value="">Domingo cerrado</option>';
                 return;
             }
 
+            // Determinar hora de cierre según el día
+            const closingHour = isSaturday ? 18 : CONFIG.BUSINESS_HOURS.end; // Sábados hasta las 18:00
+
             const times = [];
-            for (let hour = CONFIG.BUSINESS_HOURS.start; hour < CONFIG.BUSINESS_HOURS.end; hour++) {
-                const timeString = hour.toString().padStart(2, '0') + ':00';
+            for (let hour = CONFIG.BUSINESS_HOURS.start; hour < closingHour; hour++) {
+                // Saltar hora de almuerzo
+                if (hour >= CONFIG.BUSINESS_HOURS.lunchBreak.start && hour < CONFIG.BUSINESS_HOURS.lunchBreak.end) {
+                    continue;
+                }
                 
-                // Verificar si la hora está disponible
+                const timeString = hour.toString().padStart(2, '0') + ':00';
                 const isAvailable = !bookedTimes.includes(timeString);
                 
                 if (isAvailable) {
@@ -447,13 +613,13 @@ const bookingApp = {
             });
         })() : 'No seleccionada';
 
-        const barberText = selectedBarber ? selectedBarber.name : 'No seleccionado';
+        const professionalText = selectedProfessional ? selectedProfessional.name : 'No seleccionado';
 
         container.innerHTML = `
             <div class="row">
                 <div class="col-md-6">
                     <strong>Servicio:</strong> ${selectedService.name}<br>
-                    <strong>Barbero:</strong> ${barberText}<br>
+                    <strong>Profesional:</strong> ${professionalText}<br>
                     <strong>Precio:</strong> $${selectedService.price.toLocaleString()}
                 </div>
                 <div class="col-md-6">
@@ -504,8 +670,8 @@ const bookingApp = {
                     this.showToast('Por favor selecciona una hora', 'error');
                     return false;
                 }
-                if (!selectedBarber) {
-                    this.showToast('Por favor selecciona un barbero', 'error');
+                if (!selectedProfessional) {
+                    this.showToast('Por favor selecciona un profesional', 'error');
                     return false;
                 }
                 break;
@@ -586,7 +752,7 @@ const bookingApp = {
     // Cargar datos según el paso
     loadStepData() {
         if (currentStep === 2) {
-            this.loadAvailableBarbers();
+            this.loadAvailableProfessionals();
             this.updateServiceInfo();
         }
     },
@@ -635,9 +801,9 @@ const bookingApp = {
                     price: selectedService.price,
                     duration: selectedService.duration
                 },
-                barber: {
-                    id: selectedBarber.id,
-                    name: selectedBarber.name
+                professional: {
+                    id: selectedProfessional.id,
+                    name: selectedProfessional.name
                 },
                 date: selectedDate, // Enviar la fecha original en formato YYYY-MM-DD
                 time: selectedTime,
@@ -653,10 +819,34 @@ const bookingApp = {
             const result = await bookingAPI.createBooking(bookingData);
             
             this.hideLoadingModal();
-            this.showToast('✅ ¡Reserva confirmada! Te enviaremos un email con los detalles.', 'success');
-            this.closeModal();
-            
-            console.log(' Reserva enviada al backend:', bookingData);
+            // Crear mensaje detallado con los datos de la reserva
+            const bookingDetails = `
+                ✅ ¡Reserva Confirmada has un ScreenShot a tu Reserva!
+                
+                📋 Detalles:
+                👤 Cliente: ${bookingData.client.name}
+                💇 Servicio: ${bookingData.service.name}
+                💰 Precio: $${bookingData.service.price.toLocaleString()}
+                👨‍💼 Profesional: ${bookingData.professional.name}
+                📅 Fecha: ${new Date(bookingData.date).toLocaleDateString('es-ES', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                })}
+                🕐 Hora: ${bookingData.time}
+                ⏱️ Duración: ${bookingData.service.duration} minutos
+            `;
+
+            // Mostrar toast por 2 minutos (120000 ms)
+            this.showToast(bookingDetails, 'success', 120000);
+
+            // Cerrar modal después de 2 segundos
+            setTimeout(() => {
+                this.closeModal();
+            }, 2000);
+
+            console.log('📤 Reserva enviada al backend:', bookingData);
             console.log('✅ Respuesta del backend:', result);
             
         } catch (error) {
@@ -772,7 +962,7 @@ const bookingApp = {
         selectedService = null;
         selectedDate = null;
         selectedTime = null;
-        selectedBarber = null;
+        selectedProfessional = null;
         
         // Limpiar formulario
         const form = document.getElementById('clientForm');
@@ -783,7 +973,7 @@ const bookingApp = {
     },
 
     // Mostrar notificación toast
-    showToast(message, type = 'info') {
+    showToast(message, type = 'info', duration = null) {
         if (typeof Toastify !== 'undefined') {
             const colors = {
                 success: '#28a745',
@@ -794,7 +984,7 @@ const bookingApp = {
             
             Toastify({
                 text: message,
-                duration: CONFIG.TOAST_DURATION,
+                duration: duration || CONFIG.TOAST_DURATION,
                 gravity: "top",
                 position: "right",
                 style: {

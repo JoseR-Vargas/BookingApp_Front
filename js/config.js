@@ -20,8 +20,12 @@ const APP_CONFIG = {
     
     BUSINESS_HOURS: {
         start: 9,
-        end: 17,
-        interval: 60
+        end: 20,
+        interval: 60,
+        lunchBreak: {
+            start: 13,
+            end: 14
+        }
     },
     
     CANCELLATION_HOURS: 5,

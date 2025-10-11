@@ -212,14 +212,18 @@ const adminApp = {
             return;
         }
 
-        const html = bookings.map(booking => `
-            <tr>
-                <td>${booking.client.name}</td>
-                <td>${booking.service.name}</td>
-                <td>${this.formatDate(booking.date)}</td>
-                <td>${booking.barber.name}</td>
-            </tr>
-        `).join('');
+        const html = bookings.map(booking => {
+            // Compatibilidad con formato antiguo (barber) y nuevo (professional)
+            const professionalName = booking.professional?.name || booking.barber?.name || 'N/A';
+            return `
+                <tr>
+                    <td>${booking.client.name}</td>
+                    <td>${booking.service.name}</td>
+                    <td>${this.formatDate(booking.date)}</td>
+                    <td>${professionalName}</td>
+                </tr>
+            `;
+        }).join('');
 
         tableBody.innerHTML = html;
     },
@@ -254,41 +258,45 @@ const adminApp = {
             return;
         }
 
-        const html = bookings.map(booking => `
-            <tr>
-                <td>#${booking._id.slice(-6)}</td>
-                <td>
-                    <div>
-                        <strong>${booking.client.name}</strong><br>
-                        <small class="text-muted">${booking.client.email}</small>
-                    </div>
-                </td>
-                <td>
-                    <div>
-                        <strong>${booking.service.name}</strong><br>
-                        <small class="text-muted">$${booking.service.price}</small>
-                    </div>
-                </td>
-                <td>${this.formatDate(booking.date)}</td>
-                <td>${booking.time}</td>
-                <td>${booking.barber.name}</td>
-                <td>
-                    ${booking.notes ? 
-                        `<div class="notes-cell" title="${booking.notes}">
-                            <span class="notes-text">${booking.notes}</span>
-                        </div>` : 
-                        '<span class="text-muted">Sin notas</span>'
-                    }
-                </td>
-                <td>
-                    <button class="btn btn-danger btn-sm" 
-                            onclick="adminApp.deleteBooking('${booking._id}', '${booking.client.name}')"
-                            title="Eliminar reserva">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+        const html = bookings.map(booking => {
+            // Compatibilidad con formato antiguo (barber) y nuevo (professional)
+            const professionalName = booking.professional?.name || booking.barber?.name || 'N/A';
+            return `
+                <tr>
+                    <td>#${booking._id.slice(-6)}</td>
+                    <td>
+                        <div>
+                            <strong>${booking.client.name}</strong><br>
+                            <small class="text-muted">${booking.client.email}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <strong>${booking.service.name}</strong><br>
+                            <small class="text-muted">$${booking.service.price}</small>
+                        </div>
+                    </td>
+                    <td>${this.formatDate(booking.date)}</td>
+                    <td>${booking.time}</td>
+                    <td>${professionalName}</td>
+                    <td>
+                        ${booking.notes ? 
+                            `<div class="notes-cell" title="${booking.notes}">
+                                <span class="notes-text">${booking.notes}</span>
+                            </div>` : 
+                            '<span class="text-muted">Sin notas</span>'
+                        }
+                    </td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" 
+                                onclick="adminApp.deleteBooking('${booking._id}', '${booking.client.name}')"
+                                title="Eliminar reserva">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
 
         tableBody.innerHTML = html;
     },

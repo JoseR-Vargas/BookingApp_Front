@@ -126,21 +126,7 @@ html {
     overflow: hidden;
 }
 
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url('../img/Black and White Minimal Modern Bold Beauty Logo.pdf-2_page-0003.jpg');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 1;
-    pointer-events: none;
-    z-index: 0;
-}
+/* Removido el fondo con imagen del logo */
 
 .hero-section::after {
     content: '';
@@ -155,16 +141,56 @@ html {
     z-index: 1;
 }
 
-.hero-icon {
-    font-size: 15rem;
-    color: rgba(228,228,228,0.1);
+/* Logo principal - Imagen del logo */
+.hero-logo {
+    max-width: 400px;
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
     animation: float 3s ease-in-out infinite;
     position: relative;
     z-index: 2;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     transform: translateZ(0);
     will-change: transform;
+    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
+    transition: var(--transition);
+    object-fit: cover;
+    aspect-ratio: 1;
+}
+
+.hero-logo:hover {
+    transform: translateY(-10px) scale(1.05);
+    filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.5));
+}
+
+.hero-logo-container {
+    position: relative;
+    display: inline-block;
+}
+
+.hero-logo-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { 
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.3;
+    }
+    50% { 
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.6;
+    }
 }
 
 @keyframes float {
@@ -570,9 +596,14 @@ footer {
         font-size: 1rem;
     }
     
-    .hero-icon {
-        font-size: 8rem;
+    .hero-logo {
+        max-width: 300px;
         margin-top: 2rem;
+    }
+    
+    .hero-logo-container::before {
+        width: 200px;
+        height: 200px;
     }
     
     .hero-section .d-flex {
@@ -679,9 +710,14 @@ footer {
         font-size: 0.95rem;
     }
     
-    .hero-icon {
-        font-size: 5rem;
+    .hero-logo {
+        max-width: 250px;
         margin-top: 1rem;
+    }
+    
+    .hero-logo-container::before {
+        width: 150px;
+        height: 150px;
     }
     
     /* Buttons */
@@ -831,8 +867,13 @@ footer {
         font-size: 1.5rem;
     }
     
-    .hero-icon {
-        font-size: 4rem;
+    .hero-logo {
+        max-width: 200px;
+    }
+    
+    .hero-logo-container::before {
+        width: 120px;
+        height: 120px;
     }
     
     .step-number {

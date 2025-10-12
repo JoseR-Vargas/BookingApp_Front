@@ -1,240 +1,265 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Admin - Barbería Premium</title>
-    
+
     <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
     <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+
     <!-- Toastify CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="./admin/css/admin.css">
-</head>
-<body>
+    <link rel="stylesheet" href="./admin/css/admin.css" />
+  </head>
+  <body>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <i class="fas fa-cut text-primary"></i>
-            <span class="sidebar-title">Big Ligas Barber Studio</span>
-        </div>
-        
-        <nav class="sidebar-nav">
-            <ul class="nav-list">
-                <li class="nav-item active">
-                    <a href="#dashboard" class="nav-link" data-section="dashboard">
-                        <i class="fas fa-tachometer-alt"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#bookings" class="nav-link" data-section="bookings">
-                        <i class="fas fa-calendar-check"></i>
-                        <span>Reservas</span>
-                    </a>
-                </li>
+      <div class="sidebar-header">
+        <i class="fas fa-cut text-primary"></i>
+        <span class="sidebar-title">Big Ligas Beauty & Barber Studio</span>
+      </div>
 
+      <nav class="sidebar-nav">
+        <ul class="nav-list">
+          <li class="nav-item active">
+            <a href="#dashboard" class="nav-link" data-section="dashboard">
+              <i class="fas fa-tachometer-alt"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#bookings" class="nav-link" data-section="bookings">
+              <i class="fas fa-calendar-check"></i>
+              <span>Reservas</span>
+            </a>
+          </li>
 
-                <li class="nav-item">
-                    <a href="#reports" class="nav-link" data-section="reports">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Reportes</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+          <!-- <li class="nav-item">
+            <a href="#reports" class="nav-link" data-section="reports">
+              <i class="fas fa-chart-bar"></i>
+              <span>Reportes</span>
+            </a>
+          </li> -->
+        </ul>
+      </nav>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Top Navigation -->
-        <nav class="top-nav">
-            <div class="nav-left">
-                <button class="sidebar-toggle" id="sidebarToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h1 class="page-title" id="pageTitle">Dashboard</h1>
-            </div>
-            <div class="nav-right">
-                <div class="admin-info">
-                    <span class="admin-name" id="adminUserName">Admin</span>
-                    <button class="btn btn-sm btn-outline-danger ms-3" id="logoutBtn" title="Cerrar sesión">
-                        <i class="fas fa-sign-out-alt"></i> Salir
-                    </button>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Content Area -->
-        <div class="content-area">
-            <!-- Dashboard Section -->
-            <section id="dashboard" class="content-section active">
-                <div class="row g-4 mb-4">
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-icon bg-primary">
-                                <i class="fas fa-calendar-check"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3 id="totalBookings">0</h3>
-                                <p>Reservas Totales</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-icon bg-warning">
-                                <i class="fas fa-dollar-sign"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3 id="totalRevenue">$0</h3>
-                                <p>Ingresos del Mes</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-icon bg-info">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3 id="todayBookings">0</h3>
-                                <p>Reservas Hoy</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row g-4">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title">Reservas Recientes</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Cliente</th>
-                                                <th>Servicio</th>
-                                                <th>Fecha</th>
-                                                <th>Profesional</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="recentBookingsTable">
-                                            <!-- Se llenará dinámicamente -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
-            <!-- Bookings Section -->
-            <section id="bookings" class="content-section">
-                <div class="section-header">
-                    <h2>Gestión de Reservas</h2>
-                </div>
-
-                <div class="filters-row mb-4">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <input type="date" class="form-control" id="dateFilter" placeholder="Filtrar por fecha">
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="total-revenue-display">
-                                    <span class="text-muted">Total: </span>
-                                    <span class="fw-bold text-success fs-5" id="filteredTotalRevenue">$0</span>
-                                </div>
-                                <button class="btn btn-outline-secondary" onclick="adminApp.clearFilters()">
-                                    <i class="fas fa-sync-alt"></i> Actualizar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover" id="bookingsTable">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Cliente</th>
-                                        <th>Servicio</th>
-                                        <th>Fecha</th>
-                                        <th>Hora</th>
-                                        <th>Barbero</th>
-                                        <th>Notas</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="bookingsTableBody">
-                                    <!-- Se llenará dinámicamente -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-
-
-
-
-            <!-- Reports Section -->
-            <section id="reports" class="content-section">
-                <div class="section-header">
-                    <h2>Reportes y Estadísticas</h2>
-                </div>
-
-                <div class="row g-4">
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title">Reservas por Mes</h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="bookingsChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title">Servicios Más Populares</h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="servicesChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+      <!-- Top Navigation -->
+      <nav class="top-nav">
+        <div class="nav-left">
+          <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1 class="page-title" id="pageTitle">Dashboard</h1>
         </div>
+        <div class="nav-right">
+          <div class="admin-info">
+            <span class="admin-name" id="adminUserName">Admin</span>
+            <button
+              class="btn btn-sm btn-outline-danger ms-3"
+              id="logoutBtn"
+              title="Cerrar sesión"
+            >
+              <i class="fas fa-sign-out-alt"></i> Salir
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Content Area -->
+      <div class="content-area">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+          <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-md-6">
+              <div class="stat-card">
+                <div class="stat-icon bg-primary">
+                  <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-content">
+                  <h3 id="totalBookings">0</h3>
+                  <p>Reservas Totales</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+              <div class="stat-card">
+                <div class="stat-icon bg-warning">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-content">
+                  <h3 id="totalRevenue">$0</h3>
+                  <p>Ingresos del Mes</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+              <div class="stat-card">
+                <div class="stat-icon bg-info">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                  <h3 id="todayBookings">0</h3>
+                  <p>Reservas Hoy</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title">Reservas Recientes</h5>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>Cliente</th>
+                          <th>Teléfono</th>
+                          <th>Servicio</th>
+                          <th>Fecha</th>
+                          <th>Profesional</th>
+                        </tr>
+                      </thead>
+                      <tbody id="recentBookingsTable">
+                        <!-- Se llenará dinámicamente -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bookings Section -->
+        <section id="bookings" class="content-section">
+          <div class="section-header">
+            <h2>Gestión de Reservas</h2>
+          </div>
+
+          <div class="filters-row mb-4">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <input
+                  type="date"
+                  class="form-control"
+                  id="dateFilter"
+                  placeholder="Filtrar por fecha"
+                />
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="total-revenue-display">
+                    <span class="text-muted">Total: </span>
+                    <span
+                      class="fw-bold text-success fs-5"
+                      id="filteredTotalRevenue"
+                      >$0</span
+                    >
+                  </div>
+                  <button
+                    class="btn btn-outline-secondary"
+                    onclick="adminApp.clearFilters()"
+                  >
+                    <i class="fas fa-sync-alt"></i> Actualizar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover" id="bookingsTable">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Cliente</th>
+                      <th>Teléfono</th>
+                      <th>Servicio</th>
+                      <th>Fecha</th>
+                      <th>Hora</th>
+                      <th>Barbero</th>
+                      <th>Notas</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="bookingsTableBody">
+                    <!-- Se llenará dinámicamente -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Reports Section -->
+        <section id="reports" class="content-section">
+          <div class="section-header">
+            <h2>Reportes y Estadísticas</h2>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title">Reservas por Mes</h5>
+                </div>
+                <div class="card-body">
+                  <canvas id="bookingsChart"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title">Servicios Más Populares</h5>
+                </div>
+                <div class="card-body">
+                  <canvas id="servicesChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+
     <!-- Configuración centralizada (DEBE CARGARSE PRIMERO) -->
     <script src="./js/config.js"></script>
-    
+
     <script src="./admin/js/admin.js"></script>
-</body>
+  </body>
 </html>

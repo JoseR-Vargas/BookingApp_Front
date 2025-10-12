@@ -212,7 +212,7 @@ const adminApp = {
         if (bookings.length === 0) {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="4" class="text-center text-muted">
+                    <td colspan="5" class="text-center text-muted">
                         No hay reservas recientes
                     </td>
                 </tr>
@@ -226,6 +226,7 @@ const adminApp = {
             return `
                 <tr>
                     <td>${booking.client.name}</td>
+                    <td>${booking.client.phone || 'N/A'}</td>
                     <td>${booking.service.name}</td>
                     <td>${this.formatDate(booking.date)}</td>
                     <td>${professionalName}</td>
@@ -277,6 +278,9 @@ const adminApp = {
                             <strong>${booking.client.name}</strong><br>
                             <small class="text-muted">${booking.client.email}</small>
                         </div>
+                    </td>
+                    <td>
+                        <strong>${booking.client.phone || 'N/A'}</strong>
                     </td>
                     <td>
                         <div>

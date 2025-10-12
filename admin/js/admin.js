@@ -1,3 +1,11 @@
+// ===== VERIFICACIÓN DE AUTENTICACIÓN =====
+(function checkAuth() {
+    const isAdmin = sessionStorage.getItem('isAdmin');
+    if (!isAdmin || isAdmin !== 'true') {
+        window.location.href = '../login.html';
+    }
+})();
+
 // ===== CONFIGURACIÓN GLOBAL =====
 const ADMIN_CONFIG = window.APP_CONFIG || {
     TOAST_DURATION: 3000,
@@ -507,6 +515,27 @@ const adminApp = {
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', function() {
     adminApp.init();
+    
+    // Mostrar nombre de usuario
+    const adminUser = sessionStorage.getItem('adminUser');
+    if (adminUser) {
+        const adminUserNameEl = document.getElementById('adminUserName');
+        if (adminUserNameEl) {
+            adminUserNameEl.textContent = adminUser;
+        }
+    }
+    
+    // Manejar logout
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                sessionStorage.removeItem('isAdmin');
+                sessionStorage.removeItem('adminUser');
+                window.location.href = '../login.html';
+            }
+        });
+    }
 });
 
 // ===== EXPORTAR PARA USO EXTERNO =====

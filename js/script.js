@@ -72,8 +72,17 @@ const SERVICES = [
         id: 'corte-degrade',
         name: 'Corte degrade (Barbería)',
         description: 'Corte de cabello y arreglo de barba completo',
+        price: 500,
+        duration: 45,
+        professionals: ['cesar-viloria', 'random'],
+        icon: 'fas fa-cut'
+    },
+    {
+        id: 'corte-degrade-barba',
+        name: 'Corte degrade + Barba (Barbería)',
+        description: 'Corte degradado con arreglo completo de barba',
         price: 700,
-        duration: 60,
+        duration: 45,
         professionals: ['cesar-viloria', 'random'],
         icon: 'fas fa-cut'
     },
@@ -81,31 +90,39 @@ const SERVICES = [
         id: 'cejas-barberia',
         name: 'Cejas (Barbería)',
         description: 'Diseño y arreglo de cejas masculinas',
-        price: 200,
-        duration: 20,
+        price: 100,
+        duration: 30,
         professionals: ['cesar-viloria', 'random'],
         icon: 'fas fa-eye'
     },
 
 
         {
-        id: 'mechas-platinado',
-        name: 'Mechas / Platinado (Barbería)',
+        id: 'mechas-corte-barberia',
+        name: 'Mechas + Corte (Barbería)',
         description: 'Mechas o platinado profesional para hombre',
-        price: 1000,
+        price: 2000,
+        duration: 90,
+        professionals: ['cesar-viloria', 'random'],
+        icon: 'fas fa-spray-can'
+    },
+        {
+        id: 'platinado-corte-barberia',
+        name: 'Platinado + Corte (Barbería)',
+        description: 'Platinado profesional para hombre',
+        price: 3000,
         duration: 90,
         professionals: ['cesar-viloria', 'random'],
         icon: 'fas fa-spray-can'
     },
 
 
-
     {
         id: 'cejas',
         name: 'Perfilado de Cejas (Estetica)',
         description: 'Diseño y arreglo profesional de cejas',
-        price: 300,
-        duration: 30,
+        price: 450,
+        duration: 50,
         professionals: ['andrea-velasquez'],
         icon: 'fas fa-eye'
     },
@@ -113,19 +130,10 @@ const SERVICES = [
         id: 'pestanas',
         name: 'Lifting de Pestañas (Estetica)',
         description: 'Tratamiento profesional de pestañas',
-        price: 400,
-        duration: 45,
+        price: 1100,
+        duration: 50,
         professionals: ['andrea-velasquez'],
         icon: 'fas fa-eye-dropper'
-    },
-    {
-        id: 'depilacion',
-        name: 'Depilación Facial (Estetica)',
-        description: 'Servicio profesional de depilación',
-        price: 350,
-        duration: 40,
-        professionals: ['andrea-velasquez'],
-        icon: 'fas fa-spa'
     },
 
 
@@ -133,8 +141,8 @@ const SERVICES = [
         id: 'perfilado-henna',
         name: 'Perfilado con Henna (Estetica)',
         description: 'Perfilado de cejas con tinte de henna natural',
-        price: 450,
-        duration: 40,
+        price: 550,
+        duration: 50,
         professionals: ['andrea-velasquez'],
         icon: 'fas fa-paint-brush'
     },
@@ -143,7 +151,7 @@ const SERVICES = [
         id: 'laminado-cejas',
         name: 'Laminado de Cejas (Estetica)',
         description: 'Tratamiento de laminado para cejas perfectas',
-        price: 600,
+        price: 850,
         duration: 50,
         professionals: ['andrea-velasquez'],
         icon: 'fas fa-magic'
@@ -152,8 +160,8 @@ const SERVICES = [
         id: 'pestanas-express',
         name: 'Pestañas Express (Estetica)',
         description: 'Tratamiento rápido de pestañas',
-        price: 350,
-        duration: 30,
+        price: 850,
+        duration: 45,
         professionals: ['andrea-velasquez'],
         icon: 'fas fa-bolt'
     },
@@ -161,8 +169,8 @@ const SERVICES = [
         id: 'hydrogloss',
         name: 'Hydrogloss (Estetica)',
         description: 'Tratamiento de brillo e hidratación labial',
-        price: 500,
-        duration: 35,
+        price: 1200,
+        duration: 50,
         professionals: ['andrea-velasquez'],
         icon: 'fas fa-kiss'
     },
@@ -174,7 +182,7 @@ const SERVICES = [
         name: 'Corte de Cabello (Peluquería)',
         description: 'Corte de cabello femenino profesional',
         price: 500,
-        duration: 60,
+        duration: 50,
         professionals: ['random'],
         icon: 'fas fa-cut'
     },
@@ -182,25 +190,39 @@ const SERVICES = [
         id: 'secado-cabello',
         name: 'Secado de Cabello (Peluquería)',
         description: 'Secado y peinado profesional',
-        price: 350,
-        duration: 45,
+        price: 500,
+        duration: 50,
         professionals: ['random'],
         icon: 'fas fa-wind'
     },
     {
-        id: 'mechas',
-        name: 'Mechas (Peluquería)',
+        id: 'mechas-gorro-peluqueria',
+        name: 'Mechas con gorro (Peluquería)',
         description: 'Aplicación de mechas para resaltar tu cabello',
-        price: 1200,
+        price: 2000,
         duration: 120,
         professionals: ['random'],
         icon: 'fas fa-paint-brush'
     },
+
+
+    {
+        id: 'mechas-papel-peluqueria',
+        name: 'Mechas con papel (Peluquería)',
+        description: 'Aplicación de mechas para resaltar tu cabello',
+        price: 3000,
+        duration: 120,
+        professionals: ['random'],
+        icon: 'fas fa-paint-brush'
+    },
+
+
+
     {
         id: 'balayage',
         name: 'Balayage (Peluquería)',
         description: 'Técnica de coloración degradada natural',
-        price: 1500,
+        price: 3000,
         duration: 150,
         professionals: ['random'],
         icon: 'fas fa-palette'
@@ -209,7 +231,7 @@ const SERVICES = [
         id: 'progresivo-alisado',
         name: 'Progresivo o Alisado (Peluquería)',
         description: 'Tratamiento de alisado permanente',
-        price: 2000,
+        price: 1500,
         duration: 180,
         professionals: ['random'],
         icon: 'fas fa-grip-lines'
@@ -218,8 +240,8 @@ const SERVICES = [
         id: 'hidrataciones',
         name: 'Hidrataciones (Peluquería)',
         description: 'Tratamiento profundo de hidratación capilar',
-        price: 800,
-        duration: 90,
+        price: 500,
+        duration: 50,
         professionals: ['random'],
         icon: 'fas fa-droplet'
     },

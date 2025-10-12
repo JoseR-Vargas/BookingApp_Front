@@ -1,7 +1,7 @@
 // ===== CONFIGURACIÓN CENTRALIZADA =====
 const APP_CONFIG = {
     BACKEND_URL: (() => {
-        const isProduction = window.location.hostname === 'bookingappservice.netlify.app';
+        const isProduction = window.location.hostname === 'bigligasbeautybarberstudio.netlify.app';
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
         if (isProduction) {

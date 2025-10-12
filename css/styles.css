@@ -127,6 +127,13 @@ html {
     flex: 1;
 }
 
+/* Ocultar botón de reservar en desktop */
+@media (min-width: 1000px) {
+    .navbar .btn {
+        display: none;
+    }
+}
+
 /* Mejorar menú móvil */
 @media (max-width: 991.98px) {
     .navbar .container {

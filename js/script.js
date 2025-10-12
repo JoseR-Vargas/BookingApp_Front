@@ -266,7 +266,6 @@ const bookingApp = {
         this.loadServices();
         this.setupEventListeners();
         this.setupDateValidation();
-        console.log('✅ Barbería Premium inicializada');
     },
 
     // Cargar servicios en la página principal
@@ -338,7 +337,6 @@ const bookingApp = {
     openModal() {
         // Limpia cualquier backdrop antes de abrir
         document.querySelectorAll('.modal-backdrop').forEach(e => e.remove());
-        console.log('🟢 bookingApp.openModal() fue llamado desde el botón Reservar');
         this.resetState();
         this.loadServicesInModal();
         this.updateStep();
@@ -351,7 +349,6 @@ const bookingApp = {
             setTimeout(() => {
                 document.querySelectorAll('.modal-backdrop').forEach(e => {
                     e.remove();
-                    console.log('🧹 Overlay .modal-backdrop eliminado tras abrir el modal');
                 });
             }, 200);
         }
@@ -502,9 +499,6 @@ const bookingApp = {
         const isSunday = dayOfWeek === 0; // Domingo
         const isSaturday = dayOfWeek === 6; // Sábado
         
-        console.log(` Fecha seleccionada: ${date}, Día de la semana: ${dayOfWeek}, Es domingo: ${isSunday}, Es sábado: ${isSaturday}`);
-        console.log(`📅 Fecha creada: ${selectedDate.toDateString()}`);
-        
         if (isSunday) {
             timeSelect.innerHTML = '<option value="">Domingo cerrado</option>';
             return;
@@ -550,7 +544,6 @@ const bookingApp = {
             
             return true;
         } catch (error) {
-            console.error('❌ Error verificando disponibilidad:', error);
             this.showToast('Error verificando disponibilidad. Por favor intenta de nuevo.', 'error');
             return false;
         }
@@ -574,8 +567,6 @@ const bookingApp = {
                     booking.status !== 'cancelled'
                 )
                 .map(booking => booking.time);
-
-            console.log('📅 Horas reservadas para este profesional:', bookedTimes);
 
             const [year, month, day] = selectedDate.split('-');
             const selectedDateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
@@ -611,7 +602,6 @@ const bookingApp = {
             timeSelect.innerHTML = '<option value="">Selecciona una hora</option>' + times.join('');
             
         } catch (error) {
-            console.error('❌ Error actualizando horarios:', error);
             timeSelect.innerHTML = '<option value="">Error cargando horarios</option>';
         }
     },
@@ -783,7 +773,6 @@ const bookingApp = {
     async submitBooking() {
         // PREVENIR MÚLTIPLES ENVÍOS
         if (isSubmitting) {
-            console.log('⏳ Ya se está procesando una reserva...');
             return;
         }
 
@@ -833,10 +822,6 @@ const bookingApp = {
                 status: 'confirmed'
             };
 
-            console.log('📅 Fecha original seleccionada:', selectedDate);
-            console.log(' Fecha procesada:', bookingDate.toDateString());
-            console.log('📅 Fecha que se enviará al backend:', selectedDate);
-
             // Enviar al backend
             const result = await bookingAPI.createBooking(bookingData);
             
@@ -867,13 +852,9 @@ const bookingApp = {
             setTimeout(() => {
                 this.closeModal();
             }, 2000);
-
-            console.log('📤 Reserva enviada al backend:', bookingData);
-            console.log('✅ Respuesta del backend:', result);
             
         } catch (error) {
             this.hideLoadingModal();
-            console.error('❌ Error enviando reserva:', error);
             this.showToast(`Error al procesar la reserva: ${error.message}`, 'error');
         } finally {
             // RESETEAR ESTADO DE ENVÍO
@@ -938,11 +919,9 @@ const bookingApp = {
                         bsModal.dispose();
                     }
                 } catch (error) {
-                    console.log('Modal ya cerrado');
+                    // Modal ya cerrado
                 }
             }
-            
-            console.log('✅ Modal de carga cerrado');
         }
     },
 
@@ -1027,16 +1006,11 @@ if (typeof bootstrap !== 'undefined') {
   });
 }
 
-console.log('🚀 URL del backend configurada:', BACKEND_URL);
-
 // ===== FUNCIONES DE FETCH PARA BACKEND =====
 const bookingAPI = {
     // Crear nueva reserva
     async createBooking(bookingData) {
         try {
-            console.log('📤 Enviando reserva al backend:', bookingData);
-            console.log(' URL del backend:', BACKEND_URL);
-            
             const response = await fetch(`${BACKEND_URL}/api/bookings`, {
                 method: 'POST',
                 headers: {
@@ -1050,10 +1024,8 @@ const bookingAPI = {
             }
 
             const result = await response.json();
-            console.log('✅ Reserva creada exitosamente:', result);
             return result;
         } catch (error) {
-            console.error('❌ Error creando reserva:', error);
             throw error;
         }
     },
@@ -1061,9 +1033,6 @@ const bookingAPI = {
     // Obtener todas las reservas
     async getBookings() {
         try {
-            console.log('📥 Obteniendo reservas del backend...');
-            console.log(' URL del backend:', BACKEND_URL);
-            
             const response = await fetch(`${BACKEND_URL}/api/bookings`);
             
             if (!response.ok) {
@@ -1071,10 +1040,8 @@ const bookingAPI = {
             }
 
             const bookings = await response.json();
-            console.log('✅ Reservas obtenidas:', bookings);
             return bookings;
         } catch (error) {
-            console.error('❌ Error obteniendo reservas:', error);
             throw error;
         }
     }

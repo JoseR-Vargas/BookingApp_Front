@@ -14,17 +14,11 @@ const ADMIN_CONFIG = window.APP_CONFIG || {
 
 const BACKEND_URL = window.APP_CONFIG?.BACKEND_URL || 'http://localhost:3000';
 
-console.log('🚀 URL del backend configurada:', BACKEND_URL);
-
-
 // ===== FUNCIONES DE FETCH PARA BACKEND =====
 const adminAPI = {
     // Obtener todas las reservas
     async getBookings() {
         try {
-            console.log('📥 Obteniendo reservas del backend...');
-            console.log(' URL del backend:', BACKEND_URL);
-            
             const response = await fetch(`${BACKEND_URL}/api/bookings`);
             
             if (!response.ok) {
@@ -32,10 +26,8 @@ const adminAPI = {
             }
 
             const bookings = await response.json();
-            console.log('✅ Reservas obtenidas:', bookings);
             return bookings;
         } catch (error) {
-            console.error('❌ Error obteniendo reservas:', error);
             throw error;
         }
     },
@@ -43,9 +35,6 @@ const adminAPI = {
     // Obtener estadísticas
     async getStatistics() {
         try {
-            console.log('📊 Obteniendo estadísticas del backend...');
-            console.log(' URL del backend:', BACKEND_URL);
-            
             const response = await fetch(`${BACKEND_URL}/api/bookings/statistics`);
             
             if (!response.ok) {
@@ -53,10 +42,8 @@ const adminAPI = {
             }
 
             const stats = await response.json();
-            console.log('✅ Estadísticas obtenidas:', stats);
             return stats;
         } catch (error) {
-            console.error('❌ Error obteniendo estadísticas:', error);
             throw error;
         }
     },
@@ -64,9 +51,6 @@ const adminAPI = {
     // NUEVA FUNCIÓN: Eliminar reserva
     async deleteBooking(bookingId) {
         try {
-            console.log('️ Eliminando reserva:', bookingId);
-            console.log(' URL del backend:', BACKEND_URL);
-            
             const response = await fetch(`${BACKEND_URL}/api/bookings/${bookingId}`, {
                 method: 'DELETE',
                 headers: {
@@ -79,10 +63,8 @@ const adminAPI = {
             }
 
             const result = await response.json();
-            console.log('✅ Reserva eliminada exitosamente:', result);
             return result;
         } catch (error) {
-            console.error('❌ Error eliminando reserva:', error);
             throw error;
         }
     }
@@ -96,7 +78,6 @@ const adminApp = {
         await this.loadDashboard();
         await this.loadBookings();
         this.setupCharts();
-        console.log('✅ Dashboard Admin inicializado');
     },
 
     // Configurar event listeners
@@ -166,7 +147,6 @@ const adminApp = {
             await this.updateStatistics();
             await this.loadRecentBookings();
         } catch (error) {
-            console.error('❌ Error cargando dashboard:', error);
             this.showToast('Error cargando datos del dashboard', 'error');
         }
     },
@@ -182,7 +162,6 @@ const adminApp = {
             document.getElementById('todayBookings').textContent = stats.todayBookings || 0;
             
         } catch (error) {
-            console.error('❌ Error obteniendo estadísticas:', error);
             this.showToast('Error cargando estadísticas', 'error');
         }
     },
@@ -199,7 +178,6 @@ const adminApp = {
             this.renderRecentBookingsTable(recentBookings);
             
         } catch (error) {
-            console.error('❌ Error obteniendo reservas recientes:', error);
             this.showToast('Error cargando reservas recientes', 'error');
         }
     },
@@ -246,7 +224,6 @@ const adminApp = {
             this.updateFilteredTotalRevenue(bookings);
             
         } catch (error) {
-            console.error('❌ Error obteniendo reservas:', error);
             this.showToast('Error cargando reservas', 'error');
         }
     },
@@ -339,7 +316,6 @@ const adminApp = {
             this.showToast(resultsMessage, 'info');
             
         } catch (error) {
-            console.error('❌ Error filtrando reservas:', error);
             this.showToast('Error aplicando filtros', 'error');
         }
     },
@@ -353,7 +329,6 @@ const adminApp = {
             await this.loadBookings();
             this.showToast('Filtros limpiados', 'info');
         } catch (error) {
-            console.error('❌ Error limpiando filtros:', error);
             this.showToast('Error limpiando filtros', 'error');
         }
     },
@@ -510,7 +485,6 @@ const adminApp = {
             this.showToast(`✅ Reserva de ${clientName} eliminada exitosamente`, 'success');
             
         } catch (error) {
-            console.error('❌ Error eliminando reserva:', error);
             this.showToast(`Error eliminando reserva: ${error.message}`, 'error');
         }
     }

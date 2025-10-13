@@ -891,6 +891,18 @@ const bookingApp = {
       const result = await bookingAPI.createBooking(bookingData);
 
       this.hideLoadingModal();
+      
+      // Formatear la fecha correctamente para evitar problemas de zona horaria
+      const [displayYear, displayMonth, displayDay] = bookingData.date.split("-");
+      const dateForDisplay = new Date(Date.UTC(displayYear, displayMonth - 1, displayDay));
+      const formattedDate = dateForDisplay.toLocaleDateString("es-ES", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        timeZone: "UTC", // Usar UTC para evitar problemas de zona horaria
+      });
+      
       // Crear mensaje detallado con los datos de la reserva
       const bookingDetails = `
                 ✅ ¡Reserva Confirmada has un ScreenShot a tu Reserva!
@@ -900,15 +912,7 @@ const bookingApp = {
                 💇 Servicio: ${bookingData.service.name}
                 💰 Precio: $${bookingData.service.price.toLocaleString()}
                 👨‍💼 Profesional: ${bookingData.professional.name}
-                📅 Fecha: ${new Date(bookingData.date).toLocaleDateString(
-                  "es-ES",
-                  {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }
-                )}
+                📅 Fecha: ${formattedDate}
                 🕐 Hora: ${bookingData.time}
                 ⏱️ Duración: ${bookingData.service.duration} minutos
             `;

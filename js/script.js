@@ -102,7 +102,15 @@ const SERVICES = [
     professionals: ["cesar-viloria", "random"],
     icon: "fas fa-eye",
   },
-
+  {
+    id: "mascarilla-facial",
+    name: "Mascarilla Facial (Barbería)",
+    description: "Tratamiento facial profesional para el cuidado y limpieza de la piel",
+    price: 150,
+    duration: 30,
+    professionals: ["cesar-viloria", "random"],
+    icon: "fas fa-spa",
+  },
   {
     id: "mechas-corte-barberia",
     name: "Mechas + Corte (Barbería)",
@@ -126,7 +134,7 @@ const SERVICES = [
     id: "cejas",
     name: "Perfilado de Cejas (Estética)",
     description: "Diseño y arreglo profesional de cejas",
-    price: 450,
+    price: 500,
     duration: 50,
     professionals: ["andrea-velasquez"],
     icon: "fas fa-eye",
@@ -182,7 +190,7 @@ const SERVICES = [
   {
     id: "corte-cabello-peluqueria",
     name: "Corte de Cabello (Peluquería)",
-    description: "Corte de cabello femenino profesional",
+    description: "Corte de cabello femenino profesional. Precio sujeto a cambios según largo y abundancia del cabello",
     price: 500,
     duration: 50,
     professionals: ["random"],
@@ -191,7 +199,7 @@ const SERVICES = [
   {
     id: "secado-cabello",
     name: "Secado de Cabello (Peluquería)",
-    description: "Secado y peinado profesional",
+    description: "Secado y peinado profesional. Precio sujeto a cambios según largo y abundancia del cabello",
     price: 500,
     duration: 50,
     professionals: ["random"],
@@ -200,7 +208,7 @@ const SERVICES = [
   {
     id: "mechas-gorro-peluqueria",
     name: "Mechas con gorro (Peluquería)",
-    description: "Aplicación de mechas para resaltar tu cabello",
+    description: "Aplicación de mechas para resaltar tu cabello. Precio sujeto a cambios según largo y abundancia del cabello",
     price: 2000,
     duration: 120,
     professionals: ["random"],
@@ -210,7 +218,7 @@ const SERVICES = [
   {
     id: "mechas-papel-peluqueria",
     name: "Mechas con papel (Peluquería)",
-    description: "Aplicación de mechas para resaltar tu cabello",
+    description: "Aplicación de mechas para resaltar tu cabello. Precio sujeto a cambios según largo y abundancia del cabello",
     price: 3000,
     duration: 120,
     professionals: ["random"],
@@ -220,7 +228,7 @@ const SERVICES = [
   {
     id: "balayage",
     name: "Balayage (Peluquería)",
-    description: "Técnica de coloración degradada natural",
+    description: "Técnica de coloración degradada natural. Precio sujeto a cambios según largo y abundancia del cabello",
     price: 3000,
     duration: 150,
     professionals: ["random"],
@@ -229,7 +237,7 @@ const SERVICES = [
   {
     id: "progresivo-alisado",
     name: "Progresivo o Alisado (Peluquería)",
-    description: "Tratamiento de alisado permanente",
+    description: "Tratamiento de alisado permanente. Precio sujeto a cambios según largo y abundancia del cabello",
     price: 1500,
     duration: 180,
     professionals: ["random"],
@@ -238,11 +246,20 @@ const SERVICES = [
   {
     id: "hidrataciones",
     name: "Hidrataciones (Peluquería)",
-    description: "Tratamiento profundo de hidratación capilar",
+    description: "Tratamiento profundo de hidratación capilar. Precio sujeto a cambios según largo y abundancia del cabello",
     price: 500,
     duration: 50,
     professionals: ["random"],
     icon: "fas fa-droplet",
+  },
+  {
+    id: "mascarilla-cabello",
+    name: "Mascarilla de Cabello (Peluquería)",
+    description: "Tratamiento capilar intensivo con mascarilla. Precio sujeto a cambios según largo y abundancia del cabello",
+    price: 800,
+    duration: 50,
+    professionals: ["random"],
+    icon: "fas fa-spa",
   },
 ];
 

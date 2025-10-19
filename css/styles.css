@@ -523,12 +523,37 @@ html {
 .btn-primary {
     background: var(--gradient-primary);
     color: var(--white-color);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: var(--shadow-medium);
     color: var(--white-color);
+}
+
+/* Estilos para botón deshabilitado - mejor feedback visual */
+.btn-primary:disabled,
+.btn-primary.disabled {
+    background: #6c757d !important;
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
+    transform: none !important;
+}
+
+/* Prevenir doble tap en mobile */
+.btn-primary {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .btn-secondary {

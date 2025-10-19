@@ -273,6 +273,9 @@ let selectedProfessional = null;
 // Agregar variable para controlar estado de envío
 let isSubmitting = false;
 
+// Flag para controlar que los event listeners solo se registren una vez
+let eventListenersRegistered = false;
+
 // ===== APLICACIÓN PRINCIPAL =====
 const bookingApp = {
   // Inicializar la aplicación
@@ -320,17 +323,33 @@ const bookingApp = {
 
   // Configurar event listeners
   setupEventListeners() {
+    // Prevenir múltiples registros de event listeners
+    if (eventListenersRegistered) {
+      return;
+    }
+    
     // Botones de navegación del modal
     const btnNext = document.getElementById("btnNext");
     const btnBack = document.getElementById("btnBack");
 
     if (btnNext) {
-      btnNext.addEventListener("click", () => this.nextStep());
+      // Usar una sola función para manejar el click
+      btnNext.addEventListener("click", (e) => {
+        // Prevenir múltiples clics
+        if (btnNext.disabled || isSubmitting) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+        this.nextStep();
+      }, { once: false });
     }
 
     if (btnBack) {
       btnBack.addEventListener("click", () => this.previousStep());
     }
+    
+    eventListenersRegistered = true;
 
     // Event listener para selección de fecha
     const dateInput = document.getElementById("appointmentDate");
@@ -727,11 +746,22 @@ const bookingApp = {
 
   // Avanzar al siguiente paso
   nextStep() {
+    // Si estamos en el paso 3 y ya se está enviando, no hacer nada
+    if (currentStep === 3 && isSubmitting) {
+      return;
+    }
+    
     if (this.validateCurrentStep()) {
       if (currentStep < 3) {
         currentStep++;
         this.updateStep();
       } else {
+        // Deshabilitar botón INMEDIATAMENTE
+        const btnNext = document.getElementById("btnNext");
+        if (btnNext) {
+          btnNext.disabled = true;
+          btnNext.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+        }
         this.submitBooking();
       }
     }
@@ -834,16 +864,22 @@ const bookingApp = {
 
     if (btnNext) {
       if (currentStep === 3) {
-        btnNext.innerHTML =
-          '<i class="fas fa-check me-2"></i>Confirmar Reserva';
-        // DESHABILITAR SI SE ESTÁ ENVIANDO
-        btnNext.disabled = isSubmitting;
-        if (isSubmitting) {
-          btnNext.innerHTML =
-            '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+        if (!isSubmitting) {
+          btnNext.innerHTML = '<i class="fas fa-check me-2"></i>Confirmar Reserva';
+          btnNext.disabled = false;
+          btnNext.style.opacity = '1';
+          btnNext.style.cursor = 'pointer';
+        } else {
+          btnNext.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+          btnNext.disabled = true;
+          btnNext.style.opacity = '0.6';
+          btnNext.style.cursor = 'not-allowed';
         }
       } else {
         btnNext.innerHTML = 'Siguiente <i class="fas fa-arrow-right ms-2"></i>';
+        btnNext.disabled = false;
+        btnNext.style.opacity = '1';
+        btnNext.style.cursor = 'pointer';
       }
     }
   },
@@ -867,12 +903,14 @@ const bookingApp = {
 
     if (!formData) {
       this.showToast("Por favor completa todos los campos", "error");
+      this.resetSubmitButton();
       return;
     }
 
     // NUEVA VALIDACIÓN: Verificar disponibilidad antes de enviar
     const isAvailable = await this.checkBookingAvailability();
     if (!isAvailable) {
+      this.resetSubmitButton();
       return; // No continuar si no está disponible
     }
 
@@ -949,13 +987,27 @@ const bookingApp = {
       // Cerrar modal después de 2 segundos
       setTimeout(() => {
         this.closeModal();
+        this.resetSubmitButton();
       }, 2000);
     } catch (error) {
       this.hideLoadingModal();
-      this.showToast(`Error al procesar la reserva: ${error.message}`, "error");
+      this.showToast(`Error al procesar la reserva: ${error.message}`, "error", 5000);
+      this.resetSubmitButton();
     } finally {
       // RESETEAR ESTADO DE ENVÍO
       isSubmitting = false;
+    }
+  },
+
+  // Resetear el botón de envío a su estado original
+  resetSubmitButton() {
+    isSubmitting = false;
+    const btnNext = document.getElementById("btnNext");
+    if (btnNext && currentStep === 3) {
+      btnNext.disabled = false;
+      btnNext.innerHTML = '<i class="fas fa-check me-2"></i>Confirmar Reserva';
+      btnNext.style.opacity = '1';
+      btnNext.style.cursor = 'pointer';
     }
   },
 
@@ -1061,6 +1113,7 @@ const bookingApp = {
     selectedDate = null;
     selectedTime = null;
     selectedProfessional = null;
+    isSubmitting = false;
 
     // Limpiar formulario
     const form = document.getElementById("clientForm");
@@ -1105,24 +1158,35 @@ if (typeof bootstrap !== "undefined") {
 
 // ===== FUNCIONES DE FETCH PARA BACKEND =====
 const bookingAPI = {
-  // Crear nueva reserva
+  // Crear nueva reserva con timeout
   async createBooking(bookingData) {
     try {
+      // Crear un AbortController para manejar timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos
+
       const response = await fetch(`${BACKEND_URL}/api/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(bookingData),
+        signal: controller.signal
       });
 
+      clearTimeout(timeoutId);
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(errorText || `Error del servidor: ${response.status}`);
       }
 
       const result = await response.json();
       return result;
     } catch (error) {
+      if (error.name === 'AbortError') {
+        throw new Error('La solicitud tardó demasiado tiempo. Por favor verifica tu conexión e intenta nuevamente.');
+      }
       throw error;
     }
   },

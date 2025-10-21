@@ -89,6 +89,7 @@ html {
 .navbar-brand {
     font-weight: 700;
     color: var(--brand-white) !important;
+    font-size: 1.10rem !important;
 }
 
 .navbar-brand:hover {
@@ -198,7 +199,7 @@ html {
 
 /* Logo principal - Imagen del logo */
 .hero-logo {
-    max-width: 400px;
+    max-width: 280px;
     width: 100%;
     height: auto;
     border-radius: 50%;

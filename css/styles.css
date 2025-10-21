@@ -89,7 +89,7 @@ html {
 .navbar-brand {
     font-weight: 700;
     color: var(--brand-white) !important;
-    font-size: 1.10rem !important;
+    font-size: 1.1rem !important;
 }
 
 .navbar-brand:hover {

@@ -539,10 +539,12 @@ const bookingApp = {
           name: card.dataset.professionalName,
         };
 
-        this.showToast(
-          `✅ Profesional seleccionado: ${selectedProfessional.name}`,
-          "success"
-        );
+        // Mostrar toast específico para móviles
+        const message = isMobileDevice() ? 
+          `✅ ${selectedProfessional.name} seleccionado. Cargando horarios...` :
+          `✅ Profesional seleccionado: ${selectedProfessional.name}`;
+        
+        this.showToast(message, "success");
 
         // Actualizar horarios disponibles para este profesional
         this.updateAvailableTimesForProfessional();
@@ -631,17 +633,42 @@ const bookingApp = {
   },
 
   // Actualizar horarios disponibles según profesional seleccionado
-  async updateAvailableTimesForProfessional() {
+  async updateAvailableTimesForProfessional(retryCount = 0) {
     if (!selectedDate || !selectedProfessional) return;
 
     const timeSelect = document.getElementById("appointmentTime");
     if (!timeSelect) return;
 
-    timeSelect.innerHTML =
-      '<option value="">Verificando disponibilidad...</option>';
+    // Detectar dispositivo móvil y conexión lenta para ajustar timeouts
+    const isMobile = isMobileDevice();
+    const isSlowConn = isSlowConnection();
+    const timeout = (isMobile || isSlowConn) ? 15000 : 10000; // Más tiempo para móviles
+
+    // Mostrar indicador de carga más claro
+    const loadingText = isMobile ? '📱 Cargando horarios...' : '🔄 Verificando horarios disponibles...';
+    timeSelect.innerHTML = `<option value="">${loadingText}</option>`;
 
     try {
-      const bookings = await bookingAPI.getBookings();
+      // Crear timeout específico para esta función
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+      const bookings = await fetch(`${BACKEND_URL}/api/bookings`, {
+        signal: controller.signal,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }).then(async response => {
+        clearTimeout(timeoutId);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return await response.json();
+      });
+
+      clearTimeout(timeoutId);
+
       const bookedTimes = bookings
         .filter(
           (booking) =>
@@ -651,52 +678,94 @@ const bookingApp = {
         )
         .map((booking) => booking.time);
 
-      const [year, month, day] = selectedDate.split("-");
-      const selectedDateObj = new Date(
-        parseInt(year),
-        parseInt(month) - 1,
-        parseInt(day)
-      );
-      const dayOfWeek = selectedDateObj.getDay();
-      const isSunday = dayOfWeek === 0;
-      const isSaturday = dayOfWeek === 6;
+      this.renderTimeSlots(bookedTimes);
 
-      if (isSunday) {
-        timeSelect.innerHTML = '<option value="">Domingo cerrado</option>';
+    } catch (error) {
+      console.error('Error loading bookings:', error);
+      
+      // Retry automático para dispositivos móviles (máximo 2 intentos)
+      if (retryCount < 2 && (error.name === 'AbortError' || error.message.includes('Failed to fetch'))) {
+        console.log(`Reintentando carga de horarios... Intento ${retryCount + 1}`);
+        
+        // Mostrar mensaje de reintento específico para móviles
+        const retryText = isMobile ? 
+          `📱 Reintentando conexión... (${retryCount + 1}/2)` : 
+          `🔄 Reintentando... (${retryCount + 1}/2)`;
+        timeSelect.innerHTML = `<option value="">${retryText}</option>`;
+        
+        // Esperar más tiempo en móviles antes de reintentar
+        const retryDelay = isMobile ? 2500 : 1500;
+        setTimeout(() => {
+          this.updateAvailableTimesForProfessional(retryCount + 1);
+        }, retryDelay);
         return;
       }
 
-      // Determinar hora de cierre según el día
-      const closingHour = isSaturday ? 18 : CONFIG.BUSINESS_HOURS.end; // Sábados hasta las 18:00
+      // Si falló después de los reintentos, mostrar horarios básicos como fallback
+      console.log('Usando fallback offline para horarios');
+      const fallbackMessage = isMobile ? 
+        'No se pueden verificar las reservas. Se muestran todos los horarios. Te recomendamos llamar para confirmar.' :
+        'No se pudieron verificar las reservas existentes. Se muestran todos los horarios disponibles. Te recomendamos confirmar por teléfono.';
+      
+      this.showToast(fallbackMessage, 'warning', 10000);
+      
+      // Mostrar todos los horarios como disponibles (fallback offline)
+      this.renderTimeSlots([]);
+    }
+  },
 
-      const times = [];
-      for (let hour = CONFIG.BUSINESS_HOURS.start; hour < closingHour; hour++) {
-        // Saltar hora de almuerzo
-        if (
-          hour >= CONFIG.BUSINESS_HOURS.lunchBreak.start &&
-          hour < CONFIG.BUSINESS_HOURS.lunchBreak.end
-        ) {
-          continue;
-        }
+  // Nueva función para renderizar horarios (separada para reutilización)
+  renderTimeSlots(bookedTimes = []) {
+    const timeSelect = document.getElementById("appointmentTime");
+    if (!timeSelect || !selectedDate) return;
 
-        const timeString = hour.toString().padStart(2, "0") + ":00";
-        const isAvailable = !bookedTimes.includes(timeString);
+    const [year, month, day] = selectedDate.split("-");
+    const selectedDateObj = new Date(
+      parseInt(year),
+      parseInt(month) - 1,
+      parseInt(day)
+    );
+    const dayOfWeek = selectedDateObj.getDay();
+    const isSunday = dayOfWeek === 0;
+    const isSaturday = dayOfWeek === 6;
 
-        if (isAvailable) {
-          times.push(`<option value="${timeString}">${timeString}</option>`);
-        } else {
-          times.push(
-            `<option value="${timeString}" disabled>${timeString} - Ocupado</option>`
-          );
-        }
+    if (isSunday) {
+      timeSelect.innerHTML = '<option value="">🚫 Domingo cerrado</option>';
+      return;
+    }
+
+    // Determinar hora de cierre según el día
+    const closingHour = isSaturday ? 18 : CONFIG.BUSINESS_HOURS.end;
+
+    const times = [];
+    for (let hour = CONFIG.BUSINESS_HOURS.start; hour < closingHour; hour++) {
+      // Saltar hora de almuerzo
+      if (
+        hour >= CONFIG.BUSINESS_HOURS.lunchBreak.start &&
+        hour < CONFIG.BUSINESS_HOURS.lunchBreak.end
+      ) {
+        continue;
       }
 
-      timeSelect.innerHTML =
-        '<option value="">Selecciona una hora</option>' + times.join("");
-    } catch (error) {
-      timeSelect.innerHTML =
-        '<option value="">Error cargando horarios</option>';
+      const timeString = hour.toString().padStart(2, "0") + ":00";
+      const isBooked = bookedTimes.includes(timeString);
+
+      if (!isBooked) {
+        times.push(`<option value="${timeString}">✅ ${timeString}</option>`);
+      } else {
+        times.push(
+          `<option value="${timeString}" disabled>❌ ${timeString} - Ocupado</option>`
+        );
+      }
     }
+
+    const availableCount = times.filter(time => !time.includes('disabled')).length;
+    const headerText = availableCount > 0 
+      ? `Selecciona una hora (${availableCount} disponibles)` 
+      : 'No hay horarios disponibles';
+
+    timeSelect.innerHTML =
+      `<option value="">${headerText}</option>` + times.join("");
   },
 
   // Actualizar información del servicio seleccionado
@@ -1191,10 +1260,21 @@ const bookingAPI = {
     }
   },
 
-  // Obtener todas las reservas
-  async getBookings() {
+  // Obtener todas las reservas con timeout mejorado
+  async getBookings(timeout = 8000) {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/bookings`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+      const response = await fetch(`${BACKEND_URL}/api/bookings`, {
+        signal: controller.signal,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -1203,12 +1283,29 @@ const bookingAPI = {
       const bookings = await response.json();
       return bookings;
     } catch (error) {
+      if (error.name === 'AbortError') {
+        throw new Error('Timeout: La conexión tardó demasiado tiempo');
+      }
       throw error;
     }
   },
 };
 
 // ===== FUNCIONES DE UTILIDAD =====
+
+// Detectar dispositivo móvil y problemas de conectividad
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+         (window.innerWidth <= 768);
+}
+
+function isSlowConnection() {
+  if ('connection' in navigator) {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    return connection && (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g');
+  }
+  return false;
+}
 
 // Validar que se puede cancelar (5 horas antes)
 function canCancelBooking(bookingDateTime) {

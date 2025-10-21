@@ -513,6 +513,71 @@ html {
     margin-bottom: 0.5rem;
 }
 
+/* ===== MEJORAS PARA CARGA DE HORARIOS EN MÓVILES ===== */
+.form-select option {
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Indicadores de carga mejorados */
+.form-select option[value=""]:first-child {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Animación sutil para opciones de carga */
+.form-select option[value=""]:first-child:before {
+    content: "";
+    display: inline-block;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Feedback visual para horarios disponibles */
+.form-select option:not([disabled]):not([value=""]) {
+    background-color: #e8f5e8;
+    color: #155724;
+}
+
+.form-select option[disabled] {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Mejoras para dispositivos táctiles */
+@media (max-width: 768px) {
+    .form-select {
+        font-size: 1.1rem;
+        padding: 0.75rem 1rem;
+        min-height: 50px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 3rem;
+    }
+    
+    .form-select option {
+        padding: 1rem;
+        font-size: 1.1rem;
+    }
+    
+    /* Mejor feedback visual en móviles */
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+        outline: none;
+    }
+}
+
 /* ===== BOTONES ===== */
 .btn {
     border-radius: var(--border-radius);

@@ -14,6 +14,14 @@ const ADMIN_CONFIG = window.APP_CONFIG || {
 
 const BACKEND_URL = window.APP_CONFIG?.BACKEND_URL || 'http://localhost:3000';
 
+// ===== SISTEMA DE LOGGING (solo en desarrollo) =====
+const IS_DEVELOPMENT = BACKEND_URL.includes('localhost') || BACKEND_URL.includes('127.0.0.1');
+const logger = {
+    log: IS_DEVELOPMENT ? (...args) => console.log(...args) : () => {},
+    warn: IS_DEVELOPMENT ? (...args) => console.warn(...args) : () => {},
+    error: (...args) => console.error(...args) // Los errores siempre se muestran
+};
+
 // ===== FUNCIONES DE FETCH PARA BACKEND =====
 const adminAPI = {
     // Obtener todas las reservas
@@ -77,14 +85,85 @@ const adminApp = {
     notificationCount: 0,
     isFirstLoad: true,
     socket: null,
+    audioContext: null,
 
     // Inicializar la aplicación
     async init() {
         this.setupEventListeners();
+        this.initAudioContext();
         this.initWebSocket();
         await this.loadDashboard();
         await this.loadBookings();
         this.setupCharts();
+    },
+
+    // Inicializar contexto de audio al primer click del usuario
+    initAudioContext() {
+        // Intentar inicializar inmediatamente (algunos navegadores lo permiten)
+        try {
+            if (!this.audioContext) {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                logger.log('Contexto de audio inicializado:', this.audioContext.state);
+                
+                // Verificar si está suspendido y mostrar botón si es necesario
+                if (this.audioContext.state === 'suspended') {
+                    this.showEnableSoundButton();
+                }
+            }
+        } catch (error) {
+            // Si falla, esperar a la interacción del usuario
+            logger.log('Esperando interacción del usuario para inicializar audio...');
+            this.showEnableSoundButton();
+        }
+    },
+
+    // Activar contexto de audio (llamado desde interacción del usuario)
+    activateAudioContext() {
+        try {
+            if (!this.audioContext) {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (this.audioContext.state === 'suspended') {
+                this.audioContext.resume().then(() => {
+                    logger.log('✅ Contexto de audio activado correctamente');
+                    this.hideEnableSoundButton();
+                    // Reproducir un sonido de prueba para confirmar
+                    this.playSound();
+                }).catch(err => {
+                    logger.warn('No se pudo activar el contexto de audio:', err);
+                    this.showEnableSoundButton();
+                });
+            } else {
+                logger.log('✅ Contexto de audio ya está activo');
+                this.hideEnableSoundButton();
+            }
+        } catch (error) {
+            logger.error('Error al activar contexto de audio:', error);
+            this.showEnableSoundButton();
+        }
+    },
+
+    // Habilitar sonido manualmente (botón)
+    enableNotificationSound() {
+        this.activateAudioContext();
+        this.showToast('🔔 Sonido de notificaciones activado', 'success');
+    },
+
+    // Mostrar botón para activar sonido
+    showEnableSoundButton() {
+        const btn = document.getElementById('enableSoundBtn');
+        if (btn) {
+            btn.classList.remove('enable-sound-btn-hidden');
+        }
+    },
+
+    // Ocultar botón para activar sonido
+    hideEnableSoundButton() {
+        const btn = document.getElementById('enableSoundBtn');
+        if (btn) {
+            btn.classList.add('enable-sound-btn-hidden');
+        }
     },
 
     // Configurar event listeners
@@ -116,6 +195,21 @@ const adminApp = {
         if (notificationBell) {
             notificationBell.addEventListener('click', () => this.handleNotificationClick());
         }
+
+        // Botón para activar sonido
+        const enableSoundBtn = document.getElementById('enableSoundBtn');
+        if (enableSoundBtn) {
+            enableSoundBtn.addEventListener('click', () => this.enableNotificationSound());
+        }
+
+        // Activar audio al hacer click en cualquier parte (una vez)
+        const activateAudio = () => {
+            this.activateAudioContext();
+            document.removeEventListener('click', activateAudio);
+            document.removeEventListener('keydown', activateAudio);
+        };
+        document.addEventListener('click', activateAudio, { once: true });
+        document.addEventListener('keydown', activateAudio, { once: true });
     },
 
     // Toggle sidebar
@@ -510,19 +604,24 @@ const adminApp = {
             this.socket = io(BACKEND_URL);
 
             this.socket.on('connect', () => {
-                console.log('WebSocket conectado');
+                logger.log('WebSocket conectado');
             });
 
             this.socket.on('disconnect', () => {
-                console.log('WebSocket desconectado');
+                logger.log('WebSocket desconectado');
             });
 
             this.socket.on('newBooking', async (booking) => {
-                console.log('Nueva reserva recibida:', booking);
+                logger.log('Nueva reserva recibida:', booking);
                 
                 // Incrementar contador de notificaciones
                 this.notificationCount++;
                 this.updateNotificationBadge();
+                
+                // Reproducir sonido de notificación (con pequeño delay para asegurar contexto)
+                setTimeout(() => {
+                    this.playNotificationSound();
+                }, 100);
                 
                 // Mostrar toast de nueva reserva
                 this.showToast('🔔 Nueva reserva recibida!', 'success');
@@ -538,11 +637,11 @@ const adminApp = {
             });
 
             this.socket.on('connect_error', (error) => {
-                console.error('Error de conexión WebSocket:', error);
+                logger.error('Error de conexión WebSocket:', error);
             });
 
         } catch (error) {
-            console.error('Error inicializando WebSocket:', error);
+            logger.error('Error inicializando WebSocket:', error);
         }
     },
 
@@ -575,6 +674,137 @@ const adminApp = {
 
         // Recargar las reservas para mostrar las más recientes
         await this.loadBookings();
+    },
+
+    // Reproducir sonido de notificación
+    playNotificationSound() {
+        try {
+            // Crear contexto de audio si no existe
+            if (!this.audioContext) {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            // Función auxiliar para reproducir el sonido
+            const doPlaySound = () => {
+                try {
+                    this.playSound();
+                } catch (error) {
+                    logger.error('Error al reproducir el sonido:', error);
+                }
+            };
+
+            // Si el contexto está suspendido, intentar reanudarlo
+            if (this.audioContext.state === 'suspended') {
+                this.audioContext.resume().then(() => {
+                    logger.log('Contexto de audio reanudado, reproduciendo sonido...');
+                    doPlaySound();
+                }).catch(err => {
+                    logger.warn('No se pudo reanudar el contexto de audio:', err);
+                    // Intentar crear un nuevo contexto si falla
+                    try {
+                        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        doPlaySound();
+                    } catch (newErr) {
+                        logger.error('Error al crear nuevo contexto de audio:', newErr);
+                    }
+                });
+                return;
+            }
+
+            // Si el contexto está activo, reproducir directamente
+            if (this.audioContext.state === 'running') {
+                doPlaySound();
+            } else {
+                // Si está en otro estado, intentar reanudar
+                this.audioContext.resume().then(() => {
+                    doPlaySound();
+                }).catch(err => {
+                    logger.warn('Error al reanudar contexto:', err);
+                });
+            }
+
+        } catch (error) {
+            logger.error('Error en playNotificationSound:', error);
+        }
+    },
+
+    // Función auxiliar para reproducir el sonido
+    playSound() {
+        try {
+            // Verificar que el contexto esté activo
+            if (!this.audioContext || this.audioContext.state !== 'running') {
+                logger.warn('Contexto de audio no está activo, intentando método alternativo...');
+                this.playSoundFallback();
+                return;
+            }
+
+            // Crear un oscilador para generar el sonido
+            const oscillator = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
+
+            // Conectar los nodos
+            oscillator.connect(gainNode);
+            gainNode.connect(this.audioContext.destination);
+
+            // Configurar el sonido (notificación tipo "ding" - más audible)
+            const currentTime = this.audioContext.currentTime;
+            
+            // Crear dos tonos para un sonido más distintivo
+            oscillator.frequency.setValueAtTime(880, currentTime); // Frecuencia inicial (LA)
+            oscillator.frequency.exponentialRampToValueAtTime(1320, currentTime + 0.15); // Subir (MI)
+            oscillator.frequency.exponentialRampToValueAtTime(1100, currentTime + 0.3); // Bajar (DO sostenido)
+            
+            // Configurar el volumen (gain) - más audible
+            gainNode.gain.setValueAtTime(0.4, currentTime); // Volumen inicial
+            gainNode.gain.exponentialRampToValueAtTime(0.2, currentTime + 0.2); // Mantener volumen
+            gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.5); // Desvanecer
+
+            // Tipo de onda (sine es más suave)
+            oscillator.type = 'sine';
+
+            // Reproducir el sonido
+            oscillator.start(currentTime);
+            oscillator.stop(currentTime + 0.9); // Duración de 900ms
+
+
+        } catch (error) {
+            logger.warn('Error al reproducir el sonido con Web Audio API:', error);
+            // Intentar método alternativo
+            this.playSoundFallback();
+        }
+    },
+
+    // Método alternativo usando HTML Audio (más compatible)
+    playSoundFallback() {
+        try {
+            // Usar el API de Audio HTML5 como fallback
+            // Crear un sonido simple usando data URI con un beep corto
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            const currentTime = audioContext.currentTime;
+            oscillator.frequency.setValueAtTime(880, currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(1320, currentTime + 0.15);
+            
+            gainNode.gain.setValueAtTime(0.3, currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.4);
+            
+            oscillator.type = 'sine';
+            oscillator.start(currentTime);
+            oscillator.stop(currentTime + 0.4);
+            
+            // Intentar reanudar el contexto si está suspendido
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
+        } catch (error) {
+            logger.error('No se pudo reproducir el sonido ni con el método alternativo:', error);
+        }
     }
 };
 

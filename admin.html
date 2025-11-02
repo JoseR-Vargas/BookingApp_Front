@@ -65,12 +65,21 @@
       <!-- Top Navigation -->
       <nav class="top-nav">
         <div class="nav-left">
-          <button class="sidebar-toggle" id="sidebarToggle">
+          <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar" aria-label="Toggle sidebar">
             <i class="fas fa-bars"></i>
           </button>
           <h1 class="page-title" id="pageTitle">Dashboard</h1>
         </div>
         <div class="nav-right">
+          <!-- Botón para activar sonido de notificaciones -->
+          <button 
+            class="btn btn-sm btn-outline-secondary me-2 enable-sound-btn-hidden" 
+            id="enableSoundBtn"
+            title="Haz click para activar el sonido de notificaciones"
+            aria-label="Activar sonido de notificaciones">
+            <i class="fas fa-volume-mute"></i> Activar Sonido
+          </button>
+          
           <!-- Campana de notificaciones -->
           <div class="notification-bell" id="notificationBell" title="Nuevas reservas">
             <i class="fas fa-bell"></i>

@@ -787,6 +787,11 @@ body {
     }
 }
 
+/* ===== ENABLE SOUND BUTTON ===== */
+.enable-sound-btn-hidden {
+    display: none !important;
+}
+
 /* ===== UTILITIES ===== */
 .text-primary { color: var(--primary-color) !important; }
 .text-success { color: var(--success-color) !important; }

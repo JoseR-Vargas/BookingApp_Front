@@ -253,6 +253,13 @@ body {
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex-wrap: nowrap;
+}
+
+/* Asegurar que los botones en desktop tengan buen espaciado */
+#enableSoundBtn .btn-text,
+#logoutBtn .btn-text {
+    white-space: nowrap;
 }
 
 /* ===== NOTIFICATION BELL ===== */
@@ -731,6 +738,22 @@ body {
 }
 
 /* ===== RESPONSIVE ===== */
+
+/* Media query intermedio para tabletas */
+@media (max-width: 992px) {
+    .nav-right {
+        gap: 0.75rem;
+    }
+
+    .admin-name {
+        font-size: 0.9rem;
+    }
+
+    .page-title {
+        font-size: 1.3rem;
+    }
+}
+
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);
@@ -762,20 +785,141 @@ body {
     .stat-icon {
         margin-bottom: 1rem;
     }
+
+    /* ===== NAVBAR MOBILE ===== */
+    .top-nav {
+        padding: 0 0.75rem;
+        height: auto;
+        min-height: var(--top-nav-height);
+        flex-wrap: wrap;
+    }
+
+    .nav-left {
+        gap: 0.5rem;
+        flex: 0 0 auto;
+    }
+
+    .page-title {
+        font-size: 1.1rem;
+    }
+
+    .nav-right {
+        gap: 0.5rem;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    /* Ajustar botones en mobile - mostrar solo iconos */
+    .enable-sound-btn-hidden,
+    #enableSoundBtn {
+        padding: 0.5rem;
+        min-width: 40px;
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0 !important;
+    }
+
+    #enableSoundBtn i {
+        margin: 0 !important;
+    }
+
+    /* Ajustar botón de logout */
+    #logoutBtn {
+        padding: 0.5rem;
+        min-width: 40px;
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0 !important;
+    }
+
+    #logoutBtn i {
+        margin: 0 !important;
+    }
+
+    /* Ocultar nombre del admin en mobile o hacerlo más pequeño */
+    .admin-info {
+        gap: 0.25rem;
+        align-items: center;
+    }
+
+    .admin-name {
+        font-size: 0.85rem;
+        display: none !important; /* Ocultar completamente en mobile */
+    }
+
+    /* Ajustar tamaño de la campana */
+    .notification-bell {
+        width: 36px;
+        height: 36px;
+        padding: 0.4rem;
+    }
+
+    .notification-bell i {
+        font-size: 1.1rem;
+    }
 }
 
 @media (max-width: 576px) {
     .top-nav {
-        padding: 0 1rem;
+        padding: 0 0.5rem;
+        gap: 0.25rem;
     }
-    
+
+    .nav-left {
+        gap: 0.25rem;
+    }
+
+    .sidebar-toggle {
+        padding: 0.4rem;
+        font-size: 1rem;
+    }
+
     .page-title {
-        font-size: 1.2rem;
+        font-size: 1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 120px;
     }
-    
+
+    .nav-right {
+        gap: 0.25rem;
+        margin-left: auto;
+    }
+
+    /* Ocultar completamente el nombre del admin en pantallas muy pequeñas */
+    .admin-name {
+        display: none !important;
+    }
+
+    /* Botones más compactos */
+    #enableSoundBtn,
+    #logoutBtn {
+        width: 36px;
+        height: 36px;
+        padding: 0.4rem;
+        font-size: 0.9rem;
+        min-width: 36px;
+    }
+
+    .notification-bell {
+        width: 32px;
+        height: 32px;
+        padding: 0.3rem;
+    }
+
+    .notification-bell i {
+        font-size: 1rem;
+    }
+
     .admin-info {
-        flex-direction: column;
-        gap: 0.5rem;
+        gap: 0;
     }
     
     .filters-row .row {

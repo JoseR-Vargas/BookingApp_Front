@@ -605,13 +605,24 @@ const bookingApp = {
     try {
       const bookings = await bookingAPI.getBookings();
 
-      // Verificar si ya existe una reserva para esta fecha, hora y profesional
+      // Verificar si ya existe una reserva para esta fecha, hora y profesional ESPECÍFICO
+      // Solo bloqueamos si el MISMO profesional ya tiene una reserva en ese horario
       const existingBooking = bookings.find(
-        (booking) =>
-          booking.date === selectedDate &&
-          booking.time === selectedTime &&
-          booking.professional.id === selectedProfessional.id &&
-          booking.status === "confirmed"
+        (booking) => {
+          // Comparar fecha y hora
+          const sameDateTime = booking.date === selectedDate && booking.time === selectedTime;
+          
+          // Comparar que sea el MISMO profesional (importante: diferentes profesionales pueden reservar el mismo horario)
+          const sameProfessional = booking.professional && 
+                                   booking.professional.id && 
+                                   selectedProfessional.id &&
+                                   String(booking.professional.id) === String(selectedProfessional.id);
+          
+          // Solo bloquear si el estado no es "cancelled"
+          const isNotCancelled = booking.status && booking.status !== "cancelled";
+          
+          return sameDateTime && sameProfessional && isNotCancelled;
+        }
       );
 
       if (existingBooking) {
@@ -624,11 +635,10 @@ const bookingApp = {
 
       return true;
     } catch (error) {
-      this.showToast(
-        "Error verificando disponibilidad. Por favor intenta de nuevo.",
-        "error"
-      );
-      return false;
+      console.error("Error verificando disponibilidad:", error);
+      // Si hay un error, permitir que el backend haga la validación final
+      // El backend también valida correctamente por profesional
+      return true;
     }
   },
 
@@ -1023,7 +1033,11 @@ const bookingApp = {
       // Enviar al backend
       const result = await bookingAPI.createBooking(bookingData);
 
+      // Cerrar modal de carga INMEDIATAMENTE después del éxito
       this.hideLoadingModal();
+      
+      // Pequeño delay para asegurar que el modal de carga se cierre completamente
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       // Formatear la fecha correctamente para evitar problemas de zona horaria
       const [displayYear, displayMonth, displayDay] = bookingData.date.split("-");
@@ -1053,7 +1067,7 @@ const bookingApp = {
       // Mostrar toast por 2 minutos (120000 ms)
       this.showToast(bookingDetails, "success", 120000);
 
-      // Cerrar modal después de 2 segundos
+      // Cerrar modal de reserva después de 2 segundos
       setTimeout(() => {
         this.closeModal();
         this.resetSubmitButton();
@@ -1087,9 +1101,11 @@ const bookingApp = {
       return null;
     }
 
+    const clientId = document.getElementById("clientId").value || '';
+
     return {
       name: document.getElementById("clientName").value,
-      id: document.getElementById("clientId").value,
+      id: clientId,
       email: document.getElementById("email").value,
       phone: document.getElementById("phone").value,
       notes: document.getElementById("notes").value,
@@ -1101,46 +1117,88 @@ const bookingApp = {
     const modal = document.getElementById("loadingModal");
     const text = document.getElementById("loadingText");
 
+    if (!modal) {
+      console.warn("Modal de carga no encontrado en el DOM");
+      return;
+    }
+
     if (text) text.textContent = message;
 
-    if (modal && typeof bootstrap !== "undefined") {
-      const bsModal = new bootstrap.Modal(modal);
-      bsModal.show();
+    if (typeof bootstrap !== "undefined") {
+      try {
+        // Verificar si ya existe una instancia del modal
+        let bsModal = bootstrap.Modal.getInstance(modal);
+        if (!bsModal) {
+          bsModal = new bootstrap.Modal(modal);
+        }
+        // Verificar que el elemento esté en el DOM antes de mostrarlo
+        if (modal.isConnected) {
+          bsModal.show();
+        }
+      } catch (error) {
+        console.error("Error al mostrar modal de carga:", error);
+        // Fallback: mostrar directamente
+        if (modal.isConnected) {
+          modal.style.display = "block";
+          modal.classList.add("show");
+          document.body.classList.add("modal-open");
+        }
+      }
     }
   },
 
   // Ocultar modal de carga
   hideLoadingModal() {
     const modal = document.getElementById("loadingModal");
-    if (modal) {
-      // Forzar cierre del modal
-      modal.style.display = "none";
-      modal.classList.remove("show");
-      modal.setAttribute("aria-hidden", "true");
-      modal.removeAttribute("aria-modal");
-      modal.removeAttribute("role");
+    
+    // Remover backdrops primero (siempre, incluso si el modal no existe)
+    const backdrops = document.querySelectorAll(".modal-backdrop");
+    backdrops.forEach((backdrop) => backdrop.remove());
+    
+    // Limpiar clases del body
+    document.body.classList.remove("modal-open");
+    document.body.style.paddingRight = "";
+    document.body.style.overflow = "";
 
-      // Remover clases del body
-      document.body.classList.remove("modal-open");
-      document.body.style.paddingRight = "";
-      document.body.style.overflow = "";
+    if (!modal || !modal.isConnected) {
+      return;
+    }
 
-      // Remover backdrop
-      const backdrops = document.querySelectorAll(".modal-backdrop");
-      backdrops.forEach((backdrop) => backdrop.remove());
-
-      // Intentar con Bootstrap si está disponible
+    try {
+      // Intentar con Bootstrap primero si está disponible
       if (typeof bootstrap !== "undefined") {
-        try {
-          const bsModal = bootstrap.Modal.getInstance(modal);
-          if (bsModal) {
-            bsModal.dispose();
-          }
-        } catch (error) {
-          // Modal ya cerrado
+        const bsModal = bootstrap.Modal.getInstance(modal);
+        if (bsModal) {
+          // Forzar cierre inmediato sin animación
+          bsModal.hide();
+          // También dispose para limpiar completamente
+          setTimeout(() => {
+            try {
+              bsModal.dispose();
+            } catch (e) {
+              // Ignorar errores en dispose
+            }
+          }, 150);
         }
       }
+    } catch (error) {
+      // Si falla Bootstrap, continuar con método manual
+      console.warn("Error al cerrar modal con Bootstrap, usando método manual:", error);
     }
+
+    // Forzar cierre del modal de manera agresiva
+    modal.style.display = "none";
+    modal.classList.remove("show", "fade");
+    modal.setAttribute("aria-hidden", "true");
+    modal.removeAttribute("aria-modal");
+    modal.removeAttribute("role");
+    
+    // Asegurar que no queden estilos inline que bloqueen el cierre
+    setTimeout(() => {
+      if (modal) {
+        modal.style.display = "none";
+      }
+    }, 50);
   },
 
   // Cerrar modal de reserva
@@ -1246,8 +1304,33 @@ const bookingAPI = {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || `Error del servidor: ${response.status}`);
+        let errorMessage = `Error del servidor: ${response.status}`;
+        try {
+          // Leer el cuerpo de la respuesta como texto primero
+          const responseText = await response.text();
+          
+          // Intentar parsear como JSON
+          try {
+            const errorData = JSON.parse(responseText);
+            // NestJS devuelve errores en formato { statusCode, message }
+            if (errorData.message) {
+              errorMessage = typeof errorData.message === 'string' 
+                ? errorData.message 
+                : JSON.stringify(errorData.message);
+            } else if (errorData.error) {
+              errorMessage = errorData.error;
+            }
+          } catch (jsonError) {
+            // Si no es JSON válido, usar el texto directamente
+            if (responseText) {
+              errorMessage = responseText;
+            }
+          }
+        } catch (parseError) {
+          // Si todo falla, usar el mensaje por defecto
+          console.error('Error al parsear respuesta de error:', parseError);
+        }
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();

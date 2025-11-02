@@ -255,6 +255,80 @@ body {
     gap: 1rem;
 }
 
+/* ===== NOTIFICATION BELL ===== */
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+}
+
+.notification-bell:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.notification-bell i {
+    font-size: 1.3rem;
+    color: var(--secondary-color);
+    transition: var(--transition);
+}
+
+.notification-bell:hover i {
+    color: var(--primary-color);
+}
+
+.notification-bell.has-notifications i {
+    color: var(--warning-color);
+    animation: ring 2s ease-in-out infinite;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background-color: var(--danger-color);
+    color: var(--white-color);
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 2px 6px;
+    min-width: 18px;
+    text-align: center;
+    display: none;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.notification-badge.show {
+    display: block;
+}
+
+@keyframes ring {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    10%, 30% {
+        transform: rotate(-10deg);
+    }
+    20%, 40% {
+        transform: rotate(10deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
 .admin-info {
     display: flex;
     align-items: center;

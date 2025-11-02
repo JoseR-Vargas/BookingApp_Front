@@ -72,9 +72,16 @@ const adminAPI = {
 
 // ===== APLICACIÓN DE ADMINISTRACIÓN =====
 const adminApp = {
+    // Variables para el sistema de notificaciones
+    lastBookingCount: 0,
+    notificationCount: 0,
+    isFirstLoad: true,
+    socket: null,
+
     // Inicializar la aplicación
     async init() {
         this.setupEventListeners();
+        this.initWebSocket();
         await this.loadDashboard();
         await this.loadBookings();
         this.setupCharts();
@@ -102,6 +109,12 @@ const adminApp = {
         const dateFilter = document.getElementById('dateFilter');
         if (dateFilter) {
             dateFilter.addEventListener('change', () => this.filterBookings());
+        }
+
+        // Click en la campana de notificaciones
+        const notificationBell = document.getElementById('notificationBell');
+        if (notificationBell) {
+            notificationBell.addEventListener('click', () => this.handleNotificationClick());
         }
     },
 
@@ -487,6 +500,81 @@ const adminApp = {
         } catch (error) {
             this.showToast(`Error eliminando reserva: ${error.message}`, 'error');
         }
+    },
+
+    // ===== SISTEMA DE NOTIFICACIONES CON WEBSOCKET =====
+    
+    // Inicializar conexión WebSocket
+    initWebSocket() {
+        try {
+            this.socket = io(BACKEND_URL);
+
+            this.socket.on('connect', () => {
+                console.log('WebSocket conectado');
+            });
+
+            this.socket.on('disconnect', () => {
+                console.log('WebSocket desconectado');
+            });
+
+            this.socket.on('newBooking', async (booking) => {
+                console.log('Nueva reserva recibida:', booking);
+                
+                // Incrementar contador de notificaciones
+                this.notificationCount++;
+                this.updateNotificationBadge();
+                
+                // Mostrar toast de nueva reserva
+                this.showToast('🔔 Nueva reserva recibida!', 'success');
+                
+                // Actualizar dashboard automáticamente
+                await this.loadDashboard();
+                
+                // Si estamos en la sección de reservas, actualizar la lista
+                const activeSection = document.querySelector('.content-section.active');
+                if (activeSection && activeSection.id === 'bookings') {
+                    await this.loadBookings();
+                }
+            });
+
+            this.socket.on('connect_error', (error) => {
+                console.error('Error de conexión WebSocket:', error);
+            });
+
+        } catch (error) {
+            console.error('Error inicializando WebSocket:', error);
+        }
+    },
+
+    // Actualizar el badge de notificaciones
+    updateNotificationBadge() {
+        const badge = document.getElementById('notificationBadge');
+        const bell = document.getElementById('notificationBell');
+
+        if (badge && bell) {
+            if (this.notificationCount > 0) {
+                badge.textContent = this.notificationCount;
+                badge.classList.add('show');
+                bell.classList.add('has-notifications');
+            } else {
+                badge.textContent = '0';
+                badge.classList.remove('show');
+                bell.classList.remove('has-notifications');
+            }
+        }
+    },
+
+    // Manejar click en la campana
+    async handleNotificationClick() {
+        // Resetear el contador de notificaciones
+        this.notificationCount = 0;
+        this.updateNotificationBadge();
+
+        // Navegar a la sección de reservas
+        this.navigateToSection('bookings');
+
+        // Recargar las reservas para mostrar las más recientes
+        await this.loadBookings();
     }
 };
 

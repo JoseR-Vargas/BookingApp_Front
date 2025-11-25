@@ -26,6 +26,7 @@ const PROFESSIONALS = [
     avatar: "fas fa-user-tie",
     available: true,
   },
+  /* DESACTIVADO - Profesional de Estética
   {
     id: "andrea-velasquez",
     name: "Andrea Velasquez",
@@ -35,6 +36,7 @@ const PROFESSIONALS = [
     avatar: "fas fa-user",
     available: true,
   },
+  */
   {
     id: "random",
     name: "Random",
@@ -130,6 +132,7 @@ const SERVICES = [
     icon: "fas fa-spray-can",
   },
 
+  /* DESACTIVADO - Servicios de Estética
   {
     id: "cejas",
     name: "Perfilado de Cejas (Estética)",
@@ -186,6 +189,7 @@ const SERVICES = [
     professionals: ["andrea-velasquez"],
     icon: "fas fa-kiss",
   },
+  */
 
   {
     id: "corte-cabello-peluqueria",

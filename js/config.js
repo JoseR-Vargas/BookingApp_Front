@@ -1,12 +1,12 @@
 // ===== CONFIGURACIÓN CENTRALIZADA =====
 const APP_CONFIG = {
     BACKEND_URL: (() => {
-        const isProduction = window.location.hostname === 'bigligasbeautybarberstudio.netlify.app';
+        const isProduction = window.location.hostname === '';
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
         if (isProduction) {
             // Actualizado para coincidir con la URL de Render desplegada
-            return 'https://bookingapp-back-um0l.onrender.com';
+            return '';
         } else if (isLocalhost) {
             return 'http://localhost:3000';
         }

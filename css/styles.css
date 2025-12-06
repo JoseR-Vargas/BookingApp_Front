@@ -219,116 +219,32 @@ html {
     filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.5));
 }
 
-/* Borde peludo blanco del gorrito usando el wrapper */
 .hero-logo-container {
     position: relative;
     display: inline-block;
+    padding: 10px 10px 0 10px;
 }
 
-.hero-logo-container .santa-hat-trim {
-    content: '';
+/* Gorrito de Navidad - Imagen */
+.santa-hat-img {
     position: absolute;
-    top: 50px;
-    right: 22px;
-    width: 55px;
-    height: 12px;
-    background: 
-        linear-gradient(180deg,
-            rgba(255, 255, 255, 1) 0%,
-            rgba(248, 248, 248, 0.95) 25%,
-            rgba(255, 255, 255, 1) 50%,
-            rgba(240, 240, 240, 0.95) 75%,
-            rgba(255, 255, 255, 1) 100%);
-    border-radius: 20px;
-    transform: rotate(105deg);
-    z-index: 9;
-    filter: 
-        drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))
-        drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
-    animation: santaHatBounce 3s ease-in-out infinite;
-    box-shadow: 
-        0 2px 0 rgba(255, 255, 255, 0.9) inset,
-        0 -1px 0 rgba(0, 0, 0, 0.1) inset,
-        0 0 10px rgba(255, 255, 255, 0.5),
-        0 1px 3px rgba(255, 255, 255, 0.8),
-        0 -1px 3px rgba(200, 200, 200, 0.5);
-}
-
-.hero-logo-container {
-    position: relative;
-    display: inline-block;
-}
-
-/* Gorrito de Navidad - Parte principal */
-.hero-logo-container::after {
-    content: '';
-    position: absolute;
-    top: -15px;
-    right: 10px;
-    width: 80px;
-    height: 90px;
-    background: 
-        linear-gradient(135deg, 
-            #E31C25 0%, 
-            #C41E3A 30%,
-            #B91D3C 50%, 
-            #A01E3D 70%,
-            #8B0000 100%);
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    transform: rotate(25deg);
+    top: -5px;
+    right: 5px;
+    width: 90px;
+    height: auto;
     z-index: 10;
-    filter: 
-        drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))
-        drop-shadow(0 0 10px rgba(227, 28, 37, 0.4));
+    transform: rotate(20deg);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     animation: santaHatBounce 3s ease-in-out infinite;
-}
-
-/* Pompón del gorrito con efecto peludo */
-.hero-logo-container::before {
-    content: '';
-    position: absolute;
-    top: -22px;
-    right: -5px;
-    width: 35px;
-    height: 35px;
-    background: 
-        radial-gradient(circle at 30% 30%, 
-            #FFFFFF 0%, 
-            #F8F8F8 30%,
-            #F0F0F0 60%, 
-            #E0E0E0 85%,
-            #D0D0D0 100%);
-    border-radius: 50%;
-    z-index: 11;
-    filter: 
-        drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2))
-        drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
-    animation: santaHatBounce 3s ease-in-out infinite, pompomGlow 2s ease-in-out infinite;
-    box-shadow: 
-        inset 0 2px 4px rgba(255, 255, 255, 0.8),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.1),
-        0 0 15px rgba(255, 255, 255, 0.3);
+    pointer-events: none;
 }
 
 @keyframes santaHatBounce {
     0%, 100% { 
-        transform: translateY(0px) rotate(25deg);
+        transform: translateY(0px) rotate(20deg);
     }
     50% { 
-        transform: translateY(-8px) rotate(28deg);
-    }
-}
-
-@keyframes pompomGlow {
-    0%, 100% {
-        filter: 
-            drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2))
-            drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
-    }
-    50% {
-        filter: 
-            drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2))
-            drop-shadow(0 0 15px rgba(255, 255, 255, 0.9));
+        transform: translateY(-8px) rotate(22deg);
     }
 }
 
@@ -887,25 +803,10 @@ footer {
     }
     
     /* Ajustes del gorrito para tablets */
-    .hero-logo-container::after {
-        width: 70px;
-        height: 80px;
-        top: -12px;
+    .santa-hat-img {
+        width: 75px;
+        top: -2px;
         right: 8px;
-    }
-    
-    .hero-logo-container::before {
-        width: 30px;
-        height: 30px;
-        top: -18px;
-        right: -3px;
-    }
-    
-    .hero-logo-container .santa-hat-trim {
-        top: 43px;
-        right: 20px;
-        width: 48px;
-        height: 10px;
     }
     
     /* Mensaje navideño en tablets */
@@ -1024,26 +925,10 @@ footer {
     }
     
     /* Ajustes del gorrito para móviles */
-    .hero-logo-container::after {
-        width: 60px;
-        height: 70px;
-        top: -8px;
-        right: 5px;
-        transform: rotate(28deg);
-    }
-    
-    .hero-logo-container::before {
-        width: 26px;
-        height: 26px;
-        top: -14px;
-        right: -2px;
-    }
-    
-    .hero-logo-container .santa-hat-trim {
-        top: 35px;
-        right: 16px;
-        width: 42px;
-        height: 9px;
+    .santa-hat-img {
+        width: 65px;
+        top: 0px;
+        right: 6px;
     }
     
     /* Mensaje navideño en móviles */
@@ -1209,26 +1094,10 @@ footer {
     }
     
     /* Ajustes del gorrito para móviles pequeños */
-    .hero-logo-container::after {
-        width: 50px;
-        height: 60px;
-        top: -5px;
-        right: 3px;
-        transform: rotate(30deg);
-    }
-    
-    .hero-logo-container::before {
-        width: 22px;
-        height: 22px;
-        top: -11px;
-        right: -1px;
-    }
-    
-    .hero-logo-container .santa-hat-trim {
-        top: 28px;
-        right: 13px;
-        width: 35px;
-        height: 7px;
+    .santa-hat-img {
+        width: 55px;
+        top: 2px;
+        right: 4px;
     }
     
     /* Mensaje navideño en móviles pequeños */

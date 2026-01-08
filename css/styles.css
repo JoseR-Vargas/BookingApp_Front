@@ -225,64 +225,10 @@ html {
     padding: 10px 10px 0 10px;
 }
 
-/* Gorrito de Navidad - Imagen */
-.santa-hat-img {
-    position: absolute;
-    top: -5px;
-    right: 5px;
-    width: 90px;
-    height: auto;
-    z-index: 10;
-    transform: rotate(20deg);
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-    animation: santaHatBounce 3s ease-in-out infinite;
-    pointer-events: none;
-}
 
-@keyframes santaHatBounce {
-    0%, 100% { 
-        transform: translateY(0px) rotate(20deg);
-    }
-    50% { 
-        transform: translateY(-8px) rotate(22deg);
-    }
-}
 
-/* Mensaje Navideño */
-.christmas-message {
-    color: #FFFFFF;
-    font-weight: 600;
-    font-size: 1.5rem;
-    text-shadow: 
-        0 0 10px rgba(255, 193, 7, 0.8),
-        0 0 20px rgba(255, 193, 7, 0.5),
-        0 2px 4px rgba(0, 0, 0, 0.3);
-    animation: christmasGlow 2s ease-in-out infinite;
-    letter-spacing: 0.5px;
-    line-height: 1.6;
-}
 
-.christmas-message i {
-    color: #FFC107;
-    animation: snowflakeRotate 4s linear infinite;
-    display: inline-block;
-}
 
-@keyframes christmasGlow {
-    0%, 100% {
-        text-shadow: 
-            0 0 10px rgba(255, 193, 7, 0.8),
-            0 0 20px rgba(255, 193, 7, 0.5),
-            0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-    50% {
-        text-shadow: 
-            0 0 20px rgba(255, 193, 7, 1),
-            0 0 30px rgba(255, 193, 7, 0.7),
-            0 0 40px rgba(255, 193, 7, 0.4),
-            0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-}
 
 @keyframes snowflakeRotate {
     0% {
@@ -802,19 +748,9 @@ footer {
         margin-top: 2rem;
     }
     
-    /* Ajustes del gorrito para tablets */
-    .santa-hat-img {
-        width: 75px;
-        top: -2px;
-        right: 8px;
-    }
+
     
-    /* Mensaje navideño en tablets */
-    .christmas-message {
-        font-size: 1.3rem;
-        padding: 0 1rem;
-    }
-    
+
     .hero-section .d-flex {
         flex-direction: column;
     }
@@ -923,24 +859,9 @@ footer {
         max-width: 250px;
         margin-top: 1rem;
     }
+
     
-    /* Ajustes del gorrito para móviles */
-    .santa-hat-img {
-        width: 65px;
-        top: 0px;
-        right: 6px;
-    }
-    
-    /* Mensaje navideño en móviles */
-    .christmas-message {
-        font-size: 1.1rem;
-        padding: 0 0.5rem;
-        line-height: 1.5;
-    }
-    
-    .christmas-message i {
-        font-size: 0.9rem;
-    }
+
     
     /* Buttons */
     .btn-lg {
@@ -1093,24 +1014,7 @@ footer {
         max-width: 200px;
     }
     
-    /* Ajustes del gorrito para móviles pequeños */
-    .santa-hat-img {
-        width: 55px;
-        top: 2px;
-        right: 4px;
-    }
-    
-    /* Mensaje navideño en móviles pequeños */
-    .christmas-message {
-        font-size: 0.95rem;
-        padding: 0 0.25rem;
-        line-height: 1.4;
-    }
-    
-    .christmas-message i {
-        font-size: 0.8rem;
-    }
-    
+
     .step-number {
         width: 28px;
         height: 28px;

@@ -49,6 +49,7 @@ const PROFESSIONALS = [
 ];
 
 // ===== SERVICIOS DISPONIBLES =====
+
 const SERVICES = [
   {
     id: "corte-cabello",
@@ -58,6 +59,15 @@ const SERVICES = [
     duration: 45,
     professionals: ["cesar-viloria", "random"],
     icon: "fas fa-cut",
+  },
+  {
+    id: "corte-nino",
+    name: "Corte para Niño (Barbería)",
+    description: "Corte moderno y cómodo para peques, con acabado prolijo",
+    price: 550,
+    duration: 40,
+    professionals: ["cesar-viloria", "random"],
+    icon: "fas fa-child",
   },
   {
     id: "barba",

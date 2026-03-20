@@ -1,17 +1,14 @@
 // ===== CONFIGURACIÓN CENTRALIZADA =====
 const APP_CONFIG = {
     BACKEND_URL: (() => {
-        const isProduction = window.location.hostname === 'https://booking-app-back.vercel.app';
-        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const hostname = window.location.hostname;
+        const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
 
-        if (isProduction) {
-            // Actualizado para coincidir con la URL de vercel desplegada
-            return 'https://booking-app-back.vercel.app';
-        } else if (isLocalhost) {
+        if (isLocalhost) {
             return 'http://localhost:3000';
         }
-        // Fallback: si no coincide producción ni localhost, usar localhost
-        return 'http://localhost:3000';
+        // Producción: cualquier dominio que no sea localhost usa el backend de Vercel
+        return 'https://booking-app-back.vercel.app';
     })(),
     
     BUSINESS_HOURS: {

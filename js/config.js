@@ -1,7 +1,7 @@
 // ===== CONFIGURACIÓN CENTRALIZADA =====
 const APP_CONFIG = {
     BACKEND_URL: (() => {
-        const isProduction = window.location.hostname === 'https://bookingsjr.netlify.app';
+        const isProduction = window.location.hostname === 'https://booking-app-back.vercel.app';
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
         if (isProduction) {

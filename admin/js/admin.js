@@ -440,11 +440,6 @@ const adminApp = {
         }
     },
 
-    // Eliminar función populateBarberFilter ya que no se necesita
-    // populateBarberFilter(bookings) {
-    //     // Esta función ya no se necesita
-    // },
-
     // Actualizar total de ingresos filtrados
     updateFilteredTotalRevenue(bookings) {
         const totalRevenueElement = document.getElementById('filteredTotalRevenue');

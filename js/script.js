@@ -18,32 +18,21 @@ const BACKEND_URL = window.APP_CONFIG?.BACKEND_URL || "http://localhost:3000";
 // ===== PROFESIONALES DISPONIBLES =====
 const PROFESSIONALS = [
   {
-    id: "cesar-viloria",
-    name: "Cesar Viloria",
-    specialty: "Barbero",
-    experience: "11 años",
+    id: "alex-garcia",
+    name: "Alex García",
+    specialty: "Especialista",
+    experience: "8 años",
     rating: 4.9,
     avatar: "fas fa-user-tie",
     available: true,
   },
-  /* DESACTIVADO - Profesional de Estética
   {
-    id: "andrea-velasquez",
-    name: "Andrea Velasquez",
-    specialty: "Especialista en Cejas, Pestañas y Depilación",
+    id: "maria-lopez",
+    name: "María López",
+    specialty: "Consultora",
     experience: "6 años",
-    rating: 5.0,
+    rating: 4.8,
     avatar: "fas fa-user",
-    available: true,
-  },
-  */
-  {
-    id: "random",
-    name: "Random",
-    specialty: "General",
-    experience: "5 años",
-    rating: 4.9,
-    avatar: "fas fa-user-tie",
     available: true,
   },
 ];
@@ -52,228 +41,40 @@ const PROFESSIONALS = [
 
 const SERVICES = [
   {
-    id: "corte-cabello",
-    name: "Corte comun (Barbería)",
-    description: "Corte profesional adaptado a tu estilo personal",
-    price: 450,
-    duration: 45,
-    professionals: ["cesar-viloria", "random"],
-    icon: "fas fa-cut",
-  },
-  {
-    id: "corte-nino",
-    name: "Corte para Niño (Barbería)",
-    description: "Corte moderno y cómodo para peques, con acabado prolijo",
-    price: 550,
-    duration: 40,
-    professionals: ["cesar-viloria", "random"],
-    icon: "fas fa-child",
-  },
-  {
-    id: "barba",
-    name: "Arreglo de Barba (Barbería)",
-    description: "Diseño y arreglo completo de barba",
-    price: 250,
-    duration: 30,
-    professionals: ["cesar-viloria", "random"],
-    icon: "fas fa-user-tie",
-  },
-  {
-    id: "corte-comun-barba",
-    name: "Corte común + Barba (Barbería)",
-    description: "Corte profesional con arreglo de barba",
-    price: 650,
-    duration: 45,
-    professionals: ["cesar-viloria", "random"],
-    icon: "fas fa-cut",
-  },
-  {
-    id: "corte-degrade",
-    name: "Corte degrade (Barbería)",
-    description: "Corte degrade afeitado rasurado completo",
+    id: "consulta-inicial",
+    name: "Consulta Inicial",
+    description: "Sesión introductoria para evaluar tus necesidades",
     price: 500,
-    duration: 45,
-    professionals: ["cesar-viloria", "random"],
-    icon: "fas fa-cut",
-  },
-  {
-    id: "corte-degrade-barba",
-    name: "Corte degrade + Barba (Barbería)",
-    description: "Corte degradado con arreglo completo de barba",
-    price: 700,
-    duration: 45,
-    professionals: ["cesar-viloria", "random"],
-    icon: "fas fa-cut",
-  },
-  {
-    id: "cejas-barberia",
-    name: "Cejas (Barbería)",
-    description: "Diseño y arreglo de cejas masculinas",
-    price: 100,
     duration: 30,
-    professionals: ["cesar-viloria", "random"],
-    icon: "fas fa-eye",
+    professionals: ["alex-garcia", "maria-lopez"],
+    icon: "fas fa-clipboard-list",
   },
   {
-    id: "mascarilla-facial",
-    name: "Mascarilla Facial (Barbería)",
-    description: "Tratamiento facial profesional para el cuidado y limpieza de la piel",
-    price: 150,
-    duration: 30,
-    professionals: ["cesar-viloria", "random"],
-    icon: "fas fa-spa",
-  },
-  {
-    id: "mechas-corte-barberia",
-    name: "Mechas + Corte (Barbería)",
-    description: "Mechas o platinado profesional para hombre",
-    price: 2000,
-    duration: 90,
-    professionals: ["cesar-viloria", "random"],
-    icon: "fas fa-spray-can",
-  },
-  {
-    id: "platinado-corte-barberia",
-    name: "Platinado + Corte (Barbería)",
-    description: "Platinado profesional para hombre",
-    price: 3000,
-    duration: 90,
-    professionals: ["cesar-viloria", "random"],
-    icon: "fas fa-spray-can",
-  },
-
-  /* DESACTIVADO - Servicios de Estética
-  {
-    id: "cejas",
-    name: "Perfilado de Cejas (Estética)",
-    description: "Diseño y arreglo profesional de cejas",
-    price: 500,
-    duration: 50,
-    professionals: ["andrea-velasquez"],
-    icon: "fas fa-eye",
-  },
-  {
-    id: "pestanas",
-    name: "Lifting de Pestañas (Estética)",
-    description: "Tratamiento profesional de pestañas",
-    price: 1100,
-    duration: 50,
-    professionals: ["andrea-velasquez"],
-    icon: "fas fa-eye-dropper",
-  },
-
-  {
-    id: "perfilado-henna",
-    name: "Perfilado con Henna (Estética)",
-    description: "Perfilado de cejas con tinte de henna natural",
-    price: 550,
-    duration: 50,
-    professionals: ["andrea-velasquez"],
-    icon: "fas fa-paint-brush",
-  },
-
-  {
-    id: "laminado-cejas",
-    name: "Laminado de Cejas (Estética)",
-    description: "Tratamiento de laminado para cejas perfectas",
-    price: 850,
-    duration: 50,
-    professionals: ["andrea-velasquez"],
-    icon: "fas fa-magic",
-  },
-  {
-    id: "pestanas-express",
-    name: "Pestañas Express (Estética)",
-    description: "Tratamiento rápido de pestañas",
-    price: 850,
-    duration: 45,
-    professionals: ["andrea-velasquez"],
-    icon: "fas fa-bolt",
-  },
-  {
-    id: "hydrogloss",
-    name: "Hydrogloss (Estética)",
-    description: "Tratamiento de brillo e hidratación labial",
+    id: "servicio-basico",
+    name: "Servicio Básico",
+    description: "Atención estándar completa con seguimiento profesional",
     price: 1200,
-    duration: 50,
-    professionals: ["andrea-velasquez"],
-    icon: "fas fa-kiss",
-  },
-  */
-
-  {
-    id: "corte-cabello-peluqueria",
-    name: "Corte de Cabello (Peluquería)",
-    description: "Corte de cabello femenino profesional. Precio sujeto a cambios según largo y abundancia del cabello",
-    price: 500,
-    duration: 50,
-    professionals: ["random"],
-    icon: "fas fa-cut",
+    duration: 60,
+    professionals: ["alex-garcia", "maria-lopez"],
+    icon: "fas fa-star",
   },
   {
-    id: "secado-cabello",
-    name: "Secado de Cabello (Peluquería)",
-    description: "Secado y peinado profesional. Precio sujeto a cambios según largo y abundancia del cabello",
-    price: 500,
-    duration: 50,
-    professionals: ["random"],
-    icon: "fas fa-wind",
+    id: "servicio-premium",
+    name: "Servicio Premium",
+    description: "Experiencia premium con atención prioritaria y resultados garantizados",
+    price: 2500,
+    duration: 90,
+    professionals: ["alex-garcia", "maria-lopez"],
+    icon: "fas fa-gem",
   },
   {
-    id: "mechas-gorro-peluqueria",
-    name: "Mechas con gorro (Peluquería)",
-    description: "Aplicación de mechas para resaltar tu cabello. Precio sujeto a cambios según largo y abundancia del cabello",
-    price: 2000,
-    duration: 120,
-    professionals: ["random"],
-    icon: "fas fa-paint-brush",
-  },
-
-  {
-    id: "mechas-papel-peluqueria",
-    name: "Mechas con papel (Peluquería)",
-    description: "Aplicación de mechas para resaltar tu cabello. Precio sujeto a cambios según largo y abundancia del cabello",
-    price: 3000,
-    duration: 120,
-    professionals: ["random"],
-    icon: "fas fa-paint-brush",
-  },
-
-  {
-    id: "balayage",
-    name: "Balayage (Peluquería)",
-    description: "Técnica de coloración degradada natural. Precio sujeto a cambios según largo y abundancia del cabello",
-    price: 3000,
-    duration: 150,
-    professionals: ["random"],
-    icon: "fas fa-palette",
-  },
-  {
-    id: "progresivo-alisado",
-    name: "Progresivo o Alisado (Peluquería)",
-    description: "Tratamiento de alisado permanente. Precio sujeto a cambios según largo y abundancia del cabello",
-    price: 1500,
-    duration: 180,
-    professionals: ["random"],
-    icon: "fas fa-grip-lines",
-  },
-  {
-    id: "hidrataciones",
-    name: "Hidrataciones (Peluquería)",
-    description: "Tratamiento profundo de hidratación capilar. Precio sujeto a cambios según largo y abundancia del cabello",
-    price: 500,
-    duration: 50,
-    professionals: ["random"],
-    icon: "fas fa-droplet",
-  },
-  {
-    id: "mascarilla-cabello",
-    name: "Mascarilla de Cabello (Peluquería)",
-    description: "Tratamiento capilar intensivo con mascarilla. Precio sujeto a cambios según largo y abundancia del cabello",
-    price: 800,
-    duration: 50,
-    professionals: ["random"],
-    icon: "fas fa-spa",
+    id: "sesion-expres",
+    name: "Sesión Exprés",
+    description: "Atención rápida y efectiva para ajustarse a tu agenda",
+    price: 700,
+    duration: 20,
+    professionals: ["alex-garcia", "maria-lopez"],
+    icon: "fas fa-bolt",
   },
 ];
 
@@ -1049,10 +850,10 @@ const bookingApp = {
 
       // Cerrar modal de carga INMEDIATAMENTE después del éxito
       this.hideLoadingModal();
-      
-      // Pequeño delay para asegurar que el modal de carga se cierre completamente
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+
+      // Delay para asegurar que el modal de carga se cierre completamente
+      await new Promise(resolve => setTimeout(resolve, 150));
+
       // Formatear la fecha correctamente para evitar problemas de zona horaria
       const [displayYear, displayMonth, displayDay] = bookingData.date.split("-");
       const dateForDisplay = new Date(Date.UTC(displayYear, displayMonth - 1, displayDay));
@@ -1061,31 +862,10 @@ const bookingApp = {
         year: "numeric",
         month: "long",
         day: "numeric",
-        timeZone: "UTC", // Usar UTC para evitar problemas de zona horaria
+        timeZone: "UTC",
       });
-      
-      // Crear mensaje detallado con los datos de la reserva
-      const bookingDetails = `
-                ✅ ¡Reserva Confirmada has un ScreenShot a tu Reserva!
-                
-                📋 Detalles:
-                👤 Cliente: ${bookingData.client.name}
-                💇 Servicio: ${bookingData.service.name}
-                💰 Precio: $${bookingData.service.price.toLocaleString()}
-                👨‍💼 Profesional: ${bookingData.professional.name}
-                📅 Fecha: ${formattedDate}
-                🕐 Hora: ${bookingData.time}
-                ⏱️ Duración: ${bookingData.service.duration} minutos
-            `;
 
-      // Mostrar toast por 2 minutos (120000 ms)
-      this.showToast(bookingDetails, "success", 120000);
-
-      // Cerrar modal de reserva después de 2 segundos
-      setTimeout(() => {
-        this.closeModal();
-        this.resetSubmitButton();
-      }, 2000);
+      this.showConfirmationModal(bookingData, formattedDate);
     } catch (error) {
       this.hideLoadingModal();
       this.showToast(`Error al procesar la reserva: ${error.message}`, "error", 5000);
@@ -1244,6 +1024,38 @@ const bookingApp = {
 
       // Remover padding del body
       document.body.style.paddingRight = "";
+    }
+  },
+
+  // Mostrar modal de confirmación con los detalles de la reserva
+  showConfirmationModal(bookingData, formattedDate) {
+    document.getElementById("conf-service-name").textContent = bookingData.service.name;
+    document.getElementById("conf-professional").textContent = bookingData.professional.name;
+    document.getElementById("conf-date").textContent = formattedDate;
+    document.getElementById("conf-time").textContent = bookingData.time;
+    document.getElementById("conf-price").textContent = "$" + bookingData.service.price.toLocaleString();
+
+    const bookingModalEl = document.getElementById("bookingModal");
+    const confirmationModalEl = document.getElementById("confirmationModal");
+
+    const showConfirmation = () => {
+      // Diferir hasta que todos los handlers de hidden.bs.modal hayan corrido
+      setTimeout(() => {
+        new bootstrap.Modal(confirmationModalEl).show();
+        this.resetSubmitButton();
+      }, 0);
+    };
+
+    const bsBooking = bootstrap.Modal.getInstance(bookingModalEl);
+    if (bsBooking) {
+      bookingModalEl.addEventListener("hidden.bs.modal", showConfirmation, { once: true });
+      bsBooking.hide();
+    } else {
+      document.querySelectorAll(".modal-backdrop").forEach((e) => e.remove());
+      document.body.classList.remove("modal-open");
+      document.body.style.paddingRight = "";
+      new bootstrap.Modal(confirmationModalEl).show();
+      this.resetSubmitButton();
     }
   },
 

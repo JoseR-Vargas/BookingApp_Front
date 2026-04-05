@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Big Ligas Barber studio</title>
+    <title>BookingApp</title>
 
     <!-- Bootstrap 5 -->
     <link
@@ -33,7 +33,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div class="container">
         <a class="navbar-brand fw-bold fs-3" href="#">
-          <i class="fas fa-cut text-primary me-2"></i>Big Ligas Beauty & Barber Studio
+          <i class="fas fa-calendar-alt text-primary me-2"></i>BookingApp
         </a>
         <button
           class="navbar-toggler"
@@ -73,21 +73,23 @@
       <div class="container">
         <div class="row align-items-center min-vh-100">
           <div class="col-12 text-center">
-            <!-- Logo Principal -->
+            <!-- Ícono principal -->
             <div class="hero-logo-container mb-4">
-              <img src="./img/Black and White Minimal Modern Bold Beauty Logo.pdf-2_page-0003.jpg" alt="Big Ligas Barber Studio Logo" class="hero-logo">
+              <div class="hero-icon-circle">
+                <i class="fas fa-calendar-check"></i>
+              </div>
             </div>
             
 
             
             <!-- Texto del Hero -->
             <h1 class="display-4 fw-bold mb-4 text-white">
-              Tu estilo, nuestra
-              <span class="text-warning">pasión</span>
+              Tu tiempo, nuestra
+              <span class="text-warning">prioridad</span>
             </h1>
             <p class="lead mb-4 text-white-50">
-              Reserva tu cita en nuestro Studio. Cortes modernos, barbas
-              perfectas, Diseño de Cejas y atención personalizada.
+              Reserva tu cita de forma rápida y sencilla. Profesionales certificados
+              y atención personalizada a tu servicio.
             </p>
             <div class="d-flex flex-wrap gap-3 justify-content-center">
               <button
@@ -97,10 +99,10 @@
                 <i class="fas fa-calendar-check me-2"></i>Reservar Ahora
               </button>
               <a
-                href="tel:+59898115693"
+                href="#servicios"
                 class="btn btn-outline-light btn-lg px-4 py-3"
               >
-                <i class="fas fa-phone me-2"></i>+598 97 010 428
+                <i class="fas fa-info-circle me-2"></i>Conocer Más
               </a>
             </div>
           </div>
@@ -114,51 +116,51 @@
         <div class="text-center mb-5">
           <h2 class="display-5 fw-bold mb-3">Nuestros Servicios</h2>
           <p class="lead text-muted">
-            Servicios profesionales para el caballero moderno
+            Soluciones profesionales adaptadas a tus necesidades
           </p>
         </div>
 
         <div class="row g-4">
-          <!-- Barbería -->
+          <!-- Consultoría -->
           <div class="col-md-4">
             <div class="card h-100 text-center shadow-sm border-0">
               <div class="card-body p-4">
                 <div class="mb-3">
-                  <i class="fas fa-cut text-primary" style="font-size: 3rem;"></i>
+                  <i class="fas fa-clipboard-list text-primary" style="font-size: 3rem;"></i>
                 </div>
-                <h4 class="card-title fw-bold mb-3">Barbería</h4>
+                <h4 class="card-title fw-bold mb-3">Consultoría</h4>
                 <p class="card-text text-muted">
-                  Cortes modernos y clásicos, afeitados y arreglos de barba profesionales
+                  Evaluación personalizada y asesoramiento profesional para encontrar la mejor solución
                 </p>
               </div>
             </div>
           </div>
 
-          <!-- Estética -->
+          <!-- Servicios Estándar -->
           <div class="col-md-4">
             <div class="card h-100 text-center shadow-sm border-0">
               <div class="card-body p-4">
                 <div class="mb-3">
-                  <i class="fas fa-spa text-primary" style="font-size: 3rem;"></i>
+                  <i class="fas fa-star text-primary" style="font-size: 3rem;"></i>
                 </div>
-                <h4 class="card-title fw-bold mb-3">Estética</h4>
+                <h4 class="card-title fw-bold mb-3">Servicios Estándar</h4>
                 <p class="card-text text-muted">
-                  Tratamientos faciales, cuidado de la piel y servicios de embellecimiento
+                  Atención completa con seguimiento y garantía de resultados en cada sesión
                 </p>
               </div>
             </div>
           </div>
 
-          <!-- Peluquería -->
+          <!-- Premium -->
           <div class="col-md-4">
             <div class="card h-100 text-center shadow-sm border-0">
               <div class="card-body p-4">
                 <div class="mb-3">
-                  <i class="fas fa-user-tie text-primary" style="font-size: 3rem;"></i>
+                  <i class="fas fa-gem text-primary" style="font-size: 3rem;"></i>
                 </div>
-                <h4 class="card-title fw-bold mb-3">Peluquería</h4>
+                <h4 class="card-title fw-bold mb-3">Premium</h4>
                 <p class="card-text text-muted">
-                  Cortes, peinados y tratamientos capilares personalizados
+                  Experiencia exclusiva con prioridad de agenda y acompañamiento dedicado
                 </p>
               </div>
             </div>
@@ -167,7 +169,7 @@
 
         <!-- Call to Action -->
         <div class="text-center mt-5">
-          <p class="lead mb-3">¿Listo para lucir increíble?</p>
+          <p class="lead mb-3">¿Listo para comenzar?</p>
           <button class="btn btn-primary btn-lg px-5" onclick="bookingApp.openModal()">
             <i class="fas fa-calendar-check me-2"></i>Reservar Cita Ahora
           </button>
@@ -184,24 +186,19 @@
             <div class="contact-info">
               <div class="contact-item mb-3">
                 <i class="fas fa-map-marker-alt text-primary me-3"></i>
-                <span>Gral Flores 2537 Esq Concepción Arenal</span>
+                <span>Av. Demo 1234, Ciudad Ejemplo</span>
               </div>
               <div class="contact-item mb-3">
                 <i class="fas fa-phone text-primary me-3"></i>
-                <span>+598 97 010 428</span>
+                <span>+XX XXX XXX XXXX</span>
               </div>
-              <!-- <div class="contact-item mb-3">
-                            <i class="fas fa-envelope text-primary me-3"></i>
-                            <span>jrvn.dev@gmail.com</span>
-                        </div> -->
               <div class="contact-item mb-3">
                 <i class="fas fa-clock text-primary me-3"></i>
                 <span>Lun - Vie: 9:00 - 19:00</span>
               </div>
-
               <div class="contact-item mb-3">
                 <i class="fas fa-clock text-primary me-3"></i>
-                <span>sabado: 9:00 - 18:00</span>
+                <span>Sáb: 9:00 - 15:00</span>
               </div>
 
 
@@ -211,13 +208,13 @@
             <div class="horarios-container p-4 bg-light rounded-3">
               <h4 class="mb-3">Horarios de Atención</h4>
               <div class="horario-item d-flex justify-content-between mb-2">
-                <span>Lunes - sabados</span>
-                <span class="fw-bold">9:00 - 19:00 </span>
+                <span>Lunes - Viernes</span>
+                <span class="fw-bold">9:00 - 19:00</span>
               </div>
               <div class="horario-item d-flex justify-content-between mb-2">
-                            <span>Sábado</span>
-                            <span class="fw-bold">9:00 - 18:00</span>
-                        </div>
+                <span>Sábado</span>
+                <span class="fw-bold">9:00 - 15:00</span>
+              </div>
               <div class="horario-item d-flex justify-content-between mb-2">
                 <span>Domingo</span>
                 <span class="fw-bold">Cerrado</span>
@@ -243,12 +240,11 @@
         <div class="row">
           <div class="col-md-6">
             <div class="d-flex align-items-center mb-3">
-              <i class="fas fa-cut text-primary me-2 fs-4"></i>
-              <span class="fw-bold fs-5">Big Ligas Beauty & Barber Studio</span>
+              <i class="fas fa-calendar-alt text-primary me-2 fs-4"></i>
+              <span class="fw-bold fs-5">BookingApp</span>
             </div>
             <p class="text-muted">
-              Tu estilo es nuestra pasión. Reserva tu cita y vive una
-              experiencia única.
+              Tu tiempo, nuestra prioridad. Reserva fácil y rápido.
             </p>
           </div>
           <div class="col-md-6 text-md-end">
@@ -264,7 +260,7 @@
               ></a>
             </div>
             <p class="text-muted mb-0">
-              &copy; 2024 Barbería Premium. Todos los derechos reservados.
+              &copy; 2024 BookingApp. Todos los derechos reservados.
             </p>
           </div>
         </div>
@@ -487,6 +483,65 @@
             </button>
             <button type="button" class="btn btn-primary" id="btnNext">
               Siguiente <i class="fas fa-arrow-right ms-2"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div
+      class="modal fade"
+      id="confirmationModal"
+      tabindex="-1"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      aria-labelledby="confirmationModalLabel"
+      aria-modal="true"
+      role="dialog"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content border-0 shadow-lg">
+          <div class="modal-body text-center p-4 p-md-5">
+            <div class="confirmation-icon-circle mb-4">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h4 class="fw-bold mb-1" id="confirmationModalLabel">¡Reserva Confirmada!</h4>
+            <p class="text-muted mb-4">Te esperamos en tu cita</p>
+            <div class="confirmation-summary p-3 rounded-3 text-start mb-4">
+              <div class="conf-row mb-2">
+                <i class="fas fa-concierge-bell text-primary me-2"></i>
+                <span class="text-muted me-1">Servicio:</span>
+                <strong id="conf-service-name"></strong>
+              </div>
+              <div class="conf-row mb-2">
+                <i class="fas fa-user-tie text-primary me-2"></i>
+                <span class="text-muted me-1">Profesional:</span>
+                <strong id="conf-professional"></strong>
+              </div>
+              <div class="conf-row mb-2">
+                <i class="fas fa-calendar-alt text-primary me-2"></i>
+                <span class="text-muted me-1">Fecha:</span>
+                <strong id="conf-date"></strong>
+              </div>
+              <div class="conf-row mb-2">
+                <i class="fas fa-clock text-primary me-2"></i>
+                <span class="text-muted me-1">Hora:</span>
+                <strong id="conf-time"></strong>
+              </div>
+              <div class="conf-row">
+                <i class="fas fa-tag text-primary me-2"></i>
+                <span class="text-muted me-1">Precio:</span>
+                <strong id="conf-price"></strong>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn btn-confirmation-cta btn-lg w-100"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar confirmación"
+            >
+              Entendido <i class="fas fa-check ms-2"></i>
             </button>
           </div>
         </div>

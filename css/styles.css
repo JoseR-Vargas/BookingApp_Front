@@ -1082,8 +1082,13 @@ footer {
 
 .conf-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     font-size: 0.95rem;
+}
+
+.conf-row i {
+    margin-top: 0.15rem;
+    flex-shrink: 0;
 }
 
 .btn-confirmation-cta {

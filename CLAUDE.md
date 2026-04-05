@@ -1,6 +1,6 @@
 # Project Guidelines — Booking Frontend
 
-Sistema de reservas para Big Ligas Barber Studio. Frontend vanilla (HTML + CSS + JS) con Bootstrap 5.3, sin frameworks SPA.
+Sistema de reservas para BookingApp. Frontend vanilla (HTML + CSS + JS) con Bootstrap 5.3, sin frameworks SPA.
 
 ## Architecture
 

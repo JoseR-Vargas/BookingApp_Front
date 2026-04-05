@@ -1034,6 +1034,7 @@ const bookingApp = {
     document.getElementById("conf-date").textContent = formattedDate;
     document.getElementById("conf-time").textContent = bookingData.time;
     document.getElementById("conf-price").textContent = "$" + bookingData.service.price.toLocaleString();
+    document.getElementById("conf-client-email").textContent = bookingData.client.email;
 
     const bookingModalEl = document.getElementById("bookingModal");
     const confirmationModalEl = document.getElementById("confirmationModal");

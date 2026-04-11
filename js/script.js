@@ -1079,27 +1079,45 @@ const bookingApp = {
 
   // Mostrar notificación toast
   showToast(message, type = "info", duration = null) {
-    if (typeof Toastify !== "undefined") {
-      const colors = {
-        success: "#4caf50",
-        error: "#e05252",
-        warning: "#c9a96e",
-        info: "#5b9bd5",
-      };
+    const dur = duration || CONFIG.TOAST_DURATION || 4000;
 
-      Toastify({
-        text: message,
-        duration: duration || CONFIG.TOAST_DURATION,
-        gravity: "top",
-        position: "right",
-        style: {
-          background: colors[type] || colors.info,
-        },
-        stopOnFocus: true,
-      }).showToast();
-    } else {
-      alert(message);
+    let container = document.getElementById("lux-toast-container");
+    if (!container) {
+      container = document.createElement("div");
+      container.id = "lux-toast-container";
+      document.body.appendChild(container);
     }
+
+    const icons = {
+      success: "fas fa-check-circle",
+      error: "fas fa-times-circle",
+      warning: "fas fa-exclamation-triangle",
+      info: "fas fa-info-circle",
+    };
+
+    const toast = document.createElement("div");
+    toast.className = `lux-toast lux-toast--${type}`;
+    toast.innerHTML = `
+      <i class="lux-toast__icon ${icons[type] || icons.info}"></i>
+      <div class="lux-toast__body">
+        <span class="lux-toast__msg"></span>
+      </div>
+      <button class="lux-toast__close" aria-label="Cerrar">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="lux-toast__progress" style="animation-duration:${dur}ms"></div>
+    `;
+    toast.querySelector(".lux-toast__msg").textContent = message;
+
+    const dismiss = () => {
+      if (toast.classList.contains("toast-exit")) return;
+      toast.classList.add("toast-exit");
+      toast.addEventListener("animationend", () => toast.remove(), { once: true });
+    };
+
+    toast.querySelector(".lux-toast__close").addEventListener("click", dismiss);
+    container.appendChild(toast);
+    setTimeout(dismiss, dur);
   },
 };
 

@@ -474,8 +474,8 @@ const adminApp = {
                 datasets: [{
                     label: 'Reservas',
                     data: bookingsData,
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderColor: '#c9a96e',
+                    backgroundColor: 'rgba(201, 169, 110, 0.15)',
                     tension: 0.4
                 }]
             },
@@ -488,7 +488,13 @@ const adminApp = {
                 },
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: { color: '#a89880' },
+                        grid: { color: 'rgba(255,255,255,0.06)' }
+                    },
+                    x: {
+                        ticks: { color: '#a89880' },
+                        grid: { color: 'rgba(255,255,255,0.06)' }
                     }
                 }
             }
@@ -510,9 +516,9 @@ const adminApp = {
                 datasets: [{
                     data: data,
                     backgroundColor: [
-                        '#007bff',
-                        '#28a745',
-                        '#ffc107'
+                        '#c9a96e',
+                        '#4caf50',
+                        '#5b9bd5'
                     ]
                 }]
             },
@@ -520,7 +526,8 @@ const adminApp = {
                 responsive: true,
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: { color: '#a89880' }
                     }
                 }
             }
@@ -544,10 +551,10 @@ const adminApp = {
     showToast(message, type = 'info') {
         if (typeof Toastify !== 'undefined') {
             const colors = {
-                success: '#28a745',
-                error: '#dc3545',
-                warning: '#ffc107',
-                info: '#17a2b8'
+                success: '#4caf50',
+                error: '#e05252',
+                warning: '#c9a96e',
+                info: '#5b9bd5'
             };
             
             Toastify({

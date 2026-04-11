@@ -14,10 +14,8 @@ window.APP_CONFIG = {
   ITEMS_PER_PAGE: 10,
 };
 
-// Mock de Toastify
-window.Toastify = jest.fn(() => ({
-  showToast: jest.fn(),
-}));
+// Mock del sistema custom de toasts (lux-toast)
+document.body.innerHTML += '<div id="lux-toast-container"></div>';
 
 // Mock de bootstrap.Modal
 const mockModalInstance = {

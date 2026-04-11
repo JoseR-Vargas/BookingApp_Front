@@ -1,0 +1,11 @@
+/* ============================================
+   MAIN — Barbershop App
+   Master import file
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Red+Rose:wght@300;400;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+@import './variables.css';
+@import './base.css';
+@import './components.css';
+@import './utilities.css';

@@ -1081,10 +1081,10 @@ const bookingApp = {
   showToast(message, type = "info", duration = null) {
     if (typeof Toastify !== "undefined") {
       const colors = {
-        success: "#28a745",
-        error: "#dc3545",
-        warning: "#ffc107",
-        info: "#17a2b8",
+        success: "#4caf50",
+        error: "#e05252",
+        warning: "#c9a96e",
+        info: "#5b9bd5",
       };
 
       Toastify({

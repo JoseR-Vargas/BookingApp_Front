@@ -1,0 +1,124 @@
+/* ============================================
+   DESIGN TOKENS — Barbershop App
+   Basado en: Hector Barbershop
+   ============================================ */
+
+:root {
+
+  /* --- COLORES BASE --- */
+  --color-bg-primary:    #0d0d0d;
+  --color-bg-secondary:  #141414;
+  --color-bg-tertiary:   #1c1c1c;
+  --color-bg-overlay:    rgba(0, 0, 0, 0.75);
+
+  /* --- ACCENT (el unico color "vivo") --- */
+  --color-accent:        #c9a96e;
+  --color-accent-light:  #dfc08a;
+  --color-accent-dark:   #a8863e;
+  --color-accent-muted:  rgba(201, 169, 110, 0.15);
+
+  /* --- TEXTO --- */
+  --color-text-primary:   #f5f0e8;
+  --color-text-secondary: #a89880;
+  --color-text-muted:     #5c5040;
+  --color-text-inverse:   #0d0d0d;
+
+  /* --- BORDES --- */
+  --color-border:         rgba(201, 169, 110, 0.2);
+  --color-border-subtle:  rgba(255, 255, 255, 0.06);
+
+  /* --- ESTADOS --- */
+  --color-success:  #4caf50;
+  --color-error:    #e05252;
+  --color-warning:  #f0a030;
+  --color-info:     #5b9bd5;
+
+  /* ============================================ */
+  /* --- TIPOGRAFIA --- */
+
+  --font-display: 'Red Rose', 'Georgia', serif;
+  --font-body: 'Montserrat', 'Helvetica Neue', sans-serif;
+  --font-mono: 'Courier New', monospace;
+
+  /* Escala tipografica */
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-md:   1.125rem;
+  --text-lg:   1.25rem;
+  --text-xl:   1.5rem;
+  --text-2xl:  2rem;
+  --text-3xl:  2.5rem;
+  --text-4xl:  3.5rem;
+  --text-hero: 5rem;
+
+  /* Pesos */
+  --font-light:    300;
+  --font-regular:  400;
+  --font-medium:   500;
+  --font-semibold: 600;
+  --font-bold:     700;
+
+  /* Line heights */
+  --leading-tight:  1.2;
+  --leading-normal: 1.5;
+  --leading-loose:  1.8;
+
+  /* Letter spacing */
+  --tracking-tight:  -0.02em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.08em;
+  --tracking-wider:   0.15em;
+  --tracking-widest:  0.25em;
+
+  /* ============================================ */
+  /* --- ESPACIADO --- */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ============================================ */
+  /* --- BORDES REDONDEADOS --- */
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   8px;
+  --radius-xl:   12px;
+  --radius-full: 9999px;
+
+  /* ============================================ */
+  /* --- SOMBRAS --- */
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg:  0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-xl:  0 20px 60px rgba(0, 0, 0, 0.7);
+  --shadow-accent: 0 4px 20px rgba(201, 169, 110, 0.25);
+
+  /* ============================================ */
+  /* --- TRANSICIONES --- */
+  --transition-fast:   150ms ease;
+  --transition-normal: 300ms ease;
+  --transition-slow:   500ms ease;
+
+  /* ============================================ */
+  /* --- LAYOUT --- */
+  --container-sm:  640px;
+  --container-md:  768px;
+  --container-lg:  1024px;
+  --container-xl:  1200px;
+  --container-2xl: 1400px;
+
+  --header-height:   70px;
+  --sidebar-width:   260px;
+  --sidebar-collapsed-width: 70px;
+  --top-nav-height:  60px;
+}

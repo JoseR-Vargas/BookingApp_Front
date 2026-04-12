@@ -474,8 +474,8 @@ const adminApp = {
                 datasets: [{
                     label: 'Reservas',
                     data: bookingsData,
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderColor: '#c9a96e',
+                    backgroundColor: 'rgba(201, 169, 110, 0.15)',
                     tension: 0.4
                 }]
             },
@@ -488,7 +488,13 @@ const adminApp = {
                 },
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: { color: '#a89880' },
+                        grid: { color: 'rgba(255,255,255,0.06)' }
+                    },
+                    x: {
+                        ticks: { color: '#a89880' },
+                        grid: { color: 'rgba(255,255,255,0.06)' }
                     }
                 }
             }
@@ -510,9 +516,9 @@ const adminApp = {
                 datasets: [{
                     data: data,
                     backgroundColor: [
-                        '#007bff',
-                        '#28a745',
-                        '#ffc107'
+                        '#c9a96e',
+                        '#4caf50',
+                        '#5b9bd5'
                     ]
                 }]
             },
@@ -520,7 +526,8 @@ const adminApp = {
                 responsive: true,
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: { color: '#a89880' }
                     }
                 }
             }
@@ -542,27 +549,45 @@ const adminApp = {
     },
 
     showToast(message, type = 'info') {
-        if (typeof Toastify !== 'undefined') {
-            const colors = {
-                success: '#28a745',
-                error: '#dc3545',
-                warning: '#ffc107',
-                info: '#17a2b8'
-            };
-            
-            Toastify({
-                text: message,
-                duration: ADMIN_CONFIG.TOAST_DURATION,
-                gravity: "top",
-                position: "right",
-                style: {
-                    background: colors[type] || colors.info
-                },
-                stopOnFocus: true
-            }).showToast();
-        } else {
-            alert(message);
+        const dur = ADMIN_CONFIG.TOAST_DURATION || 4000;
+
+        let container = document.getElementById('lux-toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'lux-toast-container';
+            document.body.appendChild(container);
         }
+
+        const icons = {
+            success: 'fas fa-check-circle',
+            error: 'fas fa-times-circle',
+            warning: 'fas fa-exclamation-triangle',
+            info: 'fas fa-info-circle',
+        };
+
+        const toast = document.createElement('div');
+        toast.className = `lux-toast lux-toast--${type}`;
+        toast.innerHTML = `
+            <i class="lux-toast__icon ${icons[type] || icons.info}"></i>
+            <div class="lux-toast__body">
+                <span class="lux-toast__msg"></span>
+            </div>
+            <button class="lux-toast__close" aria-label="Cerrar">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="lux-toast__progress" style="animation-duration:${dur}ms"></div>
+        `;
+        toast.querySelector('.lux-toast__msg').textContent = message;
+
+        const dismiss = () => {
+            if (toast.classList.contains('toast-exit')) return;
+            toast.classList.add('toast-exit');
+            toast.addEventListener('animationend', () => toast.remove(), { once: true });
+        };
+
+        toast.querySelector('.lux-toast__close').addEventListener('click', dismiss);
+        container.appendChild(toast);
+        setTimeout(dismiss, dur);
     },
 
     // NUEVA FUNCIÓN: Eliminar reserva

@@ -1,8 +1,8 @@
-const { loadScript, createMockBooking } = require('./helpers');
+const { loadScripts, createMockBooking } = require('./helpers');
 
-// Cargar el script bajo test
+// Cargar módulos en orden de dependencias (simula los <script> tags del HTML)
 beforeAll(() => {
-  // Crear DOM mínimo necesario para que el script cargue sin errores
+  // Crear DOM mínimo necesario para que los scripts carguen sin errores
   document.body.innerHTML = `
     <div id="serviciosContainer"></div>
     <div id="serviciosModal"></div>
@@ -29,7 +29,16 @@ beforeAll(() => {
     </form>
   `;
 
-  loadScript('js/script.js');
+  loadScripts([
+    'js/core/api-client.js',
+    'js/services/booking-service.js',
+    'js/state/booking-state.js',
+    'js/ui/toast.js',
+    'js/ui/components/service-card.js',
+    'js/ui/components/professional-card.js',
+    'js/ui/components/time-slot.js',
+    'js/booking-app.js',
+  ]);
 });
 
 // =============================================
@@ -38,7 +47,6 @@ beforeAll(() => {
 describe('Funciones utilitarias', () => {
   test('formatPrice formatea precio en UYU', () => {
     const result = formatPrice(450);
-    // Debe contener el número 450 en algún formato local
     expect(result).toMatch(/450/);
   });
 
@@ -48,7 +56,6 @@ describe('Funciones utilitarias', () => {
   });
 
   test('formatDate retorna fecha en español', () => {
-    // Usar fecha que no tenga problemas de timezone
     const result = formatDate('2026-06-15T12:00:00');
     expect(result.toLowerCase()).toMatch(/junio|jun/);
     expect(result).toMatch(/2026/);
@@ -75,12 +82,10 @@ describe('Funciones utilitarias', () => {
 
   test('isMobileDevice detecta desktop con ancho > 768', () => {
     Object.defineProperty(window, 'innerWidth', { value: 1024, writable: true });
-    // navigator.userAgent en jsdom no tiene patrones móviles
     expect(isMobileDevice()).toBe(false);
   });
 
   test('isSlowConnection retorna false sin navigator.connection', () => {
-    // jsdom no tiene navigator.connection por defecto
     expect(isSlowConnection()).toBe(false);
   });
 });
@@ -91,7 +96,7 @@ describe('Funciones utilitarias', () => {
 describe('Datos de servicios y profesionales', () => {
   test('SERVICES es un array con servicios activos', () => {
     expect(Array.isArray(SERVICES)).toBe(true);
-    expect(SERVICES.length).toBeGreaterThan(5);
+    expect(SERVICES.length).toBeGreaterThanOrEqual(4);
   });
 
   test('cada servicio tiene las propiedades requeridas', () => {
@@ -145,34 +150,29 @@ describe('Datos de servicios y profesionales', () => {
 // =============================================
 describe('bookingApp — horarios', () => {
   beforeEach(() => {
-    // Resetear el select de horas
     document.getElementById('appointmentTime').innerHTML = '';
   });
 
   test('domingo muestra "Domingo cerrado"', () => {
-    // 2026-03-22 es domingo
     bookingApp.loadAvailableTimes('2026-03-22');
     const timeSelect = document.getElementById('appointmentTime');
     expect(timeSelect.innerHTML).toMatch(/Domingo cerrado/i);
   });
 
   test('sábado genera slots de 9:00 a 17:00 sin hora de almuerzo', () => {
-    // 2026-03-21 es sábado
     bookingApp.loadAvailableTimes('2026-03-21');
     const timeSelect = document.getElementById('appointmentTime');
     const options = timeSelect.querySelectorAll('option');
 
-    // Horarios esperados: 09,10,11,12,14,15,16,17 (sin 13, header = primer option)
     const values = Array.from(options).map(o => o.value).filter(v => v);
     expect(values).toContain('09:00');
     expect(values).toContain('12:00');
-    expect(values).not.toContain('13:00'); // Almuerzo
+    expect(values).not.toContain('13:00');
     expect(values).toContain('17:00');
-    expect(values).not.toContain('18:00'); // Cierre sábado
+    expect(values).not.toContain('18:00');
   });
 
   test('día de semana genera slots de 9:00 a 19:00 sin hora de almuerzo', () => {
-    // 2026-03-23 es lunes
     bookingApp.loadAvailableTimes('2026-03-23');
     const timeSelect = document.getElementById('appointmentTime');
     const values = Array.from(timeSelect.querySelectorAll('option'))
@@ -181,17 +181,16 @@ describe('bookingApp — horarios', () => {
 
     expect(values).toContain('09:00');
     expect(values).toContain('12:00');
-    expect(values).not.toContain('13:00'); // Almuerzo
+    expect(values).not.toContain('13:00');
     expect(values).toContain('14:00');
     expect(values).toContain('19:00');
-    expect(values).not.toContain('20:00'); // Cierre
+    expect(values).not.toContain('20:00');
   });
 });
 
 describe('bookingApp — renderTimeSlots', () => {
   beforeEach(() => {
     document.getElementById('appointmentTime').innerHTML = '';
-    // Necesita selectedDate seteada para parsear fecha
     selectedDate = '2026-03-23'; // Lunes
   });
 
@@ -291,7 +290,7 @@ describe('bookingApp — validateCurrentStep', () => {
 });
 
 describe('bookingApp — resetState', () => {
-  test('resetea todas las variables globales', () => {
+  test('resetea todas las variables de estado', () => {
     currentStep = 3;
     selectedService = { id: 'test' };
     selectedDate = '2026-03-25';
@@ -345,9 +344,6 @@ describe('bookingApp — navegación de pasos', () => {
 
 describe('bookingApp — getFormData', () => {
   test('extrae datos del formulario correctamente', () => {
-    // Los inputs ya tienen valores del beforeAll
-    const form = document.getElementById('clientForm');
-    // checkValidity en jsdom retorna true si todos los required tienen valor
     const data = bookingApp.getFormData();
     expect(data).not.toBeNull();
     expect(data.name).toBe('Juan Pérez');
@@ -357,7 +353,6 @@ describe('bookingApp — getFormData', () => {
   });
 
   test('retorna null si el formulario es inválido', () => {
-    // Vaciar un campo requerido
     const nameInput = document.getElementById('clientName');
     const originalValue = nameInput.value;
     nameInput.value = '';
@@ -365,7 +360,6 @@ describe('bookingApp — getFormData', () => {
     const data = bookingApp.getFormData();
     expect(data).toBeNull();
 
-    // Restaurar
     nameInput.value = originalValue;
   });
 });

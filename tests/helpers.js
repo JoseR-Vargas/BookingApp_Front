@@ -13,16 +13,28 @@ function loadScript(relativePath) {
   // Convertir const/let a var para que escapen del eval al scope del llamante
   cleaned = cleaned.replace(/\b(const|let)\s/g, 'var ');
 
-  // Agregar bridge de variables de estado mutables al scope global
-  // Esto permite que los tests lean/escriban las variables del eval scope
+  // Bridge de variables de estado: si bookingState está disponible, delegar a él.
+  // Esto permite que los tests lean/escriban las variables del flujo de reserva
+  // tanto con la API antigua (currentStep = 1) como con la nueva (bookingState).
   cleaned += `
 ;(function() {
   var _stateVars = ['currentStep','selectedService','selectedDate','selectedTime','selectedProfessional','isSubmitting','eventListenersRegistered'];
   _stateVars.forEach(function(name) {
     try {
       Object.defineProperty(globalThis, name, {
-        get: function() { return eval(name); },
-        set: function(v) { eval(name + ' = v'); },
+        get: function() {
+          if (typeof window !== 'undefined' && window.bookingState) {
+            return window.bookingState.get(name);
+          }
+          try { return eval(name); } catch(e) { return undefined; }
+        },
+        set: function(v) {
+          if (typeof window !== 'undefined' && window.bookingState) {
+            window.bookingState.set(name, v);
+            return;
+          }
+          try { eval(name + ' = v'); } catch(e) {}
+        },
         configurable: true
       });
     } catch(e) {}
@@ -31,7 +43,25 @@ function loadScript(relativePath) {
 `;
 
   eval(cleaned);
-  // Exportar funciones y constantes a global para acceso en tests
+
+  // Exportar módulos y funciones a global para acceso en tests
+  // Módulos core
+  if (typeof apiClient !== 'undefined') global.apiClient = apiClient;
+  // Servicios
+  if (typeof bookingService !== 'undefined') global.bookingService = bookingService;
+  if (typeof adminService !== 'undefined') global.adminService = adminService;
+  if (typeof authService !== 'undefined') global.authService = authService;
+  // Estado
+  if (typeof bookingState !== 'undefined') global.bookingState = bookingState;
+  // UI
+  if (typeof toast !== 'undefined') global.toast = toast;
+  if (typeof renderServiceCard !== 'undefined') global.renderServiceCard = renderServiceCard;
+  if (typeof renderServiceSelectionCard !== 'undefined') global.renderServiceSelectionCard = renderServiceSelectionCard;
+  if (typeof renderProfessionalCard !== 'undefined') global.renderProfessionalCard = renderProfessionalCard;
+  if (typeof renderTimeSlot !== 'undefined') global.renderTimeSlot = renderTimeSlot;
+  if (typeof renderBookingRow !== 'undefined') global.renderBookingRow = renderBookingRow;
+  if (typeof formatBookingDate !== 'undefined') global.formatBookingDate = formatBookingDate;
+  // Orquestadores y config
   if (typeof CONFIG !== 'undefined') global.CONFIG = CONFIG;
   if (typeof BACKEND_URL !== 'undefined') global.BACKEND_URL = BACKEND_URL;
   if (typeof SERVICES !== 'undefined') global.SERVICES = SERVICES;
@@ -43,14 +73,23 @@ function loadScript(relativePath) {
   if (typeof canCancelBooking !== 'undefined') global.canCancelBooking = canCancelBooking;
   if (typeof isMobileDevice !== 'undefined') global.isMobileDevice = isMobileDevice;
   if (typeof isSlowConnection !== 'undefined') global.isSlowConnection = isSlowConnection;
-  // Admin globals
+  // Admin
   if (typeof adminApp !== 'undefined') global.adminApp = adminApp;
   if (typeof adminAPI !== 'undefined') global.adminAPI = adminAPI;
   if (typeof ADMIN_CONFIG !== 'undefined') global.ADMIN_CONFIG = ADMIN_CONFIG;
+  if (typeof logger !== 'undefined') global.logger = logger;
 }
 
 /**
- * Remueve bloques document.addEventListener("DOMContentLoaded", ...) 
+ * Carga múltiples scripts en orden (simula la carga de módulos en <script> tags)
+ * @param {string[]} relativePaths - Rutas relativas desde la raíz del proyecto
+ */
+function loadScripts(relativePaths) {
+  relativePaths.forEach(function(p) { loadScript(p); });
+}
+
+/**
+ * Remueve bloques document.addEventListener("DOMContentLoaded", ...)
  * balanceando llaves para no romper el JS
  */
 function removeDOMContentLoaded(code) {
@@ -61,11 +100,9 @@ function removeDOMContentLoaded(code) {
   for (const m of [marker, markerAlt]) {
     let idx = result.indexOf(m);
     while (idx !== -1) {
-      // Buscar el primer '{' después del marker
       let braceStart = result.indexOf('{', idx);
       if (braceStart === -1) break;
 
-      // Balancear llaves
       let depth = 0;
       let i = braceStart;
       for (; i < result.length; i++) {
@@ -74,7 +111,6 @@ function removeDOMContentLoaded(code) {
         if (depth === 0) break;
       }
 
-      // Encontrar el final: });
       let end = result.indexOf(';', i);
       if (end === -1) end = i + 2;
       else end = end + 1;
@@ -88,21 +124,17 @@ function removeDOMContentLoaded(code) {
 }
 
 /**
- * Carga un archivo JS filtrando el IIFE de autenticación
- * (para admin.js que redirige si no hay sessionStorage)
+ * Carga un archivo JS filtrando el IIFE de autenticación checkAuth
  * @param {string} relativePath - Ruta relativa desde la raíz del proyecto
  */
 function loadScriptSkipAuth(relativePath) {
   const filePath = path.resolve(__dirname, '..', relativePath);
   const content = fs.readFileSync(filePath, 'utf8');
-  // Remover IIFE de checkAuth
   var cleaned = content.replace(
     /\(function\s+checkAuth\s*\(\)\s*\{[\s\S]*?\}\)\(\)\s*;/,
     '// [TEST] checkAuth IIFE removido'
   );
-  // Remover DOMContentLoaded
   cleaned = removeDOMContentLoaded(cleaned);
-  // Convertir const/let a var
   cleaned = cleaned.replace(/\b(const|let)\s/g, 'var ');
   eval(cleaned);
   // Exportar a global
@@ -114,11 +146,11 @@ function loadScriptSkipAuth(relativePath) {
 }
 
 /**
- * Carga solo el IIFE de autenticación de admin.js para testear el redirect
- * @returns {string} - El contenido del IIFE
+ * Carga solo el IIFE de autenticación de admin-app.js para testear el redirect
+ * @returns {string|null} - El contenido del IIFE
  */
 function getAuthIIFE() {
-  const filePath = path.resolve(__dirname, '..', 'admin/js/admin.js');
+  const filePath = path.resolve(__dirname, '..', 'js/admin-app.js');
   const content = fs.readFileSync(filePath, 'utf8');
   const match = content.match(
     /\(function\s+checkAuth\s*\(\)\s*\{[\s\S]*?\}\)\(\)\s*;/
@@ -129,8 +161,8 @@ function getAuthIIFE() {
 /**
  * Crea un mock de booking para tests
  */
-function createMockBooking(overrides = {}) {
-  return {
+function createMockBooking(overrides) {
+  return Object.assign({
     _id: '507f1f77bcf86cd799439011',
     client: {
       name: 'Juan Pérez',
@@ -152,8 +184,7 @@ function createMockBooking(overrides = {}) {
     time: '10:00',
     notes: '',
     status: 'confirmed',
-    ...overrides,
-  };
+  }, overrides || {});
 }
 
-module.exports = { loadScript, loadScriptSkipAuth, getAuthIIFE, createMockBooking };
+module.exports = { loadScript, loadScripts, loadScriptSkipAuth, getAuthIIFE, createMockBooking };

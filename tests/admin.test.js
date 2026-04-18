@@ -1,4 +1,4 @@
-const { loadScriptSkipAuth, getAuthIIFE, createMockBooking } = require('./helpers');
+const { loadScript, loadScripts, loadScriptSkipAuth, getAuthIIFE, createMockBooking } = require('./helpers');
 
 // Crear DOM mínimo para admin
 beforeAll(() => {
@@ -31,7 +31,16 @@ beforeAll(() => {
   sessionStorage.setItem('isAdmin', 'true');
   sessionStorage.setItem('adminUser', 'admin');
 
-  loadScriptSkipAuth('admin/js/admin.js');
+  // Cargar módulos de dependencias primero
+  loadScripts([
+    'js/core/api-client.js',
+    'js/services/admin-service.js',
+    'js/ui/toast.js',
+    'js/ui/components/booking-table.js',
+  ]);
+
+  // Cargar el orquestador sin el checkAuth IIFE
+  loadScriptSkipAuth('js/admin-app.js');
 });
 
 // =============================================
@@ -40,7 +49,6 @@ beforeAll(() => {
 describe('adminApp — formatDate', () => {
   test('formatea fecha en español con weekday short', () => {
     const result = adminApp.formatDate('2026-03-25');
-    // miér, 25 de mar de 2026 (o similar)
     expect(result).toMatch(/2026/);
     expect(result).toMatch(/25/);
   });
@@ -65,7 +73,6 @@ describe('adminApp — updateFilteredTotalRevenue', () => {
 
     adminApp.updateFilteredTotalRevenue(bookings);
     const el = document.getElementById('filteredTotalRevenue');
-    // Debe mostrar $750 (450 + 300), no $1250
     expect(el.textContent).toMatch(/750/);
   });
 
@@ -177,7 +184,7 @@ describe('adminAPI', () => {
 
     const result = await adminAPI.getBookings();
     expect(result).toEqual(mockBookings);
-    expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('/api/bookings'));
+    expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('/api/bookings'), expect.anything());
   });
 
   test('getBookings lanza error en HTTP error', async () => {
@@ -198,7 +205,7 @@ describe('adminAPI', () => {
 
     const result = await adminAPI.getStatistics();
     expect(result).toEqual(mockStats);
-    expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('/api/bookings/statistics'));
+    expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('/api/bookings/statistics'), expect.anything());
   });
 
   test('getStatistics lanza error en HTTP error', async () => {
@@ -243,15 +250,11 @@ describe('Autenticación admin', () => {
     const authCode = getAuthIIFE();
     expect(authCode).not.toBeNull();
 
-    // Limpiar sessionStorage
     const originalIsAdmin = sessionStorage.getItem('isAdmin');
     sessionStorage.removeItem('isAdmin');
 
-    // Espiar console.error para capturar el "not implemented" de jsdom
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    // En jsdom, window.location.href = '...' lanza "not implemented" pero SÍ se ejecuta
-    // Verificamos que el código INTENTA redirigir checando que lanza
     expect(() => eval(authCode)).not.toThrow();
 
     spy.mockRestore();
@@ -262,11 +265,8 @@ describe('Autenticación admin', () => {
     const authCode = getAuthIIFE();
     sessionStorage.setItem('isAdmin', 'true');
 
-    // Si hay sesión válida, el código NO debe intentar cambiar location
-    // No debe lanzar error de navigation
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
     eval(authCode);
-    // Verificar que no hubo error de navigation (no intentó redirigir)
     const navigationErrors = spy.mock.calls.filter(
       call => String(call[0]).includes('navigation')
     );

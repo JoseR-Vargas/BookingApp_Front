@@ -1,103 +1,43 @@
 // ===== VERIFICACIÓN DE AUTENTICACIÓN =====
 (function checkAuth() {
-  const isAdmin = sessionStorage.getItem('isAdmin');
-  if (!isAdmin || isAdmin !== 'true') {
+  if (!window.authService || !window.authService.isAuthenticated()) {
     window.location.href = '../login.html';
   }
 })();
 
 // ===== ORQUESTADOR DEL PANEL ADMIN =====
 // Depende de (cargar antes en el HTML):
+//   js/config.js
 //   js/core/api-client.js
 //   js/services/admin-service.js
+//   js/services/auth-service.js
+//   js/services/audio-service.js
+//   js/services/notification-service.js
 //   js/ui/toast.js
 //   js/ui/components/booking-table.js
 
-// ===== CONFIGURACIÓN GLOBAL =====
-const ADMIN_CONFIG = window.APP_CONFIG || {
-  TOAST_DURATION: 3000,
-  ITEMS_PER_PAGE: 10,
-};
-
-// ===== SISTEMA DE LOGGING (solo en desarrollo) =====
 const _adminBackendUrl = window.APP_CONFIG ? window.APP_CONFIG.BACKEND_URL : 'http://localhost:3000';
-const IS_DEVELOPMENT = _adminBackendUrl.includes('localhost') || _adminBackendUrl.includes('127.0.0.1');
-const logger = {
-  log: IS_DEVELOPMENT ? function() { console.log.apply(console, arguments); } : function() {},
-  warn: IS_DEVELOPMENT ? function() { console.warn.apply(console, arguments); } : function() {},
-  error: function() { console.error.apply(console, arguments); },
-};
 
 // ===== APLICACIÓN DE ADMINISTRACIÓN =====
 const adminApp = {
-  lastBookingCount: 0,
-  notificationCount: 0,
-  isFirstLoad: true,
-  socket: null,
-  audioContext: null,
-
   init: async function() {
     this.setupEventListeners();
-    this.initAudioContext();
-    this.initWebSocket();
+
+    window.audioService.init();
+
+    const self = this;
+    window.notificationService.init(_adminBackendUrl, async function(booking) {
+      window.toast.show('Nueva reserva recibida!', 'success');
+      await self.loadDashboard();
+      const activeSection = document.querySelector('.content-section.active');
+      if (activeSection && activeSection.id === 'bookings') {
+        await self.loadBookings();
+      }
+    });
+
     await this.loadDashboard();
     await this.loadBookings();
     this.setupCharts();
-  },
-
-  initAudioContext: function() {
-    try {
-      if (!this.audioContext) {
-        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        logger.log('Contexto de audio inicializado:', this.audioContext.state);
-        if (this.audioContext.state === 'suspended') {
-          this.showEnableSoundButton();
-        }
-      }
-    } catch (error) {
-      logger.log('Esperando interacción del usuario para inicializar audio...');
-      this.showEnableSoundButton();
-    }
-  },
-
-  activateAudioContext: function() {
-    const self = this;
-    try {
-      if (!this.audioContext) {
-        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (this.audioContext.state === 'suspended') {
-        this.audioContext.resume().then(function() {
-          logger.log('✅ Contexto de audio activado correctamente');
-          self.hideEnableSoundButton();
-          self.playSound();
-        }).catch(function(err) {
-          logger.warn('No se pudo activar el contexto de audio:', err);
-          self.showEnableSoundButton();
-        });
-      } else {
-        logger.log('✅ Contexto de audio ya está activo');
-        this.hideEnableSoundButton();
-      }
-    } catch (error) {
-      logger.error('Error al activar contexto de audio:', error);
-      this.showEnableSoundButton();
-    }
-  },
-
-  enableNotificationSound: function() {
-    this.activateAudioContext();
-    this.showToast('🔔 Sonido de notificaciones activado', 'success');
-  },
-
-  showEnableSoundButton: function() {
-    const btn = document.getElementById('enableSoundBtn');
-    if (btn) btn.classList.remove('enable-sound-btn-hidden');
-  },
-
-  hideEnableSoundButton: function() {
-    const btn = document.getElementById('enableSoundBtn');
-    if (btn) btn.classList.add('enable-sound-btn-hidden');
   },
 
   setupEventListeners: function() {
@@ -108,8 +48,7 @@ const adminApp = {
       sidebarToggle.addEventListener('click', function() { self.toggleSidebar(); });
     }
 
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(function(link) {
+    document.querySelectorAll('.nav-link').forEach(function(link) {
       link.addEventListener('click', function(e) {
         e.preventDefault();
         self.navigateToSection(link.dataset.section);
@@ -128,16 +67,16 @@ const adminApp = {
 
     const enableSoundBtn = document.getElementById('enableSoundBtn');
     if (enableSoundBtn) {
-      enableSoundBtn.addEventListener('click', function() { self.enableNotificationSound(); });
+      enableSoundBtn.addEventListener('click', function() {
+        window.audioService.activate();
+        window.toast.show('Sonido de notificaciones activado', 'success');
+      });
     }
 
-    const activateAudio = function() {
-      self.activateAudioContext();
-      document.removeEventListener('click', activateAudio);
-      document.removeEventListener('keydown', activateAudio);
-    };
-    document.addEventListener('click', activateAudio, { once: true });
-    document.addEventListener('keydown', activateAudio, { once: true });
+    document.addEventListener('click', function activateOnInteraction() {
+      window.audioService.activate();
+      document.removeEventListener('click', activateOnInteraction);
+    }, { once: true });
   },
 
   toggleSidebar: function() {
@@ -152,16 +91,18 @@ const adminApp = {
     document.querySelectorAll('.nav-link').forEach(function(link) {
       link.classList.remove('active');
     });
-    document.querySelector('[data-section="' + section + '"]').classList.add('active');
+    const targetLink = document.querySelector('[data-section="' + section + '"]');
+    if (targetLink) targetLink.classList.add('active');
 
     document.querySelectorAll('.content-section').forEach(function(sectionEl) {
       sectionEl.classList.remove('active');
     });
-    document.getElementById(section).classList.add('active');
+    const targetSection = document.getElementById(section);
+    if (targetSection) targetSection.classList.add('active');
 
     const pageTitle = document.getElementById('pageTitle');
     const titles = { dashboard: 'Dashboard', bookings: 'Gestión de Reservas', reports: 'Reportes y Estadísticas' };
-    pageTitle.textContent = titles[section] || 'Dashboard';
+    if (pageTitle) pageTitle.textContent = titles[section] || 'Dashboard';
   },
 
   loadDashboard: async function() {
@@ -169,7 +110,7 @@ const adminApp = {
       await this.updateStatistics();
       await this.loadRecentBookings();
     } catch (error) {
-      this.showToast('Error cargando datos del dashboard', 'error');
+      window.toast.error('Error cargando datos del dashboard');
     }
   },
 
@@ -180,7 +121,7 @@ const adminApp = {
       document.getElementById('totalRevenue').textContent = '$' + ((stats.totalRevenue || 0).toLocaleString());
       document.getElementById('todayBookings').textContent = stats.todayBookings || 0;
     } catch (error) {
-      this.showToast('Error cargando estadísticas', 'error');
+      window.toast.error('Error cargando estadísticas');
     }
   },
 
@@ -192,7 +133,7 @@ const adminApp = {
         .slice(0, 5);
       this.renderRecentBookingsTable(recentBookings);
     } catch (error) {
-      this.showToast('Error cargando reservas recientes', 'error');
+      window.toast.error('Error cargando reservas recientes');
     }
   },
 
@@ -206,7 +147,7 @@ const adminApp = {
     }
 
     const self = this;
-    const html = bookings.map(function(booking) {
+    tableBody.innerHTML = bookings.map(function(booking) {
       const professionalName = (booking.professional && booking.professional.name) ||
         (booking.barber && booking.barber.name) || 'N/A';
       return (
@@ -219,8 +160,6 @@ const adminApp = {
         '</tr>'
       );
     }).join('');
-
-    tableBody.innerHTML = html;
   },
 
   loadBookings: async function() {
@@ -229,7 +168,7 @@ const adminApp = {
       this.renderBookingsTable(bookings);
       this.updateFilteredTotalRevenue(bookings);
     } catch (error) {
-      this.showToast('Error cargando reservas', 'error');
+      window.toast.error('Error cargando reservas');
     }
   },
 
@@ -249,24 +188,17 @@ const adminApp = {
 
   filterBookings: async function() {
     const dateFilter = document.getElementById('dateFilter').value;
-
     try {
       const allBookings = await window.adminService.getBookings();
-      let filteredBookings = allBookings;
-
-      if (dateFilter) {
-        filteredBookings = filteredBookings.filter(function(booking) {
-          return booking.date === dateFilter;
-        });
-      }
+      const filteredBookings = dateFilter
+        ? allBookings.filter(function(b) { return b.date === dateFilter; })
+        : allBookings;
 
       this.renderBookingsTable(filteredBookings);
       this.updateFilteredTotalRevenue(filteredBookings);
-
-      const resultsMessage = 'Mostrando ' + filteredBookings.length + ' reserva' + (filteredBookings.length !== 1 ? 's' : '');
-      this.showToast(resultsMessage, 'info');
+      window.toast.info('Mostrando ' + filteredBookings.length + ' reserva' + (filteredBookings.length !== 1 ? 's' : ''));
     } catch (error) {
-      this.showToast('Error aplicando filtros', 'error');
+      window.toast.error('Error aplicando filtros');
     }
   },
 
@@ -274,39 +206,54 @@ const adminApp = {
     document.getElementById('dateFilter').value = '';
     try {
       await this.loadBookings();
-      this.showToast('Filtros limpiados', 'info');
+      window.toast.info('Filtros limpiados');
     } catch (error) {
-      this.showToast('Error limpiando filtros', 'error');
+      window.toast.error('Error limpiando filtros');
     }
   },
 
   updateFilteredTotalRevenue: function(bookings) {
-    const totalRevenueElement = document.getElementById('filteredTotalRevenue');
-    if (!totalRevenueElement) return;
-
-    const totalRevenue = bookings
-      .filter(function(booking) { return booking.status === 'confirmed'; })
-      .reduce(function(sum, booking) { return sum + booking.service.price; }, 0);
-
-    totalRevenueElement.textContent = '$' + totalRevenue.toLocaleString();
+    const el = document.getElementById('filteredTotalRevenue');
+    if (!el) return;
+    const total = bookings
+      .filter(function(b) { return b.status === 'confirmed'; })
+      .reduce(function(sum, b) { return sum + b.service.price; }, 0);
+    el.textContent = '$' + total.toLocaleString();
   },
 
-  setupCharts: function() {
-    this.setupBookingsChart();
-    this.setupServicesChart();
+  setupCharts: async function() {
+    try {
+      const bookings = await window.adminService.getBookings();
+      this.setupBookingsChart(bookings);
+      this.setupServicesChart(bookings);
+    } catch (error) {
+      this.setupBookingsChart([]);
+      this.setupServicesChart([]);
+    }
   },
 
-  setupBookingsChart: function() {
+  setupBookingsChart: function(bookings) {
     const ctx = document.getElementById('bookingsChart');
     if (!ctx) return;
+
+    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const currentYear = new Date().getFullYear();
+    const counts = Array(12).fill(0);
+
+    (bookings || []).forEach(function(booking) {
+      const parts = booking.date ? booking.date.split('-') : [];
+      if (parts.length === 3 && parseInt(parts[0]) === currentYear) {
+        counts[parseInt(parts[1]) - 1]++;
+      }
+    });
 
     new Chart(ctx, {
       type: 'line',
       data: {
-        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+        labels: months,
         datasets: [{
-          label: 'Reservas',
-          data: [12, 19, 15, 25, 22, 30],
+          label: 'Reservas ' + currentYear,
+          data: counts,
           borderColor: '#007bff',
           backgroundColor: 'rgba(0, 123, 255, 0.1)',
           tension: 0.4,
@@ -315,20 +262,33 @@ const adminApp = {
       options: {
         responsive: true,
         plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true } },
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
       },
     });
   },
 
-  setupServicesChart: function() {
+  setupServicesChart: function(bookings) {
     const ctx = document.getElementById('servicesChart');
     if (!ctx) return;
+
+    const serviceCounts = {};
+    (bookings || []).forEach(function(booking) {
+      const name = booking.service && booking.service.name;
+      if (name) serviceCounts[name] = (serviceCounts[name] || 0) + 1;
+    });
+
+    const labels = Object.keys(serviceCounts);
+    const data = Object.values(serviceCounts);
+    const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6f42c1'];
 
     new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: ['Corte', 'Barba', 'Corte+Barba'],
-        datasets: [{ data: [45, 25, 30], backgroundColor: ['#007bff', '#28a745', '#ffc107'] }],
+        labels: labels.length > 0 ? labels : ['Sin datos'],
+        datasets: [{
+          data: data.length > 0 ? data : [1],
+          backgroundColor: colors.slice(0, Math.max(labels.length, 1)),
+        }],
       },
       options: {
         responsive: true,
@@ -342,193 +302,41 @@ const adminApp = {
   },
 
   showToast: function(message, type) {
-    if (window.toast) {
-      window.toast.show(message, type || 'info');
-    } else if (typeof Toastify !== 'undefined') {
-      const colors = { success: '#28a745', error: '#dc3545', warning: '#ffc107', info: '#17a2b8' };
-      Toastify({
-        text: message,
-        duration: ADMIN_CONFIG.TOAST_DURATION,
-        gravity: 'top', position: 'right',
-        style: { background: colors[type] || colors.info },
-        stopOnFocus: true,
-      }).showToast();
-    } else {
-      alert(message);
-    }
+    window.toast.show(message, type || 'info');
   },
 
   deleteBooking: async function(bookingId, clientName) {
-    const confirmMessage = '¿Estás seguro de que quieres eliminar la reserva de ' + clientName + '?\n\nEsta acción no se puede deshacer.';
-    if (!confirm(confirmMessage)) return;
-
+    if (!confirm('¿Estás seguro de que quieres eliminar la reserva de ' + clientName + '?\n\nEsta acción no se puede deshacer.')) return;
     try {
-      this.showToast('Eliminando reserva...', 'info');
+      window.toast.info('Eliminando reserva...');
       await window.adminService.deleteBooking(bookingId);
       await this.loadDashboard();
       await this.loadBookings();
-      this.showToast('✅ Reserva de ' + clientName + ' eliminada exitosamente', 'success');
+      window.toast.success('Reserva de ' + clientName + ' eliminada exitosamente');
     } catch (error) {
-      this.showToast('Error eliminando reserva: ' + error.message, 'error');
-    }
-  },
-
-  // ===== WEBSOCKET =====
-  initWebSocket: function() {
-    const self = this;
-    try {
-      this.socket = io(_adminBackendUrl);
-
-      this.socket.on('connect', function() { logger.log('WebSocket conectado'); });
-      this.socket.on('disconnect', function() { logger.log('WebSocket desconectado'); });
-
-      this.socket.on('newBooking', async function(booking) {
-        logger.log('Nueva reserva recibida:', booking);
-        self.notificationCount++;
-        self.updateNotificationBadge();
-        setTimeout(function() { self.playNotificationSound(); }, 100);
-        self.showToast('🔔 Nueva reserva recibida!', 'success');
-        await self.loadDashboard();
-        const activeSection = document.querySelector('.content-section.active');
-        if (activeSection && activeSection.id === 'bookings') {
-          await self.loadBookings();
-        }
-      });
-
-      this.socket.on('connect_error', function(error) {
-        logger.error('Error de conexión WebSocket:', error);
-      });
-    } catch (error) {
-      logger.error('Error inicializando WebSocket:', error);
-    }
-  },
-
-  updateNotificationBadge: function() {
-    const badge = document.getElementById('notificationBadge');
-    const bell = document.getElementById('notificationBell');
-
-    if (badge && bell) {
-      if (this.notificationCount > 0) {
-        badge.textContent = this.notificationCount;
-        badge.classList.add('show');
-        bell.classList.add('has-notifications');
-      } else {
-        badge.textContent = '0';
-        badge.classList.remove('show');
-        bell.classList.remove('has-notifications');
-      }
+      window.toast.error('Error eliminando reserva: ' + error.message);
     }
   },
 
   handleNotificationClick: async function() {
-    this.notificationCount = 0;
-    this.updateNotificationBadge();
+    window.notificationService.clearCount();
     this.navigateToSection('bookings');
     await this.loadBookings();
-  },
-
-  playNotificationSound: function() {
-    const self = this;
-    try {
-      if (!this.audioContext) {
-        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      }
-
-      const doPlaySound = function() {
-        try { self.playSound(); } catch (error) { logger.error('Error al reproducir el sonido:', error); }
-      };
-
-      if (this.audioContext.state === 'suspended') {
-        this.audioContext.resume().then(function() {
-          logger.log('Contexto de audio reanudado, reproduciendo sonido...');
-          doPlaySound();
-        }).catch(function(err) {
-          logger.warn('No se pudo reanudar el contexto de audio:', err);
-          try {
-            self.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            doPlaySound();
-          } catch (newErr) {
-            logger.error('Error al crear nuevo contexto de audio:', newErr);
-          }
-        });
-        return;
-      }
-
-      if (this.audioContext.state === 'running') {
-        doPlaySound();
-      } else {
-        this.audioContext.resume().then(function() { doPlaySound(); }).catch(function(err) {
-          logger.warn('Error al reanudar contexto:', err);
-        });
-      }
-    } catch (error) {
-      logger.error('Error en playNotificationSound:', error);
-    }
-  },
-
-  playSound: function() {
-    try {
-      if (!this.audioContext || this.audioContext.state !== 'running') {
-        logger.warn('Contexto de audio no está activo, intentando método alternativo...');
-        this.playSoundFallback();
-        return;
-      }
-
-      const oscillator = this.audioContext.createOscillator();
-      const gainNode = this.audioContext.createGain();
-      oscillator.connect(gainNode);
-      gainNode.connect(this.audioContext.destination);
-
-      const currentTime = this.audioContext.currentTime;
-      oscillator.frequency.setValueAtTime(880, currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(1320, currentTime + 0.15);
-      oscillator.frequency.exponentialRampToValueAtTime(1100, currentTime + 0.3);
-      gainNode.gain.setValueAtTime(0.4, currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.2, currentTime + 0.2);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.5);
-      oscillator.type = 'sine';
-      oscillator.start(currentTime);
-      oscillator.stop(currentTime + 0.9);
-    } catch (error) {
-      logger.warn('Error al reproducir el sonido con Web Audio API:', error);
-      this.playSoundFallback();
-    }
-  },
-
-  playSoundFallback: function() {
-    try {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      const currentTime = audioContext.currentTime;
-      oscillator.frequency.setValueAtTime(880, currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(1320, currentTime + 0.15);
-      gainNode.gain.setValueAtTime(0.3, currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.4);
-      oscillator.type = 'sine';
-      oscillator.start(currentTime);
-      oscillator.stop(currentTime + 0.4);
-      if (audioContext.state === 'suspended') audioContext.resume();
-    } catch (error) {
-      logger.error('No se pudo reproducir el sonido ni con el método alternativo:', error);
-    }
   },
 };
 
 // ===== BACKWARDS COMPAT: adminAPI =====
 const adminAPI = {
-  getBookings:    function() { return window.adminService.getBookings(); },
-  getStatistics:  function() { return window.adminService.getStatistics(); },
-  deleteBooking:  function(id) { return window.adminService.deleteBooking(id); },
+  getBookings:   function() { return window.adminService.getBookings(); },
+  getStatistics: function() { return window.adminService.getStatistics(); },
+  deleteBooking: function(id) { return window.adminService.deleteBooking(id); },
 };
 
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', function() {
   adminApp.init();
 
-  const adminUser = sessionStorage.getItem('adminUser');
+  const adminUser = window.authService.getUser();
   if (adminUser) {
     const adminUserNameEl = document.getElementById('adminUserName');
     if (adminUserNameEl) adminUserNameEl.textContent = adminUser;
@@ -538,8 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', function() {
       if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
-        sessionStorage.removeItem('isAdmin');
-        sessionStorage.removeItem('adminUser');
+        window.authService.logout();
         window.location.href = '../login.html';
       }
     });

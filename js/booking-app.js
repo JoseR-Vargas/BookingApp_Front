@@ -739,9 +739,22 @@ const bookingApp = {
     const bookingModalEl = document.getElementById('bookingModal');
     const confirmationModalEl = document.getElementById('confirmationModal');
 
+    const cleanupPage = function() {
+      document.querySelectorAll('.modal-backdrop').forEach(function(e) { e.remove(); });
+      document.body.classList.remove('modal-open');
+      document.body.style.paddingRight = '';
+      document.body.style.overflow = '';
+      try {
+        const inst = bootstrap.Modal.getInstance(confirmationModalEl);
+        if (inst) inst.dispose();
+      } catch (e) {}
+    };
+
     const showConfirmation = function() {
       setTimeout(function() {
-        new bootstrap.Modal(confirmationModalEl).show();
+        const bsConfirmation = new bootstrap.Modal(confirmationModalEl);
+        confirmationModalEl.addEventListener('hidden.bs.modal', cleanupPage, { once: true });
+        bsConfirmation.show();
         self.resetSubmitButton();
       }, 0);
     };
@@ -754,7 +767,9 @@ const bookingApp = {
       document.querySelectorAll('.modal-backdrop').forEach(function(e) { e.remove(); });
       document.body.classList.remove('modal-open');
       document.body.style.paddingRight = '';
-      new bootstrap.Modal(confirmationModalEl).show();
+      const bsConfirmation = new bootstrap.Modal(confirmationModalEl);
+      confirmationModalEl.addEventListener('hidden.bs.modal', cleanupPage, { once: true });
+      bsConfirmation.show();
       this.resetSubmitButton();
     }
   },

@@ -3,9 +3,9 @@
 
 function renderTimeSlot(timeString, isBooked) {
   if (isBooked) {
-    return '<option value="' + timeString + '" disabled>❌ ' + timeString + ' - Ocupado</option>';
+    return '<option value="' + timeString + '" disabled>' + timeString + ' — Ocupado</option>';
   }
-  return '<option value="' + timeString + '">✅ ' + timeString + '</option>';
+  return '<option value="' + timeString + '">' + timeString + '</option>';
 }
 
 window.renderTimeSlot = renderTimeSlot;

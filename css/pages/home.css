@@ -538,41 +538,6 @@
   max-width: 900px;
 }
 
-/* Step indicators */
-.step-indicator {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 2rem;
-}
-
-.step-number {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--color-bg-tertiary);
-  color: var(--color-text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: var(--font-bold);
-  border: 2px solid var(--color-border-subtle);
-  transition: all var(--transition-normal);
-}
-
-.step-number.active {
-  background: var(--color-accent);
-  color: var(--color-text-inverse);
-  border-color: var(--color-accent);
-  box-shadow: var(--shadow-accent);
-}
-
-.step-number.completed {
-  background: var(--color-success);
-  color: var(--color-text-primary);
-  border-color: var(--color-success);
-}
-
 /* Service selection cards (modal) */
 .service-selection-card {
   cursor: pointer;
@@ -828,16 +793,6 @@
     font-size: 1.1rem;
   }
 
-  .step-indicator {
-    gap: 15px;
-  }
-
-  .step-number {
-    width: 35px;
-    height: 35px;
-    font-size: 0.9rem;
-  }
-
   .service-selection-card {
     padding: 1rem;
   }
@@ -911,16 +866,6 @@
   .modal-footer .btn {
     width: 100%;
     margin: 0.25rem 0;
-  }
-
-  .step-indicator {
-    gap: 10px;
-  }
-
-  .step-number {
-    width: 30px;
-    height: 30px;
-    font-size: 0.8rem;
   }
 
   #step1 h4, #step2 h4, #step3 h4 {

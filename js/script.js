@@ -576,10 +576,10 @@ const bookingApp = {
       const isBooked = bookedTimes.includes(timeString);
 
       if (!isBooked) {
-        times.push(`<option value="${timeString}">✅ ${timeString}</option>`);
+        times.push(`<option value="${timeString}">${timeString}</option>`);
       } else {
         times.push(
-          `<option value="${timeString}" disabled>❌ ${timeString} - Ocupado</option>`
+          `<option value="${timeString}" disabled>${timeString} — Ocupado</option>`
         );
       }
     }

@@ -35,6 +35,9 @@ beforeAll(() => {
   loadScripts([
     'js/core/api-client.js',
     'js/services/admin-service.js',
+    'js/services/auth-service.js',
+    'js/services/audio-service.js',
+    'js/services/notification-service.js',
     'js/ui/toast.js',
     'js/ui/components/booking-table.js',
   ]);
@@ -246,23 +249,21 @@ describe('adminAPI', () => {
 // GRUPO 5: Autenticación
 // =============================================
 describe('Autenticación admin', () => {
-  test('IIFE checkAuth redirige si no hay sesión admin', () => {
+  test('IIFE checkAuth redirige si authService.isAuthenticated() es false', () => {
     const authCode = getAuthIIFE();
     expect(authCode).not.toBeNull();
 
-    const originalIsAdmin = sessionStorage.getItem('isAdmin');
+    // Asegurar sesión inválida
     sessionStorage.removeItem('isAdmin');
 
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
     expect(() => eval(authCode)).not.toThrow();
-
     spy.mockRestore();
-    if (originalIsAdmin) sessionStorage.setItem('isAdmin', originalIsAdmin);
   });
 
   test('IIFE checkAuth no redirige con sesión válida', () => {
     const authCode = getAuthIIFE();
+    // authService.isAuthenticated() lee sessionStorage
     sessionStorage.setItem('isAdmin', 'true');
 
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -272,5 +273,57 @@ describe('Autenticación admin', () => {
     );
     expect(navigationErrors).toHaveLength(0);
     spy.mockRestore();
+  });
+});
+
+// =============================================
+// GRUPO 6: authService
+// =============================================
+describe('authService', () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    // Resetear contador de intentos entre tests
+    if (authService._attempts !== undefined) authService._attempts = 0;
+    if (authService._lockoutUntil !== undefined) authService._lockoutUntil = null;
+  });
+
+  test('login exitoso guarda sesión en sessionStorage', async () => {
+    const result = await authService.login('admin', 'admin123');
+    expect(result.username).toBe('admin');
+    expect(sessionStorage.getItem('isAdmin')).toBe('true');
+    expect(sessionStorage.getItem('adminUser')).toBe('admin');
+  });
+
+  test('login con credenciales inválidas lanza error', async () => {
+    await expect(authService.login('admin', 'wrong')).rejects.toThrow();
+  });
+
+  test('login con campos vacíos lanza error', async () => {
+    await expect(authService.login('', '')).rejects.toThrow('Por favor completa todos los campos');
+  });
+
+  test('logout limpia sessionStorage', () => {
+    sessionStorage.setItem('isAdmin', 'true');
+    sessionStorage.setItem('adminUser', 'admin');
+    authService.logout();
+    expect(sessionStorage.getItem('isAdmin')).toBeNull();
+    expect(sessionStorage.getItem('adminUser')).toBeNull();
+  });
+
+  test('isAuthenticated retorna true con sesión activa', () => {
+    sessionStorage.setItem('isAdmin', 'true');
+    expect(authService.isAuthenticated()).toBe(true);
+  });
+
+  test('isAuthenticated retorna false sin sesión', () => {
+    sessionStorage.removeItem('isAdmin');
+    expect(authService.isAuthenticated()).toBe(false);
+  });
+
+  test('bloquea cuenta tras 5 intentos fallidos', async () => {
+    for (let i = 0; i < 5; i++) {
+      try { await authService.login('admin', 'wrong'); } catch (e) {}
+    }
+    await expect(authService.login('admin', 'admin123')).rejects.toThrow(/bloqueada|intentos/i);
   });
 });

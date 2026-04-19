@@ -94,6 +94,9 @@ describe('Funciones utilitarias', () => {
 // GRUPO 2: Datos de servicios y profesionales
 // =============================================
 describe('Datos de servicios y profesionales', () => {
+  const SERVICES = window.APP_CONFIG.SERVICES;
+  const PROFESSIONALS = window.APP_CONFIG.PROFESSIONALS;
+
   test('SERVICES es un array con servicios activos', () => {
     expect(Array.isArray(SERVICES)).toBe(true);
     expect(SERVICES.length).toBeGreaterThanOrEqual(4);
@@ -198,18 +201,15 @@ describe('bookingApp — renderTimeSlots', () => {
     selectedDate = null;
   });
 
-  test('sin reservas todos los slots muestran ✅', () => {
+  test('sin reservas todos los slots están habilitados', () => {
     bookingApp.renderTimeSlots([]);
     const timeSelect = document.getElementById('appointmentTime');
     const options = Array.from(timeSelect.querySelectorAll('option'));
     const availableOptions = options.filter(o => o.value && !o.disabled);
     expect(availableOptions.length).toBeGreaterThan(0);
-    availableOptions.forEach(opt => {
-      expect(opt.textContent).toMatch(/✅/);
-    });
   });
 
-  test('slots reservados aparecen como disabled con ❌', () => {
+  test('slots reservados aparecen como disabled con texto "Ocupado"', () => {
     bookingApp.renderTimeSlots(['10:00', '14:00']);
     const timeSelect = document.getElementById('appointmentTime');
     const options = Array.from(timeSelect.querySelectorAll('option'));
@@ -219,11 +219,10 @@ describe('bookingApp — renderTimeSlots', () => {
     const freeSlot09 = options.find(o => o.value === '09:00');
 
     expect(bookedSlot10.disabled).toBe(true);
-    expect(bookedSlot10.textContent).toMatch(/❌/);
+    expect(bookedSlot10.textContent).toMatch(/Ocupado/i);
     expect(bookedSlot14.disabled).toBe(true);
-    expect(bookedSlot14.textContent).toMatch(/❌/);
+    expect(bookedSlot14.textContent).toMatch(/Ocupado/i);
     expect(freeSlot09.disabled).toBe(false);
-    expect(freeSlot09.textContent).toMatch(/✅/);
   });
 
   test('header muestra cantidad de slots disponibles', () => {
@@ -361,6 +360,26 @@ describe('bookingApp — getFormData', () => {
     expect(data).toBeNull();
 
     nameInput.value = originalValue;
+  });
+});
+
+describe('sanitizeInput', () => {
+  test('escapa caracteres HTML peligrosos', () => {
+    expect(sanitizeInput('<script>alert(1)</script>')).toBe('&lt;script&gt;alert(1)&lt;/script&gt;');
+  });
+
+  test('escapa comillas dobles y simples', () => {
+    expect(sanitizeInput('"hola" & \'mundo\'')).toBe('&quot;hola&quot; &amp; &#x27;mundo&#x27;');
+  });
+
+  test('texto normal no se modifica', () => {
+    expect(sanitizeInput('Juan Pérez')).toBe('Juan Pérez');
+  });
+
+  test('retorna string vacío para valor falsy', () => {
+    expect(sanitizeInput('')).toBe('');
+    expect(sanitizeInput(null)).toBe('');
+    expect(sanitizeInput(undefined)).toBe('');
   });
 });
 

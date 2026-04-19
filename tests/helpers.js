@@ -76,8 +76,7 @@ function loadScript(relativePath) {
   // Admin
   if (typeof adminApp !== 'undefined') global.adminApp = adminApp;
   if (typeof adminAPI !== 'undefined') global.adminAPI = adminAPI;
-  if (typeof ADMIN_CONFIG !== 'undefined') global.ADMIN_CONFIG = ADMIN_CONFIG;
-  if (typeof logger !== 'undefined') global.logger = logger;
+  if (typeof sanitizeInput !== 'undefined') global.sanitizeInput = sanitizeInput;
 }
 
 /**
@@ -140,9 +139,9 @@ function loadScriptSkipAuth(relativePath) {
   // Exportar a global
   if (typeof adminApp !== 'undefined') global.adminApp = adminApp;
   if (typeof adminAPI !== 'undefined') global.adminAPI = adminAPI;
-  if (typeof ADMIN_CONFIG !== 'undefined') global.ADMIN_CONFIG = ADMIN_CONFIG;
-  if (typeof BACKEND_URL !== 'undefined') global.BACKEND_URL = BACKEND_URL;
-  if (typeof logger !== 'undefined') global.logger = logger;
+  if (typeof authService !== 'undefined') global.authService = authService;
+  if (typeof audioService !== 'undefined') global.audioService = audioService;
+  if (typeof notificationService !== 'undefined') global.notificationService = notificationService;
 }
 
 /**

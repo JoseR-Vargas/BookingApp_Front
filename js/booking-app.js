@@ -1,5 +1,6 @@
 // ===== ORQUESTADOR DEL FLUJO DE RESERVA =====
 // Depende de (cargar antes en el HTML):
+//   js/config.js
 //   js/core/api-client.js
 //   js/services/booking-service.js
 //   js/state/booking-state.js
@@ -8,79 +9,8 @@
 //   js/ui/components/professional-card.js
 //   js/ui/components/time-slot.js
 
-// ===== CONFIGURACIÓN =====
-const CONFIG = window.APP_CONFIG || {
-  BUSINESS_HOURS: {
-    start: 9,
-    end: 20,
-    interval: 60,
-    lunchBreak: { start: 13, end: 14 },
-  },
-  CANCELLATION_HOURS: 5,
-  TOAST_DURATION: 3000,
-};
-
-// ===== PROFESIONALES DISPONIBLES =====
-const PROFESSIONALS = [
-  {
-    id: 'alex-garcia',
-    name: 'Alex García',
-    specialty: 'Especialista',
-    experience: '8 años',
-    rating: 4.9,
-    avatar: 'fas fa-user-tie',
-    available: true,
-  },
-  {
-    id: 'maria-lopez',
-    name: 'María López',
-    specialty: 'Consultora',
-    experience: '6 años',
-    rating: 4.8,
-    avatar: 'fas fa-user',
-    available: true,
-  },
-];
-
-// ===== SERVICIOS DISPONIBLES =====
-const SERVICES = [
-  {
-    id: 'consulta-inicial',
-    name: 'Consulta Inicial',
-    description: 'Sesión introductoria para evaluar tus necesidades',
-    price: 500,
-    duration: 30,
-    professionals: ['alex-garcia', 'maria-lopez'],
-    icon: 'fas fa-clipboard-list',
-  },
-  {
-    id: 'servicio-basico',
-    name: 'Servicio Básico',
-    description: 'Atención estándar completa con seguimiento profesional',
-    price: 1200,
-    duration: 60,
-    professionals: ['alex-garcia', 'maria-lopez'],
-    icon: 'fas fa-star',
-  },
-  {
-    id: 'servicio-premium',
-    name: 'Servicio Premium',
-    description: 'Experiencia premium con atención prioritaria y resultados garantizados',
-    price: 2500,
-    duration: 90,
-    professionals: ['alex-garcia', 'maria-lopez'],
-    icon: 'fas fa-gem',
-  },
-  {
-    id: 'sesion-expres',
-    name: 'Sesión Exprés',
-    description: 'Atención rápida y efectiva para ajustarse a tu agenda',
-    price: 700,
-    duration: 20,
-    professionals: ['alex-garcia', 'maria-lopez'],
-    icon: 'fas fa-bolt',
-  },
-];
+// Acceso único al config centralizado — nunca duplicar aquí.
+const CONFIG = window.APP_CONFIG;
 
 // ===== APLICACIÓN PRINCIPAL =====
 const bookingApp = {
@@ -95,8 +25,8 @@ const bookingApp = {
   loadServices: function() {
     const container = document.getElementById('serviciosContainer');
     if (!container) return;
-    container.innerHTML = SERVICES.map(function(service) {
-      return window.renderServiceCard(service, PROFESSIONALS);
+    container.innerHTML = CONFIG.SERVICES.map(function(service) {
+      return window.renderServiceCard(service, CONFIG.PROFESSIONALS);
     }).join('');
   },
 
@@ -166,8 +96,8 @@ const bookingApp = {
   loadServicesInModal: function() {
     const container = document.getElementById('serviciosModal');
     if (!container) return;
-    container.innerHTML = SERVICES.map(function(service) {
-      return window.renderServiceSelectionCard(service, PROFESSIONALS);
+    container.innerHTML = CONFIG.SERVICES.map(function(service) {
+      return window.renderServiceSelectionCard(service, CONFIG.PROFESSIONALS);
     }).join('');
     this.setupServiceSelection();
   },
@@ -214,7 +144,7 @@ const bookingApp = {
     if (!container || !selectedService) return;
 
     const self = this;
-    const availableProfessionals = PROFESSIONALS.filter(function(professional) {
+    const availableProfessionals = CONFIG.PROFESSIONALS.filter(function(professional) {
       return selectedService.professionals.includes(professional.id);
     });
 
@@ -636,11 +566,11 @@ const bookingApp = {
     if (!form || !form.checkValidity()) return null;
 
     return {
-      name: document.getElementById('clientName').value,
-      id: document.getElementById('clientId').value || '',
-      email: document.getElementById('email').value,
-      phone: document.getElementById('phone').value,
-      notes: document.getElementById('notes').value,
+      name: sanitizeInput(document.getElementById('clientName').value),
+      id: sanitizeInput(document.getElementById('clientId').value || ''),
+      email: sanitizeInput(document.getElementById('email').value),
+      phone: sanitizeInput(document.getElementById('phone').value),
+      notes: sanitizeInput(document.getElementById('notes').value),
     };
   },
 
@@ -784,22 +714,8 @@ const bookingApp = {
     }
   },
 
-  // Mostrar notificación toast (mantiene compatibilidad con tests que mockean este método)
   showToast: function(message, type, duration) {
-    if (window.toast) {
-      window.toast.show(message, type || 'info', duration || null);
-    } else if (typeof Toastify !== 'undefined') {
-      const colors = { success: '#28a745', error: '#dc3545', warning: '#ffc107', info: '#17a2b8' };
-      Toastify({
-        text: message,
-        duration: duration || CONFIG.TOAST_DURATION,
-        gravity: 'top', position: 'right',
-        style: { background: colors[type] || colors.info },
-        stopOnFocus: true,
-      }).showToast();
-    } else {
-      alert(message);
-    }
+    window.toast.show(message, type || 'info', duration || null);
   },
 };
 
@@ -822,6 +738,18 @@ const bookingAPI = {
 };
 
 // ===== FUNCIONES DE UTILIDAD =====
+
+// Escapa caracteres HTML para prevenir XSS al insertar input del usuario en el DOM.
+function sanitizeInput(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
 function isMobileDevice() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
     (window.innerWidth <= 768);
@@ -863,10 +791,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===== EXPORTAR =====
 window.bookingApp = bookingApp;
 window.bookingAPI = bookingAPI;
-window.SERVICES = SERVICES;
-window.PROFESSIONALS = PROFESSIONALS;
 window.isMobileDevice = isMobileDevice;
 window.isSlowConnection = isSlowConnection;
 window.canCancelBooking = canCancelBooking;
 window.formatPrice = formatPrice;
 window.formatDate = formatDate;
+window.sanitizeInput = sanitizeInput;

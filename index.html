@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BookingApp</title>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <!-- Bootstrap 5 -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -17,15 +21,9 @@
       rel="stylesheet"
     />
 
-    <!-- Toastify CSS -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
-    />
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="./css/styles.css" />
+    <!-- Design System -->
+    <link rel="stylesheet" href="./css/main.css" />
+    <link rel="stylesheet" href="./css/pages/home.css" />
   </head>
 
   <body>
@@ -70,39 +68,32 @@
 
     <!-- Hero Section -->
     <section id="inicio" class="hero-section">
-      <div class="container">
+      <div class="hero-overlay"></div>
+      <div class="container hero-content">
         <div class="row align-items-center min-vh-100">
           <div class="col-12 text-center">
-            <!-- Ícono principal -->
-            <div class="hero-logo-container mb-4">
-              <div class="hero-icon-circle">
-                <i class="fas fa-calendar-check"></i>
-              </div>
-            </div>
-            
-
-            
-            <!-- Texto del Hero -->
-            <h1 class="display-4 fw-bold mb-4 text-white">
-              Tu tiempo, nuestra
-              <span class="text-warning">prioridad</span>
+            <p class="hero-eyebrow">Reservas Online</p>
+            <h1 class="hero-heading">
+              Tu tiempo,<br>nuestra<br><span class="text-accent">prioridad</span>
             </h1>
-            <p class="lead mb-4 text-white-50">
-              Reserva tu cita de forma rápida y sencilla. Profesionales certificados
-              y atención personalizada a tu servicio.
+            <div class="hero-ornament">
+              <span class="hero-ornament-line"></span>
+              <span class="hero-ornament-diamond">◆</span>
+              <span class="hero-ornament-line"></span>
+            </div>
+            <p class="hero-sub">
+              Reserva tu cita de forma rápida y sencilla.<br>
+              Profesionales certificados y atención personalizada.
             </p>
-            <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
               <button
-                class="btn btn-light btn-lg px-4 py-3"
+                class="btn btn-hero-primary"
                 onclick="bookingApp.openModal()"
               >
-                <i class="fas fa-calendar-check me-2"></i>Reservar Ahora
+                Reservar Cita
               </button>
-              <a
-                href="#servicios"
-                class="btn btn-outline-light btn-lg px-4 py-3"
-              >
-                <i class="fas fa-info-circle me-2"></i>Conocer Más
+              <a href="#servicios" class="btn btn-hero-outline">
+                Conocer Más
               </a>
             </div>
           </div>
@@ -111,121 +102,127 @@
     </section>
 
     <!-- Servicios Section -->
-    <section id="servicios" class="py-5 bg-light">
+    <section id="servicios" class="services-section">
       <div class="container">
         <div class="text-center mb-5">
-          <h2 class="display-5 fw-bold mb-3">Nuestros Servicios</h2>
-          <p class="lead text-muted">
-            Soluciones profesionales adaptadas a tus necesidades
-          </p>
+          <p class="section-label-diamond"><span class="diamond-icon">◆</span> Nuestros Servicios</p>
+          <h2 class="section-main-heading">Profesionales a tu servicio</h2>
+          <p class="section-main-sub">Soluciones adaptadas a tus necesidades</p>
         </div>
 
-        <div class="row g-4">
+        <div class="row g-4 justify-content-center">
           <!-- Consultoría -->
           <div class="col-md-4">
-            <div class="card h-100 text-center shadow-sm border-0">
-              <div class="card-body p-4">
-                <div class="mb-3">
-                  <i class="fas fa-clipboard-list text-primary" style="font-size: 3rem;"></i>
-                </div>
-                <h4 class="card-title fw-bold mb-3">Consultoría</h4>
-                <p class="card-text text-muted">
-                  Evaluación personalizada y asesoramiento profesional para encontrar la mejor solución
-                </p>
+            <div class="service-deco-card text-center">
+              <div class="service-deco-icon">
+                <i class="fas fa-clipboard-list"></i>
               </div>
+              <h4 class="service-deco-title">Consultoría</h4>
+              <p class="service-deco-text">
+                Evaluación personalizada y asesoramiento profesional para encontrar la mejor solución
+              </p>
             </div>
           </div>
 
           <!-- Servicios Estándar -->
           <div class="col-md-4">
-            <div class="card h-100 text-center shadow-sm border-0">
-              <div class="card-body p-4">
-                <div class="mb-3">
-                  <i class="fas fa-star text-primary" style="font-size: 3rem;"></i>
-                </div>
-                <h4 class="card-title fw-bold mb-3">Servicios Estándar</h4>
-                <p class="card-text text-muted">
-                  Atención completa con seguimiento y garantía de resultados en cada sesión
-                </p>
+            <div class="service-deco-card text-center">
+              <div class="service-deco-icon">
+                <i class="fas fa-star"></i>
               </div>
+              <h4 class="service-deco-title">Servicios Estándar</h4>
+              <p class="service-deco-text">
+                Atención completa con seguimiento y garantía de resultados en cada sesión
+              </p>
             </div>
           </div>
 
           <!-- Premium -->
           <div class="col-md-4">
-            <div class="card h-100 text-center shadow-sm border-0">
-              <div class="card-body p-4">
-                <div class="mb-3">
-                  <i class="fas fa-gem text-primary" style="font-size: 3rem;"></i>
-                </div>
-                <h4 class="card-title fw-bold mb-3">Premium</h4>
-                <p class="card-text text-muted">
-                  Experiencia exclusiva con prioridad de agenda y acompañamiento dedicado
-                </p>
+            <div class="service-deco-card text-center">
+              <div class="service-deco-icon">
+                <i class="fas fa-gem"></i>
               </div>
+              <h4 class="service-deco-title">Premium</h4>
+              <p class="service-deco-text">
+                Experiencia exclusiva con prioridad de agenda y acompañamiento dedicado
+              </p>
             </div>
           </div>
         </div>
 
         <!-- Call to Action -->
         <div class="text-center mt-5">
-          <p class="lead mb-3">¿Listo para comenzar?</p>
-          <button class="btn btn-primary btn-lg px-5" onclick="bookingApp.openModal()">
-            <i class="fas fa-calendar-check me-2"></i>Reservar Cita Ahora
+          <button class="btn btn-hero-primary" onclick="bookingApp.openModal()">
+            Reservar Cita Ahora
           </button>
         </div>
       </div>
     </section>
 
     <!-- Contacto Section -->
-    <section id="contacto" class="py-5">
+    <section id="contacto" class="contact-section">
       <div class="container">
-        <div class="row">
+        <div class="text-center mb-5">
+          <p class="section-label-diamond"><span class="diamond-icon">◆</span> Contacto</p>
+          <h2 class="section-main-heading">Encuéntranos</h2>
+        </div>
+
+        <div class="row g-4 align-items-start">
           <div class="col-lg-6">
-            <h2 class="display-6 fw-bold mb-4">Contáctanos</h2>
-            <div class="contact-info">
-              <div class="contact-item mb-3">
-                <i class="fas fa-map-marker-alt text-primary me-3"></i>
-                <span>Av. Demo 1234, Ciudad Ejemplo</span>
+            <div class="contact-cards-list">
+              <div class="contact-card-item">
+                <div class="contact-card-icon-wrap">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="contact-card-body">
+                  <span class="contact-card-label">Dirección</span>
+                  <span class="contact-card-value">Av. Demo 1234, Ciudad Ejemplo</span>
+                </div>
               </div>
-              <div class="contact-item mb-3">
-                <i class="fas fa-phone text-primary me-3"></i>
-                <span>+XX XXX XXX XXXX</span>
+              <div class="contact-card-item">
+                <div class="contact-card-icon-wrap">
+                  <i class="fas fa-phone"></i>
+                </div>
+                <div class="contact-card-body">
+                  <span class="contact-card-label">Teléfono</span>
+                  <span class="contact-card-value">+XX XXX XXX XXXX</span>
+                </div>
               </div>
-              <div class="contact-item mb-3">
-                <i class="fas fa-clock text-primary me-3"></i>
-                <span>Lun - Vie: 9:00 - 19:00</span>
+              <div class="contact-card-item">
+                <div class="contact-card-icon-wrap">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="contact-card-body">
+                  <span class="contact-card-label">Horario</span>
+                  <span class="contact-card-value">Lun – Vie: 9:00 – 19:00</span>
+                  <span class="contact-card-value">Sáb: 9:00 – 15:00</span>
+                </div>
               </div>
-              <div class="contact-item mb-3">
-                <i class="fas fa-clock text-primary me-3"></i>
-                <span>Sáb: 9:00 - 15:00</span>
-              </div>
-
-
             </div>
           </div>
           <div class="col-lg-6">
-            <div class="horarios-container p-4 bg-light rounded-3">
-              <h4 class="mb-3">Horarios de Atención</h4>
+            <div class="horarios-container p-4">
+              <h4 class="mb-4">Horarios de Atención</h4>
               <div class="horario-item d-flex justify-content-between mb-2">
-                <span>Lunes - Viernes</span>
-                <span class="fw-bold">9:00 - 19:00</span>
+                <span>Lunes – Viernes</span>
+                <span class="fw-bold">9:00 – 19:00</span>
               </div>
               <div class="horario-item d-flex justify-content-between mb-2">
                 <span>Sábado</span>
-                <span class="fw-bold">9:00 - 15:00</span>
+                <span class="fw-bold">9:00 – 15:00</span>
               </div>
               <div class="horario-item d-flex justify-content-between mb-2">
                 <span>Domingo</span>
-                <span class="fw-bold">Cerrado</span>
+                <span class="fw-bold text-danger">Cerrado</span>
               </div>
-              <hr />
-              <div class="text-center">
+              <div class="horario-divider"></div>
+              <div class="text-center mt-4">
                 <button
-                  class="btn btn-primary w-100"
+                  class="btn btn-hero-primary w-100"
                   onclick="bookingApp.openModal()"
                 >
-                  <i class="fas fa-calendar-plus me-2"></i>Reservar Cita
+                  Reservar Cita
                 </button>
               </div>
             </div>
@@ -235,34 +232,42 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white py-4">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="d-flex align-items-center mb-3">
-              <i class="fas fa-calendar-alt text-primary me-2 fs-4"></i>
-              <span class="fw-bold fs-5">BookingApp</span>
-            </div>
-            <p class="text-muted">
-              Tu tiempo, nuestra prioridad. Reserva fácil y rápido.
-            </p>
+    <footer class="site-footer">
+      <div class="footer-top">
+        <div class="container">
+          <div class="footer-ornament">
+            <span class="footer-ornament-line"></span>
+            <span class="footer-ornament-diamond">◆</span>
+            <span class="footer-ornament-line"></span>
           </div>
-          <div class="col-md-6 text-md-end">
-            <div class="social-links mb-3">
-              <a href="#" class="text-white me-3"
-                ><i class="fab fa-facebook-f"></i
-              ></a>
-              <a href="#" class="text-white me-3"
-                ><i class="fab fa-instagram"></i
-              ></a>
-              <a href="#" class="text-white me-3"
-                ><i class="fab fa-whatsapp"></i
-              ></a>
+          <div class="row align-items-center gy-4">
+            <div class="col-md-4">
+              <div class="footer-brand">
+                <i class="fas fa-calendar-alt text-accent me-2"></i>
+                <span class="footer-brand-name">BookingApp</span>
+              </div>
+              <p class="footer-tagline">Tu tiempo, nuestra prioridad.</p>
             </div>
-            <p class="text-muted mb-0">
-              &copy; 2024 BookingApp. Todos los derechos reservados.
-            </p>
+            <div class="col-md-4 text-center">
+              <nav class="footer-nav">
+                <a href="#inicio">Inicio</a>
+                <a href="#servicios">Servicios</a>
+                <a href="#contacto">Contacto</a>
+              </nav>
+            </div>
+            <div class="col-md-4 text-md-end">
+              <div class="social-links mb-2">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+              </div>
+            </div>
           </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="container text-center">
+          <p>&copy; 2024 BookingApp. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>
@@ -581,11 +586,6 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/toastify-js"
-    ></script>
-
     <!-- Configuración centralizada (DEBE CARGARSE PRIMERO) -->
     <script src="./js/config.js"></script>
 

@@ -19,10 +19,9 @@ var ADMIN_CONFIG = window.APP_CONFIG || {
   ITEMS_PER_PAGE: 10,
 };
 
-var BACKEND_URL = window.APP_CONFIG ? window.APP_CONFIG.BACKEND_URL : 'http://localhost:3000';
-
 // ===== SISTEMA DE LOGGING (solo en desarrollo) =====
-var IS_DEVELOPMENT = BACKEND_URL.includes('localhost') || BACKEND_URL.includes('127.0.0.1');
+var _adminBackendUrl = window.APP_CONFIG ? window.APP_CONFIG.BACKEND_URL : 'http://localhost:3000';
+var IS_DEVELOPMENT = _adminBackendUrl.includes('localhost') || _adminBackendUrl.includes('127.0.0.1');
 var logger = {
   log: IS_DEVELOPMENT ? function() { console.log.apply(console, arguments); } : function() {},
   warn: IS_DEVELOPMENT ? function() { console.warn.apply(console, arguments); } : function() {},
@@ -378,7 +377,7 @@ var adminApp = {
   initWebSocket: function() {
     var self = this;
     try {
-      this.socket = io(BACKEND_URL);
+      this.socket = io(_adminBackendUrl);
 
       this.socket.on('connect', function() { logger.log('WebSocket conectado'); });
       this.socket.on('disconnect', function() { logger.log('WebSocket desconectado'); });

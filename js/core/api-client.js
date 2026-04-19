@@ -17,10 +17,11 @@ const apiClient = {
     try {
       const fetchOptions = {
         method: method,
-        headers: Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {}),
+        headers: Object.assign({}, opts.headers || {}),
         signal: controller.signal,
       };
       if (body !== null && body !== undefined) {
+        fetchOptions.headers['Content-Type'] = 'application/json';
         fetchOptions.body = JSON.stringify(body);
       }
 

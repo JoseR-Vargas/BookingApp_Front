@@ -22,6 +22,7 @@
     />
 
     <!-- Design System -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
     <link rel="stylesheet" href="./css/main.css" />
     <link rel="stylesheet" href="./css/pages/home.css" />
   </head>
@@ -298,12 +299,7 @@
               <!-- Paso 1: Seleccionar Servicio -->
               <div id="step1" class="step-content">
                 <div class="text-center mb-4">
-                  <div class="step-indicator">
-                    <span class="step-number active">1</span>
-                    <span class="step-number">2</span>
-                    <span class="step-number">3</span>
-                  </div>
-                  <h4 class="mt-3">Elige tu Servicio</h4>
+                  <h4>Elige tu Servicio</h4>
                   <p class="text-muted">
                     Selecciona el servicio que deseas reservar
                   </p>
@@ -316,12 +312,7 @@
               <!-- Paso 2: Seleccionar Fecha y Hora -->
               <div id="step2" class="step-content d-none">
                 <div class="text-center mb-4">
-                  <div class="step-indicator">
-                    <span class="step-number completed">1</span>
-                    <span class="step-number active">2</span>
-                    <span class="step-number">3</span>
-                  </div>
-                  <h4 class="mt-3">Fecha y Hora</h4>
+                  <h4>Fecha y Hora</h4>
                   <p class="text-muted">Selecciona cuándo quieres tu cita</p>
                 </div>
                 <div class="row">
@@ -377,12 +368,7 @@
               <!-- Paso 3: Datos del Cliente -->
               <div id="step3" class="step-content d-none">
                 <div class="text-center mb-4">
-                  <div class="step-indicator">
-                    <span class="step-number completed">1</span>
-                    <span class="step-number completed">2</span>
-                    <span class="step-number active">3</span>
-                  </div>
-                  <h4 class="mt-3">Tus Datos</h4>
+                  <h4>Tus Datos</h4>
                   <p class="text-muted">
                     Necesitamos esta información para tu reserva
                   </p>
@@ -599,6 +585,7 @@
     <script src="./js/state/booking-state.js"></script>
 
     <!-- UI -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="./js/ui/toast.js"></script>
     <script src="./js/ui/components/service-card.js"></script>
     <script src="./js/ui/components/professional-card.js"></script>

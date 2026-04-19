@@ -189,8 +189,7 @@ const bookingApp = {
           professionals: card.dataset.serviceProfessionals.split(','),
         });
 
-        self.showToast('✅ Servicio seleccionado: ' + window.bookingState.get('selectedService').name, 'success');
-        setTimeout(function() { self.nextStep(); }, 1000);
+        setTimeout(function() { self.nextStep(); }, 400);
       });
     });
   },
@@ -240,11 +239,6 @@ const bookingApp = {
         });
 
         const selectedProfessional = window.bookingState.get('selectedProfessional');
-        const message = isMobileDevice()
-          ? '✅ ' + selectedProfessional.name + ' seleccionado. Cargando horarios...'
-          : '✅ Profesional seleccionado: ' + selectedProfessional.name;
-
-        self.showToast(message, 'success');
         self.updateAvailableTimesForProfessional();
         self.updateServiceInfo();
       });
@@ -508,20 +502,8 @@ const bookingApp = {
     const currentStepElement = document.getElementById('step' + currentStep);
     if (currentStepElement) currentStepElement.classList.remove('d-none');
 
-    this.updateStepIndicators();
     this.updateButtons();
     this.loadStepData();
-  },
-
-  // Actualizar indicadores de pasos
-  updateStepIndicators: function() {
-    const currentStep = window.bookingState.get('currentStep');
-    const indicators = document.querySelectorAll('.step-number');
-    indicators.forEach(function(indicator, index) {
-      indicator.classList.remove('active', 'completed');
-      if (index + 1 < currentStep) indicator.classList.add('completed');
-      else if (index + 1 === currentStep) indicator.classList.add('active');
-    });
   },
 
   // Actualizar botones de navegación

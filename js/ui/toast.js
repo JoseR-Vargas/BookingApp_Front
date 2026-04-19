@@ -24,7 +24,7 @@ const toast = {
         stopOnFocus: true,
       }).showToast();
     } else {
-      alert(message);
+      console.warn('Toastify no disponible:', message);
     }
   },
 

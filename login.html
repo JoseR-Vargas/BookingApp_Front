@@ -105,11 +105,30 @@
     <!-- Config -->
     <script src="./js/config.js"></script>
 
-    <!-- Script JS reutilizando funciones existentes -->
-    <script src="./js/script.js"></script>
+    <!-- Auth Service -->
+    <script src="./js/services/auth-service.js"></script>
 
     <!-- Login Logic -->
     <script>
+      function showLoginToast(message, type) {
+        if (typeof Toastify !== "undefined") {
+          const colors = {
+            success: "#28a745",
+            error: "#dc3545",
+          };
+          Toastify({
+            text: message,
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            style: { background: colors[type] || "#17a2b8" },
+            stopOnFocus: true,
+          }).showToast();
+        } else {
+          alert(message);
+        }
+      }
+
       document
         .getElementById("loginForm")
         .addEventListener("submit", async (e) => {
@@ -117,40 +136,23 @@
 
           const username = document.getElementById("username").value.trim();
           const password = document.getElementById("password").value;
+          const submitBtn = e.target.querySelector('[type="submit"]');
 
-          // Validación simple
-          if (!username || !password) {
-            bookingApp.showToast(
-              "Por favor completa todos los campos",
-              "error"
-            );
-            return;
-          }
+          submitBtn.disabled = true;
+          submitBtn.innerHTML =
+            '<i class="fas fa-spinner fa-spin me-2"></i>Iniciando sesión...';
 
-          // Credenciales (en producción esto debería ser un endpoint del backend)
-          const validCredentials = {
-            username: "admin",
-            password: "admin123",
-          };
-
-          if (
-            username === validCredentials.username &&
-            password === validCredentials.password
-          ) {
-            // Login exitoso
-            sessionStorage.setItem("isAdmin", "true");
-            sessionStorage.setItem("adminUser", username);
-            bookingApp.showToast("✅ Inicio de sesión exitoso", "success");
-
-            // Redirigir al dashboard
+          try {
+            await window.authService.login(username, password);
+            showLoginToast("✅ Inicio de sesión exitoso", "success");
             setTimeout(() => {
               window.location.href = "admin.html";
             }, 1000);
-          } else {
-            bookingApp.showToast(
-              "❌ Usuario o contraseña incorrectos",
-              "error"
-            );
+          } catch (error) {
+            showLoginToast("❌ " + error.message, "error");
+            submitBtn.disabled = false;
+            submitBtn.innerHTML =
+              '<i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión';
           }
         });
     </script>

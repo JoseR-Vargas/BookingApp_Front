@@ -311,7 +311,7 @@ const bookingApp = {
     const isSlowConn = isSlowConnection();
     const timeout = (isMobile || isSlowConn) ? 15000 : 10000;
 
-    const loadingText = isMobile ? '📱 Cargando horarios...' : '🔄 Verificando horarios disponibles...';
+    const loadingText = isMobile ? 'Cargando horarios...' : 'Verificando horarios disponibles';
     timeSelect.innerHTML = '<option value="">' + loadingText + '</option>';
 
     const self = this;
@@ -368,7 +368,7 @@ const bookingApp = {
     const isSaturday = dayOfWeek === 6;
 
     if (isSunday) {
-      timeSelect.innerHTML = '<option value="">🚫 Domingo cerrado</option>';
+      timeSelect.innerHTML = '<option value="">Domingo cerrado</option>';
       return;
     }
 

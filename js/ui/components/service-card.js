@@ -2,9 +2,9 @@
 // Funciones de render puras — sin lógica de negocio ni llamadas API.
 
 function renderServiceCard(service, professionals) {
-  var profNames = service.professionals
+  const profNames = service.professionals
     .map(function(profId) {
-      var prof = professionals.find(function(p) { return p.id === profId; });
+      const prof = professionals.find(function(p) { return p.id === profId; });
       return prof ? prof.name : profId;
     })
     .join(', ');
@@ -24,9 +24,9 @@ function renderServiceCard(service, professionals) {
 }
 
 function renderServiceSelectionCard(service, professionals) {
-  var profNames = service.professionals
+  const profNames = service.professionals
     .map(function(profId) {
-      var prof = professionals.find(function(p) { return p.id === profId; });
+      const prof = professionals.find(function(p) { return p.id === profId; });
       return prof ? prof.name : profId;
     })
     .join(', ');

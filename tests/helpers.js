@@ -9,7 +9,7 @@ const path = require('path');
 function loadScript(relativePath) {
   const filePath = path.resolve(__dirname, '..', relativePath);
   const content = fs.readFileSync(filePath, 'utf8');
-  var cleaned = removeDOMContentLoaded(content);
+  let cleaned = removeDOMContentLoaded(content);
   // Convertir const/let a var para que escapen del eval al scope del llamante
   cleaned = cleaned.replace(/\b(const|let)\s/g, 'var ');
 
@@ -130,7 +130,7 @@ function removeDOMContentLoaded(code) {
 function loadScriptSkipAuth(relativePath) {
   const filePath = path.resolve(__dirname, '..', relativePath);
   const content = fs.readFileSync(filePath, 'utf8');
-  var cleaned = content.replace(
+  let cleaned = content.replace(
     /\(function\s+checkAuth\s*\(\)\s*\{[\s\S]*?\}\)\(\)\s*;/,
     '// [TEST] checkAuth IIFE removido'
   );

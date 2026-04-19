@@ -1,6 +1,6 @@
 // ===== VERIFICACIÓN DE AUTENTICACIÓN =====
 (function checkAuth() {
-  var isAdmin = sessionStorage.getItem('isAdmin');
+  const isAdmin = sessionStorage.getItem('isAdmin');
   if (!isAdmin || isAdmin !== 'true') {
     window.location.href = '../login.html';
   }
@@ -14,22 +14,22 @@
 //   js/ui/components/booking-table.js
 
 // ===== CONFIGURACIÓN GLOBAL =====
-var ADMIN_CONFIG = window.APP_CONFIG || {
+const ADMIN_CONFIG = window.APP_CONFIG || {
   TOAST_DURATION: 3000,
   ITEMS_PER_PAGE: 10,
 };
 
 // ===== SISTEMA DE LOGGING (solo en desarrollo) =====
-var _adminBackendUrl = window.APP_CONFIG ? window.APP_CONFIG.BACKEND_URL : 'http://localhost:3000';
-var IS_DEVELOPMENT = _adminBackendUrl.includes('localhost') || _adminBackendUrl.includes('127.0.0.1');
-var logger = {
+const _adminBackendUrl = window.APP_CONFIG ? window.APP_CONFIG.BACKEND_URL : 'http://localhost:3000';
+const IS_DEVELOPMENT = _adminBackendUrl.includes('localhost') || _adminBackendUrl.includes('127.0.0.1');
+const logger = {
   log: IS_DEVELOPMENT ? function() { console.log.apply(console, arguments); } : function() {},
   warn: IS_DEVELOPMENT ? function() { console.warn.apply(console, arguments); } : function() {},
   error: function() { console.error.apply(console, arguments); },
 };
 
 // ===== APLICACIÓN DE ADMINISTRACIÓN =====
-var adminApp = {
+const adminApp = {
   lastBookingCount: 0,
   notificationCount: 0,
   isFirstLoad: true,
@@ -61,7 +61,7 @@ var adminApp = {
   },
 
   activateAudioContext: function() {
-    var self = this;
+    const self = this;
     try {
       if (!this.audioContext) {
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -91,24 +91,24 @@ var adminApp = {
   },
 
   showEnableSoundButton: function() {
-    var btn = document.getElementById('enableSoundBtn');
+    const btn = document.getElementById('enableSoundBtn');
     if (btn) btn.classList.remove('enable-sound-btn-hidden');
   },
 
   hideEnableSoundButton: function() {
-    var btn = document.getElementById('enableSoundBtn');
+    const btn = document.getElementById('enableSoundBtn');
     if (btn) btn.classList.add('enable-sound-btn-hidden');
   },
 
   setupEventListeners: function() {
-    var self = this;
+    const self = this;
 
-    var sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarToggle = document.getElementById('sidebarToggle');
     if (sidebarToggle) {
       sidebarToggle.addEventListener('click', function() { self.toggleSidebar(); });
     }
 
-    var navLinks = document.querySelectorAll('.nav-link');
+    const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(function(link) {
       link.addEventListener('click', function(e) {
         e.preventDefault();
@@ -116,22 +116,22 @@ var adminApp = {
       });
     });
 
-    var dateFilter = document.getElementById('dateFilter');
+    const dateFilter = document.getElementById('dateFilter');
     if (dateFilter) {
       dateFilter.addEventListener('change', function() { self.filterBookings(); });
     }
 
-    var notificationBell = document.getElementById('notificationBell');
+    const notificationBell = document.getElementById('notificationBell');
     if (notificationBell) {
       notificationBell.addEventListener('click', function() { self.handleNotificationClick(); });
     }
 
-    var enableSoundBtn = document.getElementById('enableSoundBtn');
+    const enableSoundBtn = document.getElementById('enableSoundBtn');
     if (enableSoundBtn) {
       enableSoundBtn.addEventListener('click', function() { self.enableNotificationSound(); });
     }
 
-    var activateAudio = function() {
+    const activateAudio = function() {
       self.activateAudioContext();
       document.removeEventListener('click', activateAudio);
       document.removeEventListener('keydown', activateAudio);
@@ -141,7 +141,7 @@ var adminApp = {
   },
 
   toggleSidebar: function() {
-    var sidebar = document.getElementById('sidebar');
+    const sidebar = document.getElementById('sidebar');
     sidebar.classList.toggle('collapsed');
     if (window.innerWidth <= 768) {
       sidebar.classList.toggle('show');
@@ -159,8 +159,8 @@ var adminApp = {
     });
     document.getElementById(section).classList.add('active');
 
-    var pageTitle = document.getElementById('pageTitle');
-    var titles = { dashboard: 'Dashboard', bookings: 'Gestión de Reservas', reports: 'Reportes y Estadísticas' };
+    const pageTitle = document.getElementById('pageTitle');
+    const titles = { dashboard: 'Dashboard', bookings: 'Gestión de Reservas', reports: 'Reportes y Estadísticas' };
     pageTitle.textContent = titles[section] || 'Dashboard';
   },
 
@@ -175,7 +175,7 @@ var adminApp = {
 
   updateStatistics: async function() {
     try {
-      var stats = await window.adminService.getStatistics();
+      const stats = await window.adminService.getStatistics();
       document.getElementById('totalBookings').textContent = stats.totalBookings || 0;
       document.getElementById('totalRevenue').textContent = '$' + ((stats.totalRevenue || 0).toLocaleString());
       document.getElementById('todayBookings').textContent = stats.todayBookings || 0;
@@ -186,8 +186,8 @@ var adminApp = {
 
   loadRecentBookings: async function() {
     try {
-      var bookings = await window.adminService.getBookings();
-      var recentBookings = bookings
+      const bookings = await window.adminService.getBookings();
+      const recentBookings = bookings
         .sort(function(a, b) { return new Date(b.createdAt) - new Date(a.createdAt); })
         .slice(0, 5);
       this.renderRecentBookingsTable(recentBookings);
@@ -197,7 +197,7 @@ var adminApp = {
   },
 
   renderRecentBookingsTable: function(bookings) {
-    var tableBody = document.getElementById('recentBookingsTable');
+    const tableBody = document.getElementById('recentBookingsTable');
     if (!tableBody) return;
 
     if (bookings.length === 0) {
@@ -205,9 +205,9 @@ var adminApp = {
       return;
     }
 
-    var self = this;
-    var html = bookings.map(function(booking) {
-      var professionalName = (booking.professional && booking.professional.name) ||
+    const self = this;
+    const html = bookings.map(function(booking) {
+      const professionalName = (booking.professional && booking.professional.name) ||
         (booking.barber && booking.barber.name) || 'N/A';
       return (
         '<tr>' +
@@ -225,7 +225,7 @@ var adminApp = {
 
   loadBookings: async function() {
     try {
-      var bookings = await window.adminService.getBookings();
+      const bookings = await window.adminService.getBookings();
       this.renderBookingsTable(bookings);
       this.updateFilteredTotalRevenue(bookings);
     } catch (error) {
@@ -234,7 +234,7 @@ var adminApp = {
   },
 
   renderBookingsTable: function(bookings) {
-    var tableBody = document.getElementById('bookingsTableBody');
+    const tableBody = document.getElementById('bookingsTableBody');
     if (!tableBody) return;
 
     if (bookings.length === 0) {
@@ -248,11 +248,11 @@ var adminApp = {
   },
 
   filterBookings: async function() {
-    var dateFilter = document.getElementById('dateFilter').value;
+    const dateFilter = document.getElementById('dateFilter').value;
 
     try {
-      var allBookings = await window.adminService.getBookings();
-      var filteredBookings = allBookings;
+      const allBookings = await window.adminService.getBookings();
+      let filteredBookings = allBookings;
 
       if (dateFilter) {
         filteredBookings = filteredBookings.filter(function(booking) {
@@ -263,7 +263,7 @@ var adminApp = {
       this.renderBookingsTable(filteredBookings);
       this.updateFilteredTotalRevenue(filteredBookings);
 
-      var resultsMessage = 'Mostrando ' + filteredBookings.length + ' reserva' + (filteredBookings.length !== 1 ? 's' : '');
+      const resultsMessage = 'Mostrando ' + filteredBookings.length + ' reserva' + (filteredBookings.length !== 1 ? 's' : '');
       this.showToast(resultsMessage, 'info');
     } catch (error) {
       this.showToast('Error aplicando filtros', 'error');
@@ -281,10 +281,10 @@ var adminApp = {
   },
 
   updateFilteredTotalRevenue: function(bookings) {
-    var totalRevenueElement = document.getElementById('filteredTotalRevenue');
+    const totalRevenueElement = document.getElementById('filteredTotalRevenue');
     if (!totalRevenueElement) return;
 
-    var totalRevenue = bookings
+    const totalRevenue = bookings
       .filter(function(booking) { return booking.status === 'confirmed'; })
       .reduce(function(sum, booking) { return sum + booking.service.price; }, 0);
 
@@ -297,7 +297,7 @@ var adminApp = {
   },
 
   setupBookingsChart: function() {
-    var ctx = document.getElementById('bookingsChart');
+    const ctx = document.getElementById('bookingsChart');
     if (!ctx) return;
 
     new Chart(ctx, {
@@ -321,7 +321,7 @@ var adminApp = {
   },
 
   setupServicesChart: function() {
-    var ctx = document.getElementById('servicesChart');
+    const ctx = document.getElementById('servicesChart');
     if (!ctx) return;
 
     new Chart(ctx, {
@@ -345,7 +345,7 @@ var adminApp = {
     if (window.toast) {
       window.toast.show(message, type || 'info');
     } else if (typeof Toastify !== 'undefined') {
-      var colors = { success: '#28a745', error: '#dc3545', warning: '#ffc107', info: '#17a2b8' };
+      const colors = { success: '#28a745', error: '#dc3545', warning: '#ffc107', info: '#17a2b8' };
       Toastify({
         text: message,
         duration: ADMIN_CONFIG.TOAST_DURATION,
@@ -359,7 +359,7 @@ var adminApp = {
   },
 
   deleteBooking: async function(bookingId, clientName) {
-    var confirmMessage = '¿Estás seguro de que quieres eliminar la reserva de ' + clientName + '?\n\nEsta acción no se puede deshacer.';
+    const confirmMessage = '¿Estás seguro de que quieres eliminar la reserva de ' + clientName + '?\n\nEsta acción no se puede deshacer.';
     if (!confirm(confirmMessage)) return;
 
     try {
@@ -375,7 +375,7 @@ var adminApp = {
 
   // ===== WEBSOCKET =====
   initWebSocket: function() {
-    var self = this;
+    const self = this;
     try {
       this.socket = io(_adminBackendUrl);
 
@@ -389,7 +389,7 @@ var adminApp = {
         setTimeout(function() { self.playNotificationSound(); }, 100);
         self.showToast('🔔 Nueva reserva recibida!', 'success');
         await self.loadDashboard();
-        var activeSection = document.querySelector('.content-section.active');
+        const activeSection = document.querySelector('.content-section.active');
         if (activeSection && activeSection.id === 'bookings') {
           await self.loadBookings();
         }
@@ -404,8 +404,8 @@ var adminApp = {
   },
 
   updateNotificationBadge: function() {
-    var badge = document.getElementById('notificationBadge');
-    var bell = document.getElementById('notificationBell');
+    const badge = document.getElementById('notificationBadge');
+    const bell = document.getElementById('notificationBell');
 
     if (badge && bell) {
       if (this.notificationCount > 0) {
@@ -428,13 +428,13 @@ var adminApp = {
   },
 
   playNotificationSound: function() {
-    var self = this;
+    const self = this;
     try {
       if (!this.audioContext) {
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       }
 
-      var doPlaySound = function() {
+      const doPlaySound = function() {
         try { self.playSound(); } catch (error) { logger.error('Error al reproducir el sonido:', error); }
       };
 
@@ -474,12 +474,12 @@ var adminApp = {
         return;
       }
 
-      var oscillator = this.audioContext.createOscillator();
-      var gainNode = this.audioContext.createGain();
+      const oscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
       oscillator.connect(gainNode);
       gainNode.connect(this.audioContext.destination);
 
-      var currentTime = this.audioContext.currentTime;
+      const currentTime = this.audioContext.currentTime;
       oscillator.frequency.setValueAtTime(880, currentTime);
       oscillator.frequency.exponentialRampToValueAtTime(1320, currentTime + 0.15);
       oscillator.frequency.exponentialRampToValueAtTime(1100, currentTime + 0.3);
@@ -497,12 +497,12 @@ var adminApp = {
 
   playSoundFallback: function() {
     try {
-      var audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      var oscillator = audioContext.createOscillator();
-      var gainNode = audioContext.createGain();
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
-      var currentTime = audioContext.currentTime;
+      const currentTime = audioContext.currentTime;
       oscillator.frequency.setValueAtTime(880, currentTime);
       oscillator.frequency.exponentialRampToValueAtTime(1320, currentTime + 0.15);
       gainNode.gain.setValueAtTime(0.3, currentTime);
@@ -518,7 +518,7 @@ var adminApp = {
 };
 
 // ===== BACKWARDS COMPAT: adminAPI =====
-var adminAPI = {
+const adminAPI = {
   getBookings:    function() { return window.adminService.getBookings(); },
   getStatistics:  function() { return window.adminService.getStatistics(); },
   deleteBooking:  function(id) { return window.adminService.deleteBooking(id); },
@@ -528,13 +528,13 @@ var adminAPI = {
 document.addEventListener('DOMContentLoaded', function() {
   adminApp.init();
 
-  var adminUser = sessionStorage.getItem('adminUser');
+  const adminUser = sessionStorage.getItem('adminUser');
   if (adminUser) {
-    var adminUserNameEl = document.getElementById('adminUserName');
+    const adminUserNameEl = document.getElementById('adminUserName');
     if (adminUserNameEl) adminUserNameEl.textContent = adminUser;
   }
 
-  var logoutBtn = document.getElementById('logoutBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', function() {
       if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {

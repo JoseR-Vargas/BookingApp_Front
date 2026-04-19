@@ -11,7 +11,7 @@ const toast = {
   },
 
   show: function(message, type, duration) {
-    var t = type || 'info';
+    const t = type || 'info';
     if (typeof Toastify !== 'undefined') {
       Toastify({
         text: message,

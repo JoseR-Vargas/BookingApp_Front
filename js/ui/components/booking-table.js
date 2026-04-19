@@ -2,8 +2,8 @@
 // Funciones de render puras para filas de la tabla de reservas admin.
 
 function formatBookingDate(dateString) {
-  var parts = dateString.split('-');
-  var date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+  const parts = dateString.split('-');
+  const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
   return date.toLocaleDateString('es-ES', {
     weekday: 'short',
     year: 'numeric',
@@ -13,11 +13,11 @@ function formatBookingDate(dateString) {
 }
 
 function renderBookingRow(booking) {
-  var professionalName = (booking.professional && booking.professional.name)
+  const professionalName = (booking.professional && booking.professional.name)
     || (booking.barber && booking.barber.name)
     || 'N/A';
-  var dateFormatted = formatBookingDate(booking.date);
-  var notesHtml = booking.notes
+  const dateFormatted = formatBookingDate(booking.date);
+  const notesHtml = booking.notes
     ? '<div class="notes-cell" title="' + booking.notes + '"><span class="notes-text">' + booking.notes + '</span></div>'
     : '<span class="text-muted">Sin notas</span>';
 

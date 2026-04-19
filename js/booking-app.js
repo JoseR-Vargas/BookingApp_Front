@@ -9,7 +9,7 @@
 //   js/ui/components/time-slot.js
 
 // ===== CONFIGURACIÓN =====
-var CONFIG = window.APP_CONFIG || {
+const CONFIG = window.APP_CONFIG || {
   BUSINESS_HOURS: {
     start: 9,
     end: 20,
@@ -21,7 +21,7 @@ var CONFIG = window.APP_CONFIG || {
 };
 
 // ===== PROFESIONALES DISPONIBLES =====
-var PROFESSIONALS = [
+const PROFESSIONALS = [
   {
     id: 'alex-garcia',
     name: 'Alex García',
@@ -43,7 +43,7 @@ var PROFESSIONALS = [
 ];
 
 // ===== SERVICIOS DISPONIBLES =====
-var SERVICES = [
+const SERVICES = [
   {
     id: 'consulta-inicial',
     name: 'Consulta Inicial',
@@ -83,7 +83,7 @@ var SERVICES = [
 ];
 
 // ===== APLICACIÓN PRINCIPAL =====
-var bookingApp = {
+const bookingApp = {
   // Inicializar la aplicación
   init: function() {
     this.loadServices();
@@ -93,7 +93,7 @@ var bookingApp = {
 
   // Cargar servicios en la página principal
   loadServices: function() {
-    var container = document.getElementById('serviciosContainer');
+    const container = document.getElementById('serviciosContainer');
     if (!container) return;
     container.innerHTML = SERVICES.map(function(service) {
       return window.renderServiceCard(service, PROFESSIONALS);
@@ -104,9 +104,9 @@ var bookingApp = {
   setupEventListeners: function() {
     if (window.bookingState.get('eventListenersRegistered')) return;
 
-    var self = this;
-    var btnNext = document.getElementById('btnNext');
-    var btnBack = document.getElementById('btnBack');
+    const self = this;
+    const btnNext = document.getElementById('btnNext');
+    const btnBack = document.getElementById('btnBack');
 
     if (btnNext) {
       btnNext.addEventListener('click', function(e) {
@@ -125,12 +125,12 @@ var bookingApp = {
 
     window.bookingState.set('eventListenersRegistered', true);
 
-    var dateInput = document.getElementById('appointmentDate');
+    const dateInput = document.getElementById('appointmentDate');
     if (dateInput) {
       dateInput.addEventListener('change', function(e) { self.onDateChange(e.target.value); });
     }
 
-    var timeSelect = document.getElementById('appointmentTime');
+    const timeSelect = document.getElementById('appointmentTime');
     if (timeSelect) {
       timeSelect.addEventListener('change', function(e) { self.onTimeChange(e.target.value); });
     }
@@ -138,9 +138,9 @@ var bookingApp = {
 
   // Configurar validación de fechas
   setupDateValidation: function() {
-    var dateInput = document.getElementById('appointmentDate');
+    const dateInput = document.getElementById('appointmentDate');
     if (dateInput) {
-      var today = new Date();
+      const today = new Date();
       dateInput.min = today.toISOString().split('T')[0];
     }
   },
@@ -152,9 +152,9 @@ var bookingApp = {
     this.loadServicesInModal();
     this.updateStep();
 
-    var modal = document.getElementById('bookingModal');
+    const modal = document.getElementById('bookingModal');
     if (modal && typeof bootstrap !== 'undefined') {
-      var bsModal = new bootstrap.Modal(modal);
+      const bsModal = new bootstrap.Modal(modal);
       bsModal.show();
       setTimeout(function() {
         document.querySelectorAll('.modal-backdrop').forEach(function(e) { e.remove(); });
@@ -164,7 +164,7 @@ var bookingApp = {
 
   // Cargar servicios en el modal
   loadServicesInModal: function() {
-    var container = document.getElementById('serviciosModal');
+    const container = document.getElementById('serviciosModal');
     if (!container) return;
     container.innerHTML = SERVICES.map(function(service) {
       return window.renderServiceSelectionCard(service, PROFESSIONALS);
@@ -174,8 +174,8 @@ var bookingApp = {
 
   // Configurar selección de servicios
   setupServiceSelection: function() {
-    var self = this;
-    var cards = document.querySelectorAll('.service-selection-card');
+    const self = this;
+    const cards = document.querySelectorAll('.service-selection-card');
     cards.forEach(function(card) {
       card.addEventListener('click', function() {
         cards.forEach(function(c) { c.classList.remove('selected'); });
@@ -210,12 +210,12 @@ var bookingApp = {
 
   // Cargar profesionales disponibles
   loadAvailableProfessionals: function() {
-    var container = document.getElementById('barbersContainer');
-    var selectedService = window.bookingState.get('selectedService');
+    const container = document.getElementById('barbersContainer');
+    const selectedService = window.bookingState.get('selectedService');
     if (!container || !selectedService) return;
 
-    var self = this;
-    var availableProfessionals = PROFESSIONALS.filter(function(professional) {
+    const self = this;
+    const availableProfessionals = PROFESSIONALS.filter(function(professional) {
       return selectedService.professionals.includes(professional.id);
     });
 
@@ -227,8 +227,8 @@ var bookingApp = {
 
   // Configurar selección de profesionales
   setupProfessionalSelection: function() {
-    var self = this;
-    var cards = document.querySelectorAll('.barber-selection-card');
+    const self = this;
+    const cards = document.querySelectorAll('.barber-selection-card');
     cards.forEach(function(card) {
       card.addEventListener('click', function() {
         cards.forEach(function(c) { c.classList.remove('selected'); });
@@ -239,8 +239,8 @@ var bookingApp = {
           name: card.dataset.professionalName,
         });
 
-        var selectedProfessional = window.bookingState.get('selectedProfessional');
-        var message = isMobileDevice()
+        const selectedProfessional = window.bookingState.get('selectedProfessional');
+        const message = isMobileDevice()
           ? '✅ ' + selectedProfessional.name + ' seleccionado. Cargando horarios...'
           : '✅ Profesional seleccionado: ' + selectedProfessional.name;
 
@@ -253,25 +253,25 @@ var bookingApp = {
 
   // Cargar horarios disponibles (solo estructura, sin verificar backend)
   loadAvailableTimes: function(date) {
-    var timeSelect = document.getElementById('appointmentTime');
+    const timeSelect = document.getElementById('appointmentTime');
     if (!timeSelect) return;
 
-    var parts = date.split('-');
-    var selectedDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-    var dayOfWeek = selectedDate.getDay();
-    var isSunday = dayOfWeek === 0;
-    var isSaturday = dayOfWeek === 6;
+    const parts = date.split('-');
+    const selectedDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    const dayOfWeek = selectedDate.getDay();
+    const isSunday = dayOfWeek === 0;
+    const isSaturday = dayOfWeek === 6;
 
     if (isSunday) {
       timeSelect.innerHTML = '<option value="">Domingo cerrado</option>';
       return;
     }
 
-    var closingHour = isSaturday ? 18 : CONFIG.BUSINESS_HOURS.end;
-    var times = [];
-    for (var hour = CONFIG.BUSINESS_HOURS.start; hour < closingHour; hour++) {
+    const closingHour = isSaturday ? 18 : CONFIG.BUSINESS_HOURS.end;
+    const times = [];
+    for (let hour = CONFIG.BUSINESS_HOURS.start; hour < closingHour; hour++) {
       if (hour >= CONFIG.BUSINESS_HOURS.lunchBreak.start && hour < CONFIG.BUSINESS_HOURS.lunchBreak.end) continue;
-      var timeString = hour.toString().padStart(2, '0') + ':00';
+      const timeString = hour.toString().padStart(2, '0') + ':00';
       times.push('<option value="' + timeString + '">' + timeString + '</option>');
     }
 
@@ -280,14 +280,14 @@ var bookingApp = {
 
   // Verificar disponibilidad antes de permitir la reserva
   checkBookingAvailability: async function() {
-    var selectedDate = window.bookingState.get('selectedDate');
-    var selectedTime = window.bookingState.get('selectedTime');
-    var selectedProfessional = window.bookingState.get('selectedProfessional');
+    const selectedDate = window.bookingState.get('selectedDate');
+    const selectedTime = window.bookingState.get('selectedTime');
+    const selectedProfessional = window.bookingState.get('selectedProfessional');
 
     if (!selectedDate || !selectedTime || !selectedProfessional) return true;
 
     try {
-      var isAvailable = await window.bookingService.checkAvailability(selectedDate, selectedTime, selectedProfessional.id);
+      const isAvailable = await window.bookingService.checkAvailability(selectedDate, selectedTime, selectedProfessional.id);
       if (!isAvailable) {
         this.showToast(
           '❌ Lo sentimos, ' + selectedProfessional.name + ' ya tiene una reserva para ' + selectedDate + ' a las ' + selectedTime + '. Por favor selecciona otra hora o profesional.',
@@ -304,28 +304,28 @@ var bookingApp = {
 
   // Actualizar horarios disponibles según profesional seleccionado
   updateAvailableTimesForProfessional: async function(retryCount) {
-    var count = retryCount || 0;
-    var selectedDate = window.bookingState.get('selectedDate');
-    var selectedProfessional = window.bookingState.get('selectedProfessional');
+    const count = retryCount || 0;
+    const selectedDate = window.bookingState.get('selectedDate');
+    const selectedProfessional = window.bookingState.get('selectedProfessional');
 
     if (!selectedDate || !selectedProfessional) return;
 
-    var timeSelect = document.getElementById('appointmentTime');
+    const timeSelect = document.getElementById('appointmentTime');
     if (!timeSelect) return;
 
-    var isMobile = isMobileDevice();
-    var isSlowConn = isSlowConnection();
-    var timeout = (isMobile || isSlowConn) ? 15000 : 10000;
+    const isMobile = isMobileDevice();
+    const isSlowConn = isSlowConnection();
+    const timeout = (isMobile || isSlowConn) ? 15000 : 10000;
 
-    var loadingText = isMobile ? '📱 Cargando horarios...' : '🔄 Verificando horarios disponibles...';
+    const loadingText = isMobile ? '📱 Cargando horarios...' : '🔄 Verificando horarios disponibles...';
     timeSelect.innerHTML = '<option value="">' + loadingText + '</option>';
 
-    var self = this;
+    const self = this;
 
     try {
-      var bookings = await window.bookingService.getBookings({ timeout: timeout });
+      const bookings = await window.bookingService.getBookings({ timeout: timeout });
 
-      var bookedTimes = bookings
+      const bookedTimes = bookings
         .filter(function(booking) {
           return (
             booking.date === selectedDate &&
@@ -340,16 +340,16 @@ var bookingApp = {
       console.error('Error loading bookings:', error);
 
       if (count < 2 && (error.name === 'AbortError' || error.message.includes('Failed to fetch') || error.message.includes('Timeout'))) {
-        var retryText = isMobile
+        const retryText = isMobile
           ? '📱 Reintentando conexión... (' + (count + 1) + '/2)'
           : '🔄 Reintentando... (' + (count + 1) + '/2)';
         timeSelect.innerHTML = '<option value="">' + retryText + '</option>';
-        var retryDelay = isMobile ? 2500 : 1500;
+        const retryDelay = isMobile ? 2500 : 1500;
         setTimeout(function() { self.updateAvailableTimesForProfessional(count + 1); }, retryDelay);
         return;
       }
 
-      var fallbackMessage = isMobile
+      const fallbackMessage = isMobile
         ? 'No se pueden verificar las reservas. Se muestran todos los horarios. Te recomendamos llamar para confirmar.'
         : 'No se pudieron verificar las reservas existentes. Se muestran todos los horarios disponibles. Te recomendamos confirmar por teléfono.';
 
@@ -360,36 +360,36 @@ var bookingApp = {
 
   // Renderizar slots de tiempo (usa window.renderTimeSlot del componente)
   renderTimeSlots: function(bookedTimes) {
-    var bookedList = bookedTimes || [];
-    var timeSelect = document.getElementById('appointmentTime');
+    const bookedList = bookedTimes || [];
+    const timeSelect = document.getElementById('appointmentTime');
     if (!timeSelect) return;
 
-    var selectedDate = window.bookingState.get('selectedDate');
+    const selectedDate = window.bookingState.get('selectedDate');
     if (!selectedDate) return;
 
-    var parts = selectedDate.split('-');
-    var selectedDateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-    var dayOfWeek = selectedDateObj.getDay();
-    var isSunday = dayOfWeek === 0;
-    var isSaturday = dayOfWeek === 6;
+    const parts = selectedDate.split('-');
+    const selectedDateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    const dayOfWeek = selectedDateObj.getDay();
+    const isSunday = dayOfWeek === 0;
+    const isSaturday = dayOfWeek === 6;
 
     if (isSunday) {
       timeSelect.innerHTML = '<option value="">🚫 Domingo cerrado</option>';
       return;
     }
 
-    var closingHour = isSaturday ? 18 : CONFIG.BUSINESS_HOURS.end;
-    var timeSlots = [];
+    const closingHour = isSaturday ? 18 : CONFIG.BUSINESS_HOURS.end;
+    const timeSlots = [];
 
-    for (var hour = CONFIG.BUSINESS_HOURS.start; hour < closingHour; hour++) {
+    for (let hour = CONFIG.BUSINESS_HOURS.start; hour < closingHour; hour++) {
       if (hour >= CONFIG.BUSINESS_HOURS.lunchBreak.start && hour < CONFIG.BUSINESS_HOURS.lunchBreak.end) continue;
-      var timeString = hour.toString().padStart(2, '0') + ':00';
-      var isBooked = bookedList.includes(timeString);
+      const timeString = hour.toString().padStart(2, '0') + ':00';
+      const isBooked = bookedList.includes(timeString);
       timeSlots.push(window.renderTimeSlot(timeString, isBooked));
     }
 
-    var availableCount = timeSlots.filter(function(t) { return !t.includes('disabled'); }).length;
-    var headerText = availableCount > 0
+    const availableCount = timeSlots.filter(function(t) { return !t.includes('disabled'); }).length;
+    const headerText = availableCount > 0
       ? 'Selecciona una hora (' + availableCount + ' disponibles)'
       : 'No hay horarios disponibles';
 
@@ -398,24 +398,24 @@ var bookingApp = {
 
   // Actualizar información del servicio seleccionado
   updateServiceInfo: function() {
-    var container = document.getElementById('selectedServiceInfo');
-    var selectedService = window.bookingState.get('selectedService');
-    var selectedDate = window.bookingState.get('selectedDate');
-    var selectedTime = window.bookingState.get('selectedTime');
-    var selectedProfessional = window.bookingState.get('selectedProfessional');
+    const container = document.getElementById('selectedServiceInfo');
+    const selectedService = window.bookingState.get('selectedService');
+    const selectedDate = window.bookingState.get('selectedDate');
+    const selectedTime = window.bookingState.get('selectedTime');
+    const selectedProfessional = window.bookingState.get('selectedProfessional');
 
     if (!container || !selectedService) return;
 
-    var dateText = 'No seleccionada';
+    let dateText = 'No seleccionada';
     if (selectedDate) {
-      var parts = selectedDate.split('-');
-      var date = new Date(Date.UTC(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])));
+      const parts = selectedDate.split('-');
+      const date = new Date(Date.UTC(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])));
       dateText = date.toLocaleDateString('es-ES', {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
       });
     }
 
-    var professionalText = selectedProfessional ? selectedProfessional.name : 'No seleccionado';
+    const professionalText = selectedProfessional ? selectedProfessional.name : 'No seleccionado';
 
     container.innerHTML = (
       '<div class="row">' +
@@ -435,7 +435,7 @@ var bookingApp = {
 
   // Avanzar al siguiente paso
   nextStep: function() {
-    var currentStep = window.bookingState.get('currentStep');
+    const currentStep = window.bookingState.get('currentStep');
     if (currentStep === 3 && window.bookingState.get('isSubmitting')) return;
 
     if (this.validateCurrentStep()) {
@@ -443,7 +443,7 @@ var bookingApp = {
         window.bookingState.set('currentStep', currentStep + 1);
         this.updateStep();
       } else {
-        var btnNext = document.getElementById('btnNext');
+        const btnNext = document.getElementById('btnNext');
         if (btnNext) {
           btnNext.disabled = true;
           btnNext.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
@@ -455,7 +455,7 @@ var bookingApp = {
 
   // Retroceder al paso anterior
   previousStep: function() {
-    var currentStep = window.bookingState.get('currentStep');
+    const currentStep = window.bookingState.get('currentStep');
     if (currentStep > 1) {
       window.bookingState.set('currentStep', currentStep - 1);
       this.updateStep();
@@ -464,7 +464,7 @@ var bookingApp = {
 
   // Validar el paso actual
   validateCurrentStep: function() {
-    var currentStep = window.bookingState.get('currentStep');
+    const currentStep = window.bookingState.get('currentStep');
     switch (currentStep) {
       case 1:
         if (!window.bookingState.get('selectedService')) {
@@ -486,14 +486,15 @@ var bookingApp = {
           return false;
         }
         break;
-      case 3:
-        var form = document.getElementById('clientForm');
+      case 3: {
+        const form = document.getElementById('clientForm');
         if (form && !form.checkValidity()) {
           form.classList.add('was-validated');
           this.showToast('Por favor completa todos los campos requeridos', 'error');
           return false;
         }
         break;
+      }
     }
     return true;
   },
@@ -503,8 +504,8 @@ var bookingApp = {
     document.querySelectorAll('.step-content').forEach(function(step) {
       step.classList.add('d-none');
     });
-    var currentStep = window.bookingState.get('currentStep');
-    var currentStepElement = document.getElementById('step' + currentStep);
+    const currentStep = window.bookingState.get('currentStep');
+    const currentStepElement = document.getElementById('step' + currentStep);
     if (currentStepElement) currentStepElement.classList.remove('d-none');
 
     this.updateStepIndicators();
@@ -514,8 +515,8 @@ var bookingApp = {
 
   // Actualizar indicadores de pasos
   updateStepIndicators: function() {
-    var currentStep = window.bookingState.get('currentStep');
-    var indicators = document.querySelectorAll('.step-number');
+    const currentStep = window.bookingState.get('currentStep');
+    const indicators = document.querySelectorAll('.step-number');
     indicators.forEach(function(indicator, index) {
       indicator.classList.remove('active', 'completed');
       if (index + 1 < currentStep) indicator.classList.add('completed');
@@ -525,10 +526,10 @@ var bookingApp = {
 
   // Actualizar botones de navegación
   updateButtons: function() {
-    var currentStep = window.bookingState.get('currentStep');
-    var isSubmitting = window.bookingState.get('isSubmitting');
-    var btnBack = document.getElementById('btnBack');
-    var btnNext = document.getElementById('btnNext');
+    const currentStep = window.bookingState.get('currentStep');
+    const isSubmitting = window.bookingState.get('isSubmitting');
+    const btnBack = document.getElementById('btnBack');
+    const btnNext = document.getElementById('btnNext');
 
     if (btnBack) {
       btnBack.style.display = currentStep > 1 ? 'inline-block' : 'none';
@@ -568,14 +569,14 @@ var bookingApp = {
   submitBooking: async function() {
     if (window.bookingState.get('isSubmitting')) return;
 
-    var formData = this.getFormData();
+    const formData = this.getFormData();
     if (!formData) {
       this.showToast('Por favor completa todos los campos', 'error');
       this.resetSubmitButton();
       return;
     }
 
-    var isAvailable = await this.checkBookingAvailability();
+    const isAvailable = await this.checkBookingAvailability();
     if (!isAvailable) {
       this.resetSubmitButton();
       return;
@@ -585,12 +586,12 @@ var bookingApp = {
     this.showLoadingModal('Procesando tu reserva...');
 
     try {
-      var selectedDate = window.bookingState.get('selectedDate');
-      var selectedTime = window.bookingState.get('selectedTime');
-      var selectedService = window.bookingState.get('selectedService');
-      var selectedProfessional = window.bookingState.get('selectedProfessional');
+      const selectedDate = window.bookingState.get('selectedDate');
+      const selectedTime = window.bookingState.get('selectedTime');
+      const selectedService = window.bookingState.get('selectedService');
+      const selectedProfessional = window.bookingState.get('selectedProfessional');
 
-      var bookingData = {
+      const bookingData = {
         client: {
           name: formData.name,
           id: formData.id,
@@ -618,9 +619,9 @@ var bookingApp = {
 
       await new Promise(function(resolve) { setTimeout(resolve, 150); });
 
-      var displayParts = bookingData.date.split('-');
-      var dateForDisplay = new Date(Date.UTC(parseInt(displayParts[0]), parseInt(displayParts[1]) - 1, parseInt(displayParts[2])));
-      var formattedDate = dateForDisplay.toLocaleDateString('es-ES', {
+      const displayParts = bookingData.date.split('-');
+      const dateForDisplay = new Date(Date.UTC(parseInt(displayParts[0]), parseInt(displayParts[1]) - 1, parseInt(displayParts[2])));
+      const formattedDate = dateForDisplay.toLocaleDateString('es-ES', {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
       });
 
@@ -637,8 +638,8 @@ var bookingApp = {
   // Resetear el botón de envío
   resetSubmitButton: function() {
     window.bookingState.set('isSubmitting', false);
-    var btnNext = document.getElementById('btnNext');
-    var currentStep = window.bookingState.get('currentStep');
+    const btnNext = document.getElementById('btnNext');
+    const currentStep = window.bookingState.get('currentStep');
     if (btnNext && currentStep === 3) {
       btnNext.disabled = false;
       btnNext.innerHTML = '<i class="fas fa-check me-2"></i>Confirmar Reserva';
@@ -649,7 +650,7 @@ var bookingApp = {
 
   // Obtener datos del formulario
   getFormData: function() {
-    var form = document.getElementById('clientForm');
+    const form = document.getElementById('clientForm');
     if (!form || !form.checkValidity()) return null;
 
     return {
@@ -663,16 +664,16 @@ var bookingApp = {
 
   // Mostrar modal de carga
   showLoadingModal: function(message) {
-    var msg = message || 'Procesando...';
-    var modal = document.getElementById('loadingModal');
-    var text = document.getElementById('loadingText');
+    const msg = message || 'Procesando...';
+    const modal = document.getElementById('loadingModal');
+    const text = document.getElementById('loadingText');
 
     if (!modal) { console.warn('Modal de carga no encontrado en el DOM'); return; }
     if (text) text.textContent = msg;
 
     if (typeof bootstrap !== 'undefined') {
       try {
-        var bsModal = bootstrap.Modal.getInstance(modal);
+        let bsModal = bootstrap.Modal.getInstance(modal);
         if (!bsModal) bsModal = new bootstrap.Modal(modal);
         if (modal.isConnected) bsModal.show();
       } catch (error) {
@@ -688,7 +689,7 @@ var bookingApp = {
 
   // Ocultar modal de carga
   hideLoadingModal: function() {
-    var modal = document.getElementById('loadingModal');
+    const modal = document.getElementById('loadingModal');
 
     document.querySelectorAll('.modal-backdrop').forEach(function(backdrop) { backdrop.remove(); });
     document.body.classList.remove('modal-open');
@@ -699,7 +700,7 @@ var bookingApp = {
 
     try {
       if (typeof bootstrap !== 'undefined') {
-        var bsModal = bootstrap.Modal.getInstance(modal);
+        const bsModal = bootstrap.Modal.getInstance(modal);
         if (bsModal) {
           bsModal.hide();
           setTimeout(function() {
@@ -724,10 +725,10 @@ var bookingApp = {
 
   // Cerrar modal de reserva
   closeModal: function() {
-    var modal = document.getElementById('bookingModal');
+    const modal = document.getElementById('bookingModal');
     if (modal) {
       if (typeof bootstrap !== 'undefined') {
-        var bsModal = bootstrap.Modal.getInstance(modal);
+        const bsModal = bootstrap.Modal.getInstance(modal);
         if (bsModal) {
           bsModal.hide();
         } else {
@@ -737,7 +738,7 @@ var bookingApp = {
       modal.style.display = 'none';
       modal.classList.remove('show');
       document.body.classList.remove('modal-open');
-      var backdrop = document.querySelector('.modal-backdrop');
+      const backdrop = document.querySelector('.modal-backdrop');
       if (backdrop) backdrop.remove();
       document.body.style.paddingRight = '';
     }
@@ -752,18 +753,18 @@ var bookingApp = {
     document.getElementById('conf-price').textContent = '$' + bookingData.service.price.toLocaleString();
     document.getElementById('conf-client-email').textContent = bookingData.client.email;
 
-    var self = this;
-    var bookingModalEl = document.getElementById('bookingModal');
-    var confirmationModalEl = document.getElementById('confirmationModal');
+    const self = this;
+    const bookingModalEl = document.getElementById('bookingModal');
+    const confirmationModalEl = document.getElementById('confirmationModal');
 
-    var showConfirmation = function() {
+    const showConfirmation = function() {
       setTimeout(function() {
         new bootstrap.Modal(confirmationModalEl).show();
         self.resetSubmitButton();
       }, 0);
     };
 
-    var bsBooking = bootstrap.Modal.getInstance(bookingModalEl);
+    const bsBooking = bootstrap.Modal.getInstance(bookingModalEl);
     if (bsBooking) {
       bookingModalEl.addEventListener('hidden.bs.modal', showConfirmation, { once: true });
       bsBooking.hide();
@@ -779,7 +780,7 @@ var bookingApp = {
   // Resetear estado
   resetState: function() {
     window.bookingState.reset();
-    var form = document.getElementById('clientForm');
+    const form = document.getElementById('clientForm');
     if (form) {
       form.reset();
       form.classList.remove('was-validated');
@@ -791,7 +792,7 @@ var bookingApp = {
     if (window.toast) {
       window.toast.show(message, type || 'info', duration || null);
     } else if (typeof Toastify !== 'undefined') {
-      var colors = { success: '#28a745', error: '#dc3545', warning: '#ffc107', info: '#17a2b8' };
+      const colors = { success: '#28a745', error: '#dc3545', warning: '#ffc107', info: '#17a2b8' };
       Toastify({
         text: message,
         duration: duration || CONFIG.TOAST_DURATION,
@@ -814,7 +815,7 @@ if (typeof bootstrap !== 'undefined') {
 
 // ===== BACKWARDS COMPAT: bookingAPI =====
 // Mantiene la interfaz original de bookingAPI para tests y código externo.
-var bookingAPI = {
+const bookingAPI = {
   createBooking: function(bookingData) {
     return window.bookingService.createBooking(bookingData);
   },
@@ -831,16 +832,16 @@ function isMobileDevice() {
 
 function isSlowConnection() {
   if ('connection' in navigator) {
-    var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     return connection && (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g');
   }
   return false;
 }
 
 function canCancelBooking(bookingDateTime) {
-  var now = new Date();
-  var bookingTime = new Date(bookingDateTime);
-  var hoursDifference = (bookingTime - now) / (1000 * 60 * 60);
+  const now = new Date();
+  const bookingTime = new Date(bookingDateTime);
+  const hoursDifference = (bookingTime - now) / (1000 * 60 * 60);
   return hoursDifference >= CONFIG.CANCELLATION_HOURS;
 }
 

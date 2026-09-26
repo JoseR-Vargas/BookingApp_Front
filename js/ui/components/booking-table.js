@@ -23,7 +23,6 @@ function renderBookingRow(booking) {
 
   return (
     '<tr>' +
-      '<td>#' + booking._id.slice(-6) + '</td>' +
       '<td>' +
         '<div>' +
           '<strong>' + booking.client.name + '</strong><br>' +

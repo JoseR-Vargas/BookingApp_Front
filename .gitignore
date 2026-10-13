@@ -2,4 +2,7 @@ node_modules/
 coverage/
 .env
 CLAUDE.md
-skills 
+skills
+dist/
+.DS_Store
+.codegraph/

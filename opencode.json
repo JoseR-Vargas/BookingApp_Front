@@ -19,5 +19,29 @@
       "git push -f*": "deny",
       "git reset --hard*": "deny"
     }
+  },
+  "agent": {
+    "build": {
+      "permission": {
+        "*": "allow",
+        "external_directory": "allow",
+        "doom_loop": "allow",
+        "question": "deny",
+        "read": {
+          "*": "allow",
+          "*.env": "deny",
+          "*.env.*": "deny"
+        },
+        "bash": {
+          "*": "allow",
+          "rm -rf /*": "deny",
+          "rm -rf ~*": "deny",
+          "sudo *": "deny",
+          "git push --force*": "deny",
+          "git push -f*": "deny",
+          "git reset --hard*": "deny"
+        }
+      }
+    }
   }
 }

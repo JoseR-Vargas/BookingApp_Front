@@ -1,7 +1,7 @@
 {
   "name": "booking_front",
   "version": "1.0.0",
-  "description": "",
+  "description": "BookingApp frontend: React + Vite + Tailwind booking site and admin panel",
   "type": "module",
   "scripts": {
     "dev": "vite",

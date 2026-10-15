@@ -1,11 +1,28 @@
-// Public landing page + booking flow. Implemented in T3.
+import { useState } from 'react';
+import BookingModal from '../components/booking/BookingModal.jsx';
+import ContactSection from '../components/home/ContactSection.jsx';
+import Footer from '../components/home/Footer.jsx';
+import Hero from '../components/home/Hero.jsx';
+import ServicesSection from '../components/home/ServicesSection.jsx';
+import Navbar from '../components/layout/Navbar.jsx';
+import { BookingProvider } from '../state/bookingState.jsx';
+
+// Public landing page. Every "Reservar Cita" button opens the booking flow.
 export default function Home() {
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const openBooking = () => setBookingOpen(true);
+
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <h1 className="text-2xl">
-        <i className="fas fa-calendar-alt text-accent mr-2" aria-hidden="true" />
-        BookingApp
-      </h1>
-    </main>
+    <BookingProvider>
+      <Navbar onReserve={openBooking} />
+      <main>
+        <Hero onReserve={openBooking} />
+        <ServicesSection onReserve={openBooking} />
+        <ContactSection onReserve={openBooking} />
+      </main>
+      <Footer />
+      {/* Also renders the loading and confirmation dialogs the booking flow drives. */}
+      <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
+    </BookingProvider>
   );
 }

@@ -109,6 +109,24 @@
   --spacing-sidebar-collapsed: 70px;
   --spacing-top-nav: 60px;
 
+  /*
+   * --- Breakpoints ---
+   * The legacy site used a third-party 12-column grid framework (v5.3), so every responsive rule was written
+   * against ITS breakpoints (the navbar collapses below 992px, containers snap at
+   * 576/768/992/1200/1400). Tailwind's defaults (640/768/1024/1280/1536) would move
+   * those switch points, so the five named breakpoints are overridden to match.
+   * Tailwind's `max-*:` variants (and arbitrary `max-[Npx]:`) are EXCLUSIVE (< N), while
+   * the legacy `@media (max-width: Npx)` rules are inclusive (<= N). At exactly 768px
+   * (iPad portrait) that is the difference between the mobile and tablet layout, so the
+   * `lte-*` variants below mirror the legacy inclusive queries one-to-one.
+   * They are declared from the widest to the narrowest so narrower ones win on conflicts.
+   */
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-2xl: 1400px;
+
   /* --- Animations (legacy keyframes, renamed to kebab-case) --- */
   --animate-fade-in: fade-in 0.5s ease-out;
   --animate-ring: ring 2s ease-in-out infinite;
@@ -165,11 +183,27 @@
   }
 }
 
+/* Inclusive "<= N" variants matching the legacy max-width media queries (see Breakpoints above). */
+@custom-variant lte-lg (@media (width <= 992px));
+@custom-variant lte-md (@media (width <= 768px));
+@custom-variant lte-sm (@media (width <= 576px));
+@custom-variant lte-400 (@media (width <= 400px));
+
 /* Transition tokens: no Tailwind namespace, kept as plain variables. */
 @theme static {
   --transition-fast: 150ms ease;
   --transition-normal: 300ms ease;
   --transition-slow: 500ms ease;
+
+  /*
+   * Form glyphs used as CSS background images (booking modal). They cannot be expressed as plain
+   * utilities, so they are exposed as variables: `bg-(image:--icon-field-invalid)`. The SVGs are the
+   * ones the legacy grid framework used for its select chevron, validation icons and checkbox tick.
+   */
+  --icon-select-chevron: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  --icon-field-invalid: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+  --icon-field-valid: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+  --icon-check: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
 }
 
 @layer base {

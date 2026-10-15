@@ -8,7 +8,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    // Legacy Jest suites under legacy/ stay untouched as reference until T5.
+    // Only the React suites under src/ are collected.
     include: ['src/**/*.test.{js,jsx}'],
     setupFiles: './src/test/setup.js',
   },

@@ -1,6 +1,4 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
 
 // APP_CONFIG resolves BACKEND_URL at module evaluation time, so each case
 // stubs the location and re-imports a fresh copy of the module.
@@ -37,7 +35,7 @@ describe('APP_CONFIG.BACKEND_URL', () => {
   });
 });
 
-describe('APP_CONFIG business data (parity with legacy/js/config.js)', () => {
+describe('APP_CONFIG business data (frozen from the pre-migration config)', () => {
   it('keeps scalar settings identical to legacy', async () => {
     const config = await loadConfigFor('localhost');
     expect(config.BUSINESS_HOURS).toEqual({
@@ -116,30 +114,5 @@ describe('APP_CONFIG business data (parity with legacy/js/config.js)', () => {
         icon: 'fas fa-bolt',
       },
     ]);
-  });
-
-  // Guard against drifting from the legacy source while it still exists (removed in T5).
-  it('matches every service name/price found in the legacy file text', () => {
-    const legacyPath = resolve(process.cwd(), 'legacy/js/config.js');
-    let legacyText;
-    try {
-      legacyText = readFileSync(legacyPath, 'utf8');
-    } catch {
-      return; // legacy/ is deleted at the end of the migration
-    }
-    for (const needle of [
-      "name: 'Consulta Inicial'",
-      'price: 500,',
-      "name: 'Servicio Básico'",
-      'price: 1200,',
-      "name: 'Servicio Premium'",
-      'price: 2500,',
-      "name: 'Sesión Exprés'",
-      'price: 700,',
-      "name: 'Alex García'",
-      "name: 'María López'",
-    ]) {
-      expect(legacyText).toContain(needle);
-    }
   });
 });

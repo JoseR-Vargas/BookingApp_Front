@@ -282,6 +282,29 @@ describe('Admin top bar and navigation', () => {
     expect(sidebar()).toHaveAttribute('data-show', 'false');
   });
 
+  it('closes the mobile drawer after navigating, so its backdrop does not block the page', async () => {
+    window.innerWidth = 768;
+    await loadedAdmin();
+    await userEvent.click(screen.getByRole('button', { name: 'Toggle sidebar' }));
+    expect(sidebar()).toHaveAttribute('data-show', 'true');
+
+    await userEvent.click(screen.getByRole('link', { name: 'Reservas' }));
+
+    expect(pageTitle()).toHaveTextContent('Gestión de Reservas');
+    expect(sidebar()).toHaveAttribute('data-show', 'false');
+  });
+
+  it('keeps the sidebar state untouched when navigating on desktop', async () => {
+    await loadedAdmin();
+    await userEvent.click(screen.getByRole('button', { name: 'Toggle sidebar' }));
+    expect(sidebar()).toHaveAttribute('data-collapsed', 'true');
+
+    await userEvent.click(screen.getByRole('link', { name: 'Reservas' }));
+
+    expect(sidebar()).toHaveAttribute('data-collapsed', 'true');
+    expect(sidebar()).toHaveAttribute('data-show', 'false');
+  });
+
   it('keeps the show state off at 769px (desktop rule)', async () => {
     window.innerWidth = 769;
     await loadedAdmin();
@@ -295,7 +318,7 @@ describe('Admin top bar and navigation', () => {
     it('asks for confirmation, clears the session and goes to /login when confirmed', async () => {
       await loadedAdmin();
 
-      await userEvent.click(screen.getByRole('button', { name: 'Cerrar sesión' }));
+      await userEvent.click(screen.getByRole('menuitem', { name: 'Cerrar sesión' }));
 
       expect(window.confirm).toHaveBeenCalledWith('¿Estás seguro de que deseas cerrar sesión?');
       expect(sessionStorage.getItem('isAdmin')).toBeNull();
@@ -307,7 +330,7 @@ describe('Admin top bar and navigation', () => {
       window.confirm.mockReturnValue(false);
       await loadedAdmin();
 
-      await userEvent.click(screen.getByRole('button', { name: 'Cerrar sesión' }));
+      await userEvent.click(screen.getByRole('menuitem', { name: 'Cerrar sesión' }));
 
       expect(sessionStorage.getItem('isAdmin')).toBe('true');
       expect(screen.queryByText('login page')).not.toBeInTheDocument();
@@ -323,6 +346,9 @@ describe('Admin bookings section', () => {
     return screen.findByRole('table', { name: 'Reservas' });
   }
   const rowsOf = (table) => within(table).getAllByRole('row').slice(1);
+  // The datatable owns its rows, so the <table> element is REPLACED whenever the data changes:
+  // look it up again instead of holding on to the element rendered before the change.
+  const currentTable = () => screen.getByRole('table', { name: 'Reservas' });
 
   it('shows every booking with decoded text, notes and the "Sin notas" placeholder', async () => {
     const table = await openBookings();
@@ -333,6 +359,15 @@ describe('Admin bookings section', () => {
     expect(within(table).queryByText(/&amp;/)).not.toBeInTheDocument();
     expect(within(table).getByText('Prefiero silla baja')).toBeInTheDocument();
     expect(within(table).getAllByText('Sin notas')).toHaveLength(6);
+  });
+
+  it('offers the (additive) professional filter with every professional found in the bookings', async () => {
+    await openBookings();
+
+    const filter = screen.getByRole('combobox', { name: 'Filtrar por profesional' });
+    expect(filter).toBeInTheDocument();
+    const options = screen.getAllByRole('option', { hidden: true }).map((option) => option.textContent);
+    expect(options).toEqual(['Todos', 'Alex García', 'Barbero Viejo']);
   });
 
   it('shows "No hay reservas registradas" for an empty list', async () => {
@@ -364,14 +399,14 @@ describe('Admin bookings section', () => {
 
   describe('date filter', () => {
     it('refetches the bookings, filters by exact date and toasts the plural count', async () => {
-      const table = await openBookings();
+      await openBookings();
       const before = callsTo('GET', '/api/bookings').length;
 
       fireEvent.change(screen.getByLabelText('Filtrar por fecha'), { target: { value: `${YEAR}-03-12` } });
 
       await waitFor(() => expect(toast.info).toHaveBeenCalledWith('Mostrando 2 reservas'));
       expect(callsTo('GET', '/api/bookings')).toHaveLength(before + 1);
-      const names = rowsOf(table).map((row) => within(row).getAllByRole('cell')[0].textContent);
+      const names = rowsOf(currentTable()).map((row) => within(row).getAllByRole('cell')[0].textContent);
       expect(names).toHaveLength(2);
       expect(names[0]).toContain('Ana & Co');
       expect(names[1]).toContain('Cliente 4');
@@ -406,10 +441,10 @@ describe('Admin bookings section', () => {
     });
 
     it('"Actualizar" clears the date, reloads the full list and toasts "Filtros limpiados"', async () => {
-      const table = await openBookings();
+      await openBookings();
       const input = screen.getByLabelText('Filtrar por fecha');
       fireEvent.change(input, { target: { value: `${YEAR}-03-12` } });
-      await waitFor(() => expect(rowsOf(table)).toHaveLength(2));
+      await waitFor(() => expect(rowsOf(currentTable())).toHaveLength(2));
       const before = callsTo('GET', '/api/bookings').length;
 
       await userEvent.click(screen.getByRole('button', { name: /Actualizar/ }));
@@ -417,7 +452,7 @@ describe('Admin bookings section', () => {
       await waitFor(() => expect(toast.info).toHaveBeenCalledWith('Filtros limpiados'));
       expect(input).toHaveValue('');
       expect(callsTo('GET', '/api/bookings')).toHaveLength(before + 1);
-      expect(rowsOf(table)).toHaveLength(7);
+      expect(rowsOf(currentTable())).toHaveLength(7);
     });
   });
 
@@ -443,8 +478,8 @@ describe('Admin bookings section', () => {
       // Dashboard (stats + recent) and bookings list are both reloaded.
       expect(callsTo('GET', '/api/bookings/statistics')).toHaveLength(statsGetsBefore + 1);
       expect(callsTo('GET', '/api/bookings').length).toBeGreaterThanOrEqual(bookingsGetsBefore + 2);
-      expect(within(table).queryByText('Cliente 3')).not.toBeInTheDocument();
-      expect(rowsOf(table)).toHaveLength(6);
+      expect(within(currentTable()).queryByText('Cliente 3')).not.toBeInTheDocument();
+      expect(rowsOf(currentTable())).toHaveLength(6);
     });
 
     it('shows the decoded client name in the confirm dialog and the success toast', async () => {

@@ -48,3 +48,17 @@ export function getProfessionalName(booking) {
     || (booking.barber && booking.barber.name)
     || 'N/A';
 }
+
+// Exact professional-name filter; an empty name means "no filter".
+export function filterByProfessional(bookings, name) {
+  const list = bookings || [];
+  return name ? list.filter((b) => getProfessionalName(b) === name) : list;
+}
+
+// Distinct professional names found in the bookings, sorted (options of the admin professional filter).
+export function getProfessionalNames(bookings) {
+  const names = (bookings || [])
+    .map((b) => (b.professional && b.professional.name) || (b.barber && b.barber.name))
+    .filter(Boolean);
+  return [...new Set(names)].sort((a, b) => a.localeCompare(b, 'es'));
+}

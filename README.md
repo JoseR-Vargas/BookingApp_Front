@@ -6,6 +6,7 @@ Appointment booking web app: a public site with a 3-step booking flow (service â
 
 - React 18 + Vite (JavaScript / JSX)
 - Tailwind CSS v4 (design tokens in `@theme`, see `src/index.css`)
+- Preline UI 5, as single-plugin packages (`@preline/dropdown|datatable|datepicker|select|combobox|overlay`): see [Preline UI](#preline-ui)
 - react-router-dom, `@headlessui/react` (dialogs), chart.js + react-chartjs-2, socket.io-client, toastify-js
 - Vitest + Testing Library
 - Font Awesome and Google Fonts are loaded from CDN in `index.html`
@@ -18,6 +19,17 @@ Appointment booking web app: a public site with a 3-step booking flow (service â
 | `npm run build`   | Production build into `dist/`             |
 | `npm run preview` | Serves the production build locally       |
 | `npm test`        | Runs the Vitest suite once                |
+
+## Preline UI
+
+Preline is DOM-driven: React renders the markup and a Preline plugin attaches behavior to it. Everything lives in `src/lib/` and the components that use it:
+
+- **Runtime**: one lazy chunk per plugin (`src/lib/preline.js`), loaded from `@preline/<plugin>/non-auto.mjs` only when a component mounts. The full `preline` package is NOT installed (loading it next to the single-plugin entries would duplicate constructors and global listeners). `autoInit()` is not used: this app mounts Preline markup late (lazy admin chunk, dialogs), so each component owns its instance through `usePrelineInstance` (create on mount, `destroy()` on cleanup, StrictMode-safe).
+- **Third-party globals** are loaded before the plugin that needs them: `src/vendor-globals.js` (jQuery + DataTables â†’ `window.$`, `window.DataTable`, datatable only) and `src/vendor-globals-datepicker.js` (`window._` with lodash `merge`/`mergeWith`, datepicker only).
+- **Theme**: `src/index.css` imports Preline's `theme.css`, variants and calendar skin BEFORE the project's `@theme` (project tokens win on clashes) and maps Preline's semantic tokens (`--primary`, `--layer`, `--dropdown`, ...) to the gold-on-black palette in a `:root` block. `<html class="dark">` makes Preline's `dark:` classes always apply. Preline's global `* { border-color }` rule is neutralized. `@tailwindcss/forms` is not used.
+- **Where it is used**: admin user menu (dropdown), bookings table (datatable: search, sort, pagination), date fields in the booking modal and the admin filter (datepicker), booking time field (select), admin professional filter (combobox, a NEW additive feature), admin mobile drawer (overlay). The booking/confirmation/loading modals stay on Headless UI.
+- **DOM ownership rules** (React vs. a plugin that rewrites the DOM): the datepicker input is created imperatively because `destroy()` swaps it for a clone; the select/combobox/datatable are rebuilt when their options/data change; datatable rows are read from the DOM as text (never HTML). Details are in the doc comment of each component.
+- **Tests**: jsdom cannot run the plugins, so `src/test/setup.js` makes the loader inert and each suite mocks `src/lib/preline.js` with a fake plugin class to assert the React contract (markup, `data-hs-*` attributes, init/destroy, events).
 
 ## Backend URL
 
@@ -45,6 +57,7 @@ src/
   services/    booking, admin, auth, realtime (socket) and audio services (no React)
   state/       booking flow state (React context + reducer)
   hooks/       useAdminData, useAvailableTimes, useBookingNotifications
+  lib/         Preline runtime loader + usePrelineInstance hook
   ui/          toast wrapper
   utils/       sanitize, formatting, schedule, device and admin-stats helpers
   components/  home/, booking/, admin/, auth/, layout/, ui/ (Tailwind utilities in JSX)

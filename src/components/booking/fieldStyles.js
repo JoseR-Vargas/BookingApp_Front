@@ -35,3 +35,8 @@ export const INVALID_FEEDBACK =
 // (Chrome adds 1px/2px by default), otherwise the value renders wider than in the legacy form.
 export const DATE_INPUT_RESET =
   '[&::-webkit-datetime-edit]:block [&::-webkit-datetime-edit]:p-0 [&::-webkit-datetime-edit-fields-wrapper]:p-0 [&::-webkit-datetime-edit-text]:p-0 [&::-webkit-datetime-edit-month-field]:p-0 [&::-webkit-datetime-edit-day-field]:p-0 [&::-webkit-datetime-edit-year-field]:p-0';
+
+// Preline advanced-select skin for the booking form (see ui/Select.jsx): same box as SELECT_LG
+// (`.form-select.form-select-lg`), so the field looks like the native control it replaces.
+export const SELECT_TOGGLE_LG =
+  'relative flex w-full cursor-pointer touch-manipulation items-center rounded-md border border-border-subtle bg-bg-tertiary py-2 pr-9 pl-4 text-left text-[1.25rem] leading-normal text-text-primary transition-[border-color,box-shadow] duration-150 ease-[ease] hs-select-disabled:pointer-events-none hs-select-disabled:opacity-50 hs-select-opened:border-accent focus:border-accent focus:shadow-[0_0_0_3px_var(--color-accent-muted)] focus:outline-none lte-md:min-h-[50px] lte-md:px-4 lte-md:py-3 lte-md:text-[1.1rem] lte-sm:text-[0.9rem]';

@@ -3,14 +3,20 @@
 // There is ONE bookings list (the latest fetch); the "recent" table, the filtered table, the filtered
 // revenue and the charts are all derived from it, so every view always shows the same data.
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   deleteBooking as deleteBookingRequest,
   getBookings,
   getStatistics,
 } from '../services/adminService.js';
 import { toast } from '../ui/toast.js';
-import { filterByDate, getRecentBookings, sumConfirmedRevenue } from '../utils/adminStats.js';
+import {
+  filterByDate,
+  filterByProfessional,
+  getProfessionalNames,
+  getRecentBookings,
+  sumConfirmedRevenue,
+} from '../utils/adminStats.js';
 import { decodeEntities } from '../utils/sanitize.js';
 
 const EMPTY_STATS = { totalBookings: 0, totalRevenue: 0, todayBookings: 0 };
@@ -19,6 +25,10 @@ export function useAdminData() {
   const [stats, setStats] = useState(EMPTY_STATS);
   const [bookings, setBookings] = useState([]);
   const [filterDate, setFilterDate] = useState('');
+  // Additive filter (not in the legacy panel): '' means every professional.
+  const [professional, setProfessionalState] = useState('');
+  // `applyFilter` is a stable callback but its toast must count with the CURRENT professional.
+  const professionalRef = useRef('');
 
   const updateStatistics = useCallback(async () => {
     try {
@@ -64,18 +74,24 @@ export function useAdminData() {
     try {
       const all = await getBookings();
       setBookings(all);
-      const count = filterByDate(all, date).length;
+      const count = filterByProfessional(filterByDate(all, date), professionalRef.current).length;
       toast.info('Mostrando ' + count + ' reserva' + (count !== 1 ? 's' : ''));
     } catch (error) {
       toast.error('Error aplicando filtros');
     }
   }, []);
 
+  const setProfessional = useCallback((name) => {
+    professionalRef.current = name;
+    setProfessionalState(name);
+  }, []);
+
   const clearFilters = useCallback(async () => {
     setFilterDate('');
+    setProfessional('');
     await loadBookings();
     toast.info('Filtros limpiados');
-  }, [loadBookings]);
+  }, [loadBookings, setProfessional]);
 
   // Receives the booking object (never HTML strings): the id comes straight from the data.
   const deleteBooking = useCallback(async (booking) => {
@@ -96,7 +112,12 @@ export function useAdminData() {
   }, [loadDashboard, loadBookings]);
 
   const recentBookings = useMemo(() => getRecentBookings(bookings, 5), [bookings]);
-  const visibleBookings = useMemo(() => filterByDate(bookings, filterDate), [bookings, filterDate]);
+  const visibleBookings = useMemo(
+    () => filterByProfessional(filterByDate(bookings, filterDate), professional),
+    [bookings, filterDate, professional],
+  );
+  // Options come from every booking, so they stay stable while the other filters change.
+  const professionals = useMemo(() => getProfessionalNames(bookings), [bookings]);
   const filteredRevenue = useMemo(() => sumConfirmedRevenue(visibleBookings), [visibleBookings]);
 
   return {
@@ -106,6 +127,9 @@ export function useAdminData() {
     visibleBookings,
     filteredRevenue,
     filterDate,
+    professional,
+    professionals,
+    setProfessional,
     loadDashboard,
     loadBookings,
     applyFilter,

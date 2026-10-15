@@ -1,5 +1,6 @@
 import Button from '../ui/Button.jsx';
 import NotificationBell from './NotificationBell.jsx';
+import UserMenu from './UserMenu.jsx';
 
 // Legacy buttons were inline-block with an inline icon + a text span separated by a space, so the
 // content flows inline instead of flexing. Below 768px they become square icon-only buttons
@@ -52,20 +53,7 @@ export default function Topbar({
 
         <NotificationBell count={notificationCount} onClick={onBellClick} />
 
-        <div className="flex items-center gap-4 lte-md:gap-1 lte-sm:gap-0">
-          <span className="font-medium text-text-primary lte-lg:text-[0.9rem] lte-md:hidden">{userName}</span>
-          <Button
-            variant="outlineDanger"
-            size="xs"
-            title="Cerrar sesión"
-            aria-label="Cerrar sesión"
-            onClick={onLogout}
-            className={`ml-4 lte-md:ml-0 ${INLINE} ${SQUARE}`}
-          >
-            <i aria-hidden="true" className="fas fa-sign-out-alt" />{' '}
-            <span className={`ml-1 ${LABEL}`}>Salir</span>
-          </Button>
-        </div>
+        <UserMenu userName={userName} onLogout={onLogout} />
       </div>
     </header>
   );

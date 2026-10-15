@@ -46,6 +46,13 @@ export default function Admin() {
     if (window.innerWidth <= MOBILE_MAX_WIDTH) setDrawerOpen((value) => !value);
   };
 
+  // On mobile the sidebar is a modal drawer: picking a section must dismiss it, otherwise its
+  // backdrop keeps blocking the page. Desktop sidebar state is left alone.
+  const handleNavigate = (key) => {
+    setSection(key);
+    if (window.innerWidth <= MOBILE_MAX_WIDTH) setDrawerOpen(false);
+  };
+
   const handleBellClick = () => {
     notifications.clearCount();
     setSection('bookings');
@@ -63,7 +70,13 @@ export default function Admin() {
     <AdminLayout
       collapsed={collapsed}
       sidebar={(
-        <Sidebar collapsed={collapsed} show={drawerOpen} section={section} onNavigate={setSection} />
+        <Sidebar
+          collapsed={collapsed}
+          show={drawerOpen}
+          section={section}
+          onNavigate={handleNavigate}
+          onShowChange={setDrawerOpen}
+        />
       )}
       topbar={(
         <Topbar
@@ -85,6 +98,9 @@ export default function Admin() {
         <BookingsSection
           bookings={data.visibleBookings}
           filterDate={data.filterDate}
+          professionals={data.professionals}
+          professional={data.professional}
+          onProfessionalChange={data.setProfessional}
           totalRevenue={data.filteredRevenue}
           onFilterChange={data.applyFilter}
           onClearFilters={data.clearFilters}

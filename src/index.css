@@ -1,6 +1,31 @@
 @import "tailwindcss";
 
 /*
+ * Preline UI (single-plugin packages, see src/lib/preline.js).
+ * Everything Preline ships is imported BEFORE the project's @theme block so that, on any
+ * name clash (--color-border, --radius-*, ...), the project's tokens win.
+ *  - theme.css : semantic tokens (bg-layer, text-foreground, border-layer-line, ...) driven by CSS
+ *                variables. Every @preline/* package ships the same file; the palette mapping that
+ *                makes them look native to this app is the `:root` block below.
+ *  - variants.css : JS-driven variants (hs-dropdown-open:, hs-selected:, hs-overlay-open:, ...).
+ *  - styles.css : calendar skin of the datepicker (vanilla-calendar-pro).
+ * `@tailwindcss/forms` is NOT used: every form control in this app styles itself with utilities.
+ */
+@import "@preline/dropdown/theme.css";
+@import "@preline/dropdown/variants.css";
+@import "@preline/overlay/variants.css";
+@import "@preline/select/variants.css";
+@import "@preline/combobox/variants.css";
+@import "@preline/datatable/variants.css";
+@import "@preline/datepicker/variants.css";
+@import "@preline/datepicker/styles.css";
+/* Class names that only exist inside the plugin scripts (generated markup, calendar templates). */
+@source "../node_modules/@preline/*/non-auto.mjs";
+
+/* The app is dark-only: Preline's `dark:` classes (calendar templates) must always apply. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
  * Design tokens ported from the legacy css/variables.css ("Barbershop App").
  * Token names are kept 1:1 so the legacy stylesheets stay a valid visual
  * reference, e.g. `--color-bg-primary` -> `bg-bg-primary`, `--color-text-secondary`
@@ -206,7 +231,169 @@
   --icon-check: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
 }
 
+/*
+ * Preline semantic tokens -> the app's gold-on-black palette. This block comes after theme.css,
+ * so it wins over both Preline's `:root` (light) and `.dark` (neutral) values. `--border` is a
+ * literal because `--color-border` is both a project token and a Preline alias of `--border`.
+ */
+:root {
+  --background: var(--color-bg-primary);
+  --background-1: var(--color-bg-secondary);
+  --background-2: var(--color-bg-tertiary);
+  --background-plain: var(--color-bg-primary);
+  --foreground: var(--color-text-primary);
+  --foreground-inverse: var(--color-text-inverse);
+  --inverse: var(--color-text-primary);
+
+  --border: rgba(201, 169, 110, 0.2);
+  --border-line-inverse: var(--color-bg-primary);
+  --border-line-1: var(--color-border-subtle);
+  --border-line-2: rgba(201, 169, 110, 0.2);
+  --border-line-3: rgba(201, 169, 110, 0.3);
+  --border-line-4: rgba(201, 169, 110, 0.4);
+  --border-line-5: rgba(201, 169, 110, 0.5);
+  --border-line-6: var(--color-accent-dark);
+  --border-line-7: var(--color-accent);
+  --border-line-8: var(--color-accent-light);
+
+  /* Gold scale; 500 is the brand accent and --primary points at it. */
+  --primary-50: #fbf7ef;
+  --primary-100: #f4ecda;
+  --primary-200: #e9d9b5;
+  --primary-300: #dfc08a;
+  --primary-400: #d4b57a;
+  --primary-500: #c9a96e;
+  --primary-600: #c9a96e;
+  --primary-700: #a8863e;
+  --primary-800: #876b30;
+  --primary-900: #655024;
+  --primary-950: #3d3015;
+  --primary: var(--color-accent);
+  --primary-line: transparent;
+  --primary-foreground: var(--color-text-inverse);
+  --primary-hover: var(--color-accent-light);
+  --primary-focus: var(--color-accent-light);
+  --primary-active: var(--color-accent-dark);
+  --primary-checked: var(--color-accent);
+
+  --secondary: var(--color-bg-tertiary);
+  --secondary-line: var(--color-border-subtle);
+  --secondary-foreground: var(--color-text-primary);
+  --secondary-hover: var(--color-bg-secondary);
+  --secondary-focus: var(--color-bg-secondary);
+  --secondary-active: var(--color-bg-secondary);
+
+  /* "layer" = form controls and raised surfaces: same fill/border as the app's own inputs. */
+  --layer: var(--color-bg-tertiary);
+  --layer-line: var(--color-border-subtle);
+  --layer-foreground: var(--color-text-primary);
+  --layer-hover: var(--color-bg-secondary);
+  --layer-focus: var(--color-bg-secondary);
+  --layer-active: var(--color-bg-secondary);
+
+  --surface: var(--color-bg-tertiary);
+  --surface-1: #242424;
+  --surface-2: #2c2c2c;
+  --surface-3: var(--color-text-muted);
+  --surface-4: var(--color-text-secondary);
+  --surface-5: var(--color-text-secondary);
+  --surface-line: transparent;
+  --surface-foreground: var(--color-text-primary);
+  --surface-hover: var(--color-accent-muted);
+  --surface-focus: var(--color-accent-muted);
+  --surface-active: var(--color-accent-muted);
+
+  --muted: var(--color-bg-tertiary);
+  --muted-foreground: var(--color-text-muted);
+  --muted-foreground-1: var(--color-text-secondary);
+  --muted-foreground-2: var(--color-text-secondary);
+  --muted-hover: var(--color-accent-muted);
+  --muted-focus: var(--color-accent-muted);
+  --muted-active: var(--color-accent-muted);
+
+  --destructive: var(--color-error);
+  --destructive-foreground: var(--color-text-primary);
+  --destructive-hover: #c43c3c;
+  --destructive-focus: #c43c3c;
+
+  --card: var(--color-bg-secondary);
+  --card-line: var(--color-border-subtle);
+  --card-divider: var(--color-border-subtle);
+  --card-header: var(--color-border-subtle);
+  --card-footer: var(--color-border-subtle);
+  --card-inverse: var(--color-bg-tertiary);
+
+  --dropdown: var(--color-bg-tertiary);
+  --dropdown-1: var(--color-bg-secondary);
+  --dropdown-line: var(--color-border);
+  --dropdown-divider: var(--color-border-subtle);
+  --dropdown-header: var(--color-border-subtle);
+  --dropdown-footer: var(--color-border-subtle);
+  --dropdown-item-foreground: var(--color-text-secondary);
+  --dropdown-item-hover: var(--color-accent-muted);
+  --dropdown-item-focus: var(--color-accent-muted);
+  --dropdown-item-active: var(--color-accent-muted);
+  --dropdown-inverse: var(--color-bg-tertiary);
+
+  --select: var(--color-bg-tertiary);
+  --select-1: var(--color-bg-secondary);
+  --select-line: var(--color-border);
+  --select-item-foreground: var(--color-text-secondary);
+  --select-item-hover: var(--color-accent-muted);
+  --select-item-focus: var(--color-accent-muted);
+  --select-item-active: var(--color-accent-muted);
+  --select-inverse: var(--color-bg-tertiary);
+
+  --overlay: var(--color-bg-secondary);
+  --overlay-line: var(--color-border-subtle);
+  --overlay-divider: var(--color-border-subtle);
+  --overlay-header: var(--color-border-subtle);
+  --overlay-footer: var(--color-border-subtle);
+  --overlay-inverse: var(--color-bg-tertiary);
+
+  --sidebar: var(--color-bg-secondary);
+  --sidebar-line: var(--color-border-subtle);
+  --sidebar-divider: var(--color-border-subtle);
+
+  --popover: var(--color-bg-tertiary);
+  --popover-line: var(--color-border);
+  --tooltip: var(--color-bg-tertiary);
+  --tooltip-line: var(--color-border);
+  --tooltip-foreground: var(--color-text-primary);
+
+  --table-line: var(--color-border-subtle);
+  --scrollbar-track: var(--color-bg-primary);
+  --scrollbar-thumb: var(--color-accent-dark);
+}
+
+/*
+ * datatables.net renders its own search / length / paging / info row. The app draws these controls
+ * itself (data-hs-datatable-* markup), so the generated row is hidden (Preline datatable docs).
+ */
+[data-hs-datatable] .dt-layout-row:has(.dt-search),
+[data-hs-datatable] .dt-layout-row:has(.dt-length),
+[data-hs-datatable] .dt-layout-row:has(.dt-paging) {
+  display: none !important;
+}
+
+/* Preline's calendar skin has no look for dates outside the allowed range (e.g. before today). */
+.vc [data-vc-date-disabled] {
+  opacity: 0.35;
+}
+
+.vc [data-vc-date-disabled] button {
+  cursor: not-allowed;
+}
+
 @layer base {
+  /*
+   * Preline's theme.css adds `* { border-color: var(--color-border) }`. Every existing component
+   * sets its own border colors; restoring Tailwind's default keeps them pixel-identical.
+   */
+  * {
+    border-color: currentColor;
+  }
+
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;

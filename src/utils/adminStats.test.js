@@ -6,6 +6,8 @@ import {
   getMonthlyCounts,
   getServiceCounts,
   getProfessionalName,
+  filterByProfessional,
+  getProfessionalNames,
 } from './adminStats.js';
 
 const year = new Date().getFullYear();
@@ -113,5 +115,46 @@ describe('getProfessionalName', () => {
     expect(getProfessionalName({ professional: { name: 'P' }, barber: { name: 'B' } })).toBe('P');
     expect(getProfessionalName({ barber: { name: 'B' } })).toBe('B');
     expect(getProfessionalName({})).toBe('N/A');
+  });
+});
+
+describe('filterByProfessional', () => {
+  const list = [
+    mk({ _id: 'a', professional: { name: 'Alex García' } }),
+    mk({ _id: 'b', professional: { name: 'María López' } }),
+    mk({ _id: 'c', professional: undefined, barber: { name: 'Alex García' } }),
+    mk({ _id: 'd', professional: undefined }),
+  ];
+
+  it('keeps only the bookings of that professional, legacy `barber` records included', () => {
+    expect(filterByProfessional(list, 'Alex García').map((b) => b._id)).toEqual(['a', 'c']);
+  });
+
+  it('treats an empty name as "no filter" and returns every booking', () => {
+    expect(filterByProfessional(list, '')).toEqual(list);
+    expect(filterByProfessional(undefined, '')).toEqual([]);
+  });
+
+  it('matches the exact name only', () => {
+    expect(filterByProfessional(list, 'Alex')).toEqual([]);
+  });
+});
+
+describe('getProfessionalNames', () => {
+  it('lists each professional once, sorted, and skips bookings without one', () => {
+    const names = getProfessionalNames([
+      mk({ professional: { name: 'María López' } }),
+      mk({ professional: { name: 'Alex García' } }),
+      mk({ professional: { name: 'María López' } }),
+      mk({ professional: undefined, barber: { name: 'Carlos' } }),
+      mk({ professional: undefined }),
+    ]);
+
+    expect(names).toEqual(['Alex García', 'Carlos', 'María López']);
+  });
+
+  it('returns an empty list for no bookings', () => {
+    expect(getProfessionalNames([])).toEqual([]);
+    expect(getProfessionalNames(undefined)).toEqual([]);
   });
 });

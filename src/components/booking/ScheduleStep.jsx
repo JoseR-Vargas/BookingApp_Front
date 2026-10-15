@@ -3,7 +3,9 @@ import { APP_CONFIG } from '../../config/appConfig.js';
 import { useAvailableTimes } from '../../hooks/useAvailableTimes.js';
 import { useBooking } from '../../state/bookingState.jsx';
 import { formatLongDateUTC, formatMoney } from '../../utils/format.js';
-import { DATE_INPUT_RESET, FIELD_LABEL, HELP_TEXT, INPUT_LG, SELECT_LG } from './fieldStyles.js';
+import DatePicker from '../ui/DatePicker.jsx';
+import Select from '../ui/Select.jsx';
+import { FIELD_LABEL, HELP_TEXT, INPUT_LG, SELECT_LG, SELECT_TOGGLE_LG } from './fieldStyles.js';
 import ProfessionalCard from './ProfessionalCard.jsx';
 import StepHeading from './StepHeading.jsx';
 
@@ -65,33 +67,33 @@ export default function ScheduleStep() {
       <div className="grid md:grid-cols-2 md:gap-x-6">
         <div>
           <label className={FIELD_LABEL}>Fecha de la Cita</label>
-          <input
-            type="date"
-            className={`${INPUT_LG} ${DATE_INPUT_RESET}`}
+          <DatePicker
+            ariaLabel="Fecha de la cita"
+            className={`${INPUT_LG} cursor-pointer`}
             min={todayISO()}
             required
-            aria-label="Fecha de la cita"
+            placeholder="Selecciona una fecha"
             value={selectedDate || ''}
-            onChange={(event) => setDate(event.target.value || null)}
+            onChange={(date) => setDate(date || null)}
           />
         </div>
         <div>
           <label className={FIELD_LABEL}>Hora Disponible</label>
-          <select
-            className={SELECT_LG}
+          <Select
+            ariaLabel="Hora de la cita"
+            describedBy={helperId}
             required
-            aria-label="Hora de la cita"
-            aria-describedby={helperId}
+            toggleClassName={SELECT_TOGGLE_LG}
+            nativeClassName={SELECT_LG}
+            placeholder={times.placeholder}
+            options={times.slots.map((slot) => ({
+              value: slot.value,
+              label: slot.booked ? `${slot.value} — Ocupado` : slot.value,
+              disabled: slot.booked,
+            }))}
             value={selectedTime || ''}
-            onChange={(event) => setTime(event.target.value || null)}
-          >
-            <option value="">{times.placeholder}</option>
-            {times.slots.map((slot) => (
-              <option key={slot.value} value={slot.value} disabled={slot.booked}>
-                {slot.booked ? `${slot.value} — Ocupado` : slot.value}
-              </option>
-            ))}
-          </select>
+            onChange={(time) => setTime(time || null)}
+          />
           <div id={helperId} className={HELP_TEXT}>
             Los horarios se actualizarán después de seleccionar un profesional
           </div>

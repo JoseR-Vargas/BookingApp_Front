@@ -1,19 +1,20 @@
 import Button from '../ui/Button.jsx';
 import { CONTROL_CLASSES } from '../ui/controls.js';
+import DatePicker from '../ui/DatePicker.jsx';
 import { formatMoney } from '../../utils/format.js';
 import BookingsTable from './BookingsTable.jsx';
 import Card from './Card.jsx';
+import ProfessionalFilter from './ProfessionalFilter.jsx';
 import SectionHeader from './SectionHeader.jsx';
-
-// Chrome adds 1-2px around the editable segments of a date input; the legacy reboot removed them.
-const DATE_INPUT_RESET =
-  '[&::-webkit-datetime-edit]:block [&::-webkit-datetime-edit]:p-0 [&::-webkit-datetime-edit-fields-wrapper]:p-0 [&::-webkit-datetime-edit-text]:p-0 [&::-webkit-datetime-edit-month-field]:p-0 [&::-webkit-datetime-edit-day-field]:p-0 [&::-webkit-datetime-edit-year-field]:p-0';
 
 export default function BookingsSection({
   bookings,
   filterDate,
+  professionals,
+  professional,
   totalRevenue,
   onFilterChange,
+  onProfessionalChange,
   onClearFilters,
   onDelete,
 }) {
@@ -24,14 +25,19 @@ export default function BookingsSection({
       {/* At <= 576px the legacy row lost its negative margins, so the two columns keep their own 8px inset. */}
       <div className="mb-6 rounded-lg border border-border-subtle bg-bg-secondary p-6 shadow-sm">
         <div className="grid gap-4 md:grid-cols-2 lte-sm:px-2 lte-sm:pt-4">
-          <input
-            type="date"
-            aria-label="Filtrar por fecha"
+          <DatePicker
+            ariaLabel="Filtrar por fecha"
+            className={`${CONTROL_CLASSES} cursor-pointer`}
+            placeholder="Filtrar por fecha"
             value={filterDate}
-            onChange={(event) => onFilterChange(event.target.value)}
-            className={`${CONTROL_CLASSES} ${DATE_INPUT_RESET}`}
+            onChange={onFilterChange}
           />
-          <div className="flex items-center justify-between">
+          <ProfessionalFilter
+            professionals={professionals}
+            value={professional}
+            onChange={onProfessionalChange}
+          />
+          <div className="flex items-center justify-between md:col-span-2">
             <div>
               <span className="text-text-secondary">Total: </span>
               <span

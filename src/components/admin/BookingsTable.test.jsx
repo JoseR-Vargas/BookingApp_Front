@@ -139,6 +139,68 @@ describe('BookingsTable', () => {
   });
 });
 
+describe('Preline table markup', () => {
+  const scroller = (table) => table.parentElement;
+
+  it('RecentBookingsTable wraps the table in the Preline scroll container', () => {
+    render(<RecentBookingsTable bookings={[booking()]} />);
+
+    const table = screen.getByRole('table', { name: 'Reservas recientes' });
+    expect(table).toHaveClass('min-w-full', 'divide-y', 'divide-table-line');
+    expect(scroller(table)).toHaveClass(
+      'overflow-x-auto',
+      '[&::-webkit-scrollbar]:h-2',
+      '[&::-webkit-scrollbar-thumb]:rounded-none',
+      '[&::-webkit-scrollbar-track]:bg-scrollbar-track',
+      '[&::-webkit-scrollbar-thumb]:bg-scrollbar-thumb',
+    );
+    expect(scroller(table).parentElement).toHaveClass('min-w-full');
+    expect(table.querySelector('tbody')).toHaveClass('divide-y', 'divide-table-line');
+  });
+
+  it('RecentBookingsTable uses the Preline header and cell classes (last column aligned to the end)', () => {
+    render(<RecentBookingsTable bookings={[booking()]} />);
+
+    const headers = screen.getAllByRole('columnheader');
+    headers.forEach((th) => {
+      expect(th).toHaveAttribute('scope', 'col');
+      expect(th).toHaveClass('px-6', 'py-3', 'text-xs', 'font-medium', 'text-muted-foreground-1', 'uppercase');
+    });
+    expect(headers[0]).toHaveClass('text-start');
+    expect(headers[4]).toHaveClass('text-end');
+
+    const cells = within(screen.getAllByRole('row')[1]).getAllByRole('cell');
+    expect(cells[0]).toHaveClass('px-6', 'py-4', 'text-sm', 'font-medium', 'text-foreground');
+    expect(cells[0]).not.toHaveClass('whitespace-nowrap');
+    expect(cells[1]).toHaveClass('px-6', 'py-4', 'whitespace-nowrap', 'text-sm', 'text-foreground');
+    expect(cells[1]).not.toHaveClass('font-medium');
+    expect(cells[4]).toHaveClass('text-end');
+  });
+
+  it('BookingsTable shares the scroll container, dividers, header and cell classes (compact px-3 padding for 8 columns)', () => {
+    render(<BookingsTable bookings={[booking()]} onDelete={vi.fn()} />);
+
+    const table = screen.getByRole('table', { name: 'Reservas' });
+    expect(table).toHaveClass('min-w-full', 'divide-y', 'divide-table-line');
+    expect(scroller(table)).toHaveClass('overflow-x-auto', '[&::-webkit-scrollbar-thumb]:bg-scrollbar-thumb');
+    expect(table.querySelector('tbody')).toHaveClass('divide-y', 'divide-table-line');
+    screen.getAllByRole('columnheader').forEach((th) => {
+      expect(th).toHaveClass('px-3', 'py-3', 'text-xs', 'font-medium', 'text-muted-foreground-1', 'uppercase');
+    });
+    expect(within(screen.getAllByRole('row')[1]).getAllByRole('cell')[0]).toHaveClass('px-3', 'py-4', 'text-foreground');
+  });
+
+  it('BookingsTable delete is a text-link style button: accessible name, 44px touch target, destructive color', () => {
+    render(<BookingsTable bookings={[booking()]} onDelete={vi.fn()} />);
+
+    const button = screen.getByRole('button', { name: 'Eliminar reserva' });
+    expect(button).toHaveClass('inline-flex', 'items-center', 'gap-x-2', 'text-sm', 'font-semibold', 'rounded-lg', 'touch:min-h-11', 'touch:min-w-11');
+    expect(button).toHaveClass('text-error');
+    expect(button).toHaveClass('focus:outline-hidden', 'disabled:opacity-50', 'disabled:pointer-events-none');
+    expect(button.closest('td')).toHaveClass('px-3', 'py-4', 'whitespace-nowrap', 'text-end', 'text-sm', 'font-medium');
+  });
+});
+
 describe('RecentBookingsTable', () => {
   it('renders the 5 legacy columns', () => {
     render(<RecentBookingsTable bookings={[booking()]} />);

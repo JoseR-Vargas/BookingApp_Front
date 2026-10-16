@@ -420,6 +420,25 @@
   }
 }
 
+/*
+ * Wave spinner (components/ui/Spinner.jsx). Preline ships no CSS for it (the animation lives in the
+ * markup as `[animation:spinner-wave_...]`), so the keyframes are defined here. Top level on purpose:
+ * keyframes inside @theme are only emitted when an `--animate-*` variable references them.
+ */
+@keyframes spinner-wave {
+  0%, 100% { transform: scaleY(0.5); opacity: 0.6; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+/* Reduced motion: the bars stop waving and stay as a static, readable equalizer. */
+@media (prefers-reduced-motion: reduce) {
+  .spinner-wave-bar {
+    animation: none;
+    transform: scaleY(0.85);
+    opacity: 0.85;
+  }
+}
+
 /* Preline's calendar skin has no look for dates outside the allowed range (e.g. before today). */
 /*
  * Datepicker on narrow screens. The popup can be narrower than 7 x 42px day cells (it is capped by

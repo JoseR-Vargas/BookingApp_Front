@@ -2,30 +2,38 @@ import { DialogTitle } from '@headlessui/react';
 import Button from '../ui/Button.jsx';
 import Modal from '../ui/Modal.jsx';
 
-// Legacy `#loadingModal`: the framework modal-content is transparent, the modal-body carries the surface.
-const BARE_CONTENT = 'flex w-full flex-col';
+// The Modal box is transparent here: the Preline loading-toast card below is the surface. The side
+// padding keeps the card clear of the screen edges on 320px phones.
+const BARE_CONTENT = 'flex w-full flex-col items-center px-4';
 
 /**
- * "Processing" dialog shown while the booking request is in flight.
+ * "Processing" dialog shown while the booking request is in flight (Preline loading-toast card).
  * Like legacy, "Cerrar" only hides it: the submission itself keeps going.
  */
 export default function LoadingModal({ open, onClose, message = 'Procesando tu reserva...' }) {
   return (
     <Modal open={open} onClose={onClose} contentClassName={BARE_CONTENT}>
-      <div className="rounded-lg border border-border bg-bg-secondary p-4 text-center shadow-xl">
-        <div
-          role="status"
-          className="mb-4 inline-block size-8 animate-spin rounded-full border-[0.25em] border-accent border-r-transparent align-[-0.125em] [animation-duration:0.75s]"
-        >
-          <span className="sr-only">Cargando...</span>
+      <div role="alert" className="w-full max-w-xs rounded-xl border border-layer-line bg-layer shadow-lg">
+        <div className="flex items-center gap-x-3 p-4">
+          <div
+            role="status"
+            aria-label="loading"
+            className="animate-spin inline-block size-4 shrink-0 border-3 border-current border-t-transparent text-primary rounded-[999px]"
+          >
+            <span className="sr-only">Loading...</span>
+          </div>
+          <div className="grow">
+            <DialogTitle as="p" className="text-sm text-layer-foreground">
+              {message}
+            </DialogTitle>
+            <p className="mt-1 text-xs text-muted-foreground-1">Por favor espera un momento</p>
+          </div>
         </div>
-        <DialogTitle as="h5" className="mb-2 text-[1.25rem] font-bold text-text-primary">
-          {message}
-        </DialogTitle>
-        <p className="mb-4 leading-loose text-text-secondary">Por favor espera un momento</p>
-        <Button variant="outlineSecondary" size="xs" onClick={onClose}>
-          Cerrar
-        </Button>
+        <div className="flex justify-end border-t border-layer-line px-4 py-3">
+          <Button variant="outlineSecondary" size="xs" onClick={onClose}>
+            Cerrar
+          </Button>
+        </div>
       </div>
     </Modal>
   );

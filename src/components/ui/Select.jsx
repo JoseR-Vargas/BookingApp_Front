@@ -72,6 +72,9 @@ export default function Select({
     toggleTag,
     toggleClasses: toggleClassName,
     dropdownClasses: DROPDOWN,
+    // Always open downwards: Preline otherwise flips the list upwards when it thinks there is no room
+    // below (inside the scrolling dialog), which hid the field the user is filling in.
+    dropdownVerticalFixedPlacement: 'bottom',
     optionTag: OPTION_TAG,
     optionClasses: OPTION,
     optionTemplate: OPTION_TEMPLATE,

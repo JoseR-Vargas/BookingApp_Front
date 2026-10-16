@@ -1,5 +1,5 @@
 const BASE =
-  'inline-flex cursor-pointer touch-manipulation items-center justify-center font-semibold no-underline transition-all duration-300 ease-[ease] hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
+  'inline-flex cursor-pointer touch-manipulation items-center justify-center font-semibold no-underline transition-[color,background-color,border-color,box-shadow,opacity,translate,scale,transform] duration-300 ease-[ease] hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
 
 const VARIANTS = {
   // Disabled look = legacy `.btn-primary:disabled` (muted fill, half opacity, no hover effects).

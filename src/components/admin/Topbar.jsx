@@ -27,7 +27,7 @@ export default function Topbar({
           title="Toggle sidebar"
           aria-label="Toggle sidebar"
           onClick={onToggleSidebar}
-          className="cursor-pointer rounded-md p-2 text-[1.2rem] text-text-secondary transition-all duration-150 ease-[ease] hover:bg-accent-muted hover:text-accent touch:flex touch:min-h-11 touch:min-w-11 touch:items-center touch:justify-center lte-sm:p-[0.4rem] lte-sm:text-base"
+          className="cursor-pointer rounded-md p-2 text-[1.2rem] text-text-secondary transition-colors duration-150 ease-[ease] hover:bg-accent-muted hover:text-accent touch:flex touch:min-h-11 touch:min-w-11 touch:items-center touch:justify-center lte-sm:p-[0.4rem] lte-sm:text-base"
         >
           <i aria-hidden="true" className="fas fa-bars" />
         </button>

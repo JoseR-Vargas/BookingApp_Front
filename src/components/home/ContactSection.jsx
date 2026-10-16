@@ -36,7 +36,7 @@ export default function ContactSection({ onReserve }) {
       <Container>
         <SectionHeading id="contacto-heading" label="Contacto" title="Encuéntranos" />
 
-        <div className="grid items-start gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
           <ul className="flex list-none flex-col gap-4">
             {CONTACT_ITEMS.map(({ icon, label, values }) => (
               <li
@@ -49,7 +49,7 @@ export default function ContactSection({ onReserve }) {
                 >
                   <i className={`fas ${icon}`} />
                 </div>
-                <div className="flex flex-col gap-1">
+                <div className="flex min-w-0 flex-col gap-1 [overflow-wrap:anywhere]">
                   <span className="text-xs font-semibold tracking-wider text-accent uppercase">
                     {label}
                   </span>

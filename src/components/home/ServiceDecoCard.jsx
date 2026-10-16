@@ -8,7 +8,7 @@ export default function ServiceDecoCard({ icon, title, text }) {
       <div aria-hidden="true" className="mb-5 block text-[2.5rem] text-accent">
         <i className={`fas ${icon}`} />
       </div>
-      <h3 className="mb-3 font-display text-lg font-bold tracking-wider text-accent uppercase">
+      <h3 className="mb-3 font-display text-lg font-bold tracking-wider text-accent uppercase [overflow-wrap:anywhere]">
         {title}
       </h3>
       <p className="text-sm leading-loose text-text-secondary">{text}</p>

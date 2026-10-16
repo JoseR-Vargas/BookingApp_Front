@@ -4,8 +4,13 @@ import { usePrelineInstance } from '../../lib/usePrelineInstance.js';
 // vanilla-calendar-pro positions its popup with inline document coordinates (it is appended to
 // <body>). The popup is moved inside the host (see onShow) and anchored below the input instead:
 // `!` utilities beat those inline coordinates.
-// On phones the input can be narrower than the calendar: anchor it to the input's right edge then.
-const POPUP_POSITION = 'left-0! top-full! z-50 mt-1 min-w-72 lte-sm:right-0! lte-sm:left-auto!';
+// Phones/tablets in portrait (<= 768px): the popup is centered under the field with a viewport-aware
+// width (the field's width clamped to 18-24rem, never wider than the screen minus 1rem per side)
+// instead of being anchored to one edge, so it stays symmetric whether the field is narrower
+// (admin filter) or wider than the calendar.
+const POPUP_POSITION =
+  'left-0! top-full! z-50 mt-1 min-w-72 ' +
+  'lte-md:left-1/2! lte-md:min-w-0 lte-md:w-[min(clamp(18rem,100%,24rem),calc(100vw_-_2rem))] lte-md:-translate-x-1/2';
 const NO_MIN_DATE = '1970-01-01';
 
 /**

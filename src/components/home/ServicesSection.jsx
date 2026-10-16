@@ -36,7 +36,7 @@ export default function ServicesSection({ onReserve }) {
           subtitle="Soluciones adaptadas a tus necesidades"
         />
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {SERVICES.map((service) => (
             <ServiceDecoCard key={service.title} {...service} />
           ))}

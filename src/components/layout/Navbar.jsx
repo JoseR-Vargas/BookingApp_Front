@@ -55,7 +55,7 @@ export default function Navbar({ onReserve }) {
 
           <div
             id={MENU_ID}
-            className={`${open ? 'block' : 'hidden'} grow basis-full items-center lg:flex lg:basis-auto max-lg:order-3 max-lg:mt-2 max-lg:rounded-lg max-lg:border max-lg:border-border-subtle max-lg:p-1`}
+            className={`${open ? 'block' : 'hidden'} grow basis-full items-center lg:flex lg:basis-auto max-lg:order-3 max-lg:mt-1 max-lg:rounded-lg max-lg:border max-lg:border-border-subtle max-lg:px-1 max-lg:pb-1`}
           >
             <ul className="flex list-none flex-col lg:ml-auto lg:flex-row">
               {NAV_LINKS.map(({ href, label }) => (

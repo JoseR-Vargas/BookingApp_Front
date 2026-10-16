@@ -35,7 +35,7 @@ const PAGE_ARROW = 'inline-flex min-w-10 items-center justify-center gap-x-2 rou
 // keyboard way to sort). Stretched over the header cell it becomes the click target and shows a
 // visible focus ring.
 const SORTABLE =
-  'relative cursor-pointer select-none [&_.dt-column-order]:absolute [&_.dt-column-order]:inset-0 [&_.dt-column-order]:focus-visible:outline-2 [&_.dt-column-order]:focus-visible:-outline-offset-2 [&_.dt-column-order]:focus-visible:outline-accent';
+  'relative cursor-pointer select-none [&_.dt-column-order]:absolute [&_.dt-column-order]:inset-x-0 [&_.dt-column-order]:top-0 [&_.dt-column-order]:-bottom-px [&_.dt-column-order]:focus-visible:outline-2 [&_.dt-column-order]:focus-visible:-outline-offset-2 [&_.dt-column-order]:focus-visible:outline-accent';
 
 function BookingRow({ booking, onDelete }) {
   const notes = decodeEntities(booking.notes);
@@ -203,7 +203,7 @@ function BookingsDataTable({ bookings, onDelete, viewState }) {
       </div>
 
       <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
-        <div className="text-sm whitespace-nowrap text-text-secondary" data-hs-datatable-info>
+        <div className="text-sm whitespace-nowrap text-text-secondary lte-sm:whitespace-normal" data-hs-datatable-info>
           Mostrando <span data-hs-datatable-info-from /> a <span data-hs-datatable-info-to /> de{' '}
           <span data-hs-datatable-info-length /> reservas
         </div>

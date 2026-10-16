@@ -10,7 +10,7 @@ export default function SectionHeading({ id, label, title, subtitle }) {
       </p>
       <h2
         id={id}
-        className="mb-2 font-display text-[length:clamp(1.8rem,4vw,2.5rem)] font-bold tracking-[0.04em] text-text-primary uppercase"
+        className="mb-2 font-display text-[length:clamp(1.8rem,4vw,2.5rem)] font-bold tracking-[0.04em] text-text-primary uppercase [overflow-wrap:anywhere]"
       >
         {title}
       </h2>

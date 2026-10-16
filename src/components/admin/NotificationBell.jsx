@@ -11,7 +11,7 @@ export default function NotificationBell({ count, onClick }) {
       title="Nuevas reservas"
       aria-label="Nuevas reservas"
       onClick={onClick}
-      className="group relative flex size-10 cursor-pointer items-center justify-center rounded-full p-2 transition-all duration-150 ease-[ease] hover:bg-accent-muted touch:size-11 lte-md:p-[0.4rem]"
+      className="group relative flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full p-2 transition-colors duration-150 ease-[ease] hover:bg-accent-muted touch:size-11 lte-md:p-[0.4rem]"
     >
       <i
         aria-hidden="true"

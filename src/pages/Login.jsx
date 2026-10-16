@@ -61,10 +61,10 @@ export default function Login() {
       <div className="-mx-3 flex w-full flex-wrap justify-center">
         <div className="w-full px-3 md:w-1/2 lg:w-1/3">
           <div className="rounded-lg border border-border bg-bg-secondary shadow-lg">
-            <div className="p-12">
+            <div className="p-12 lte-sm:p-8">
               <div className="mb-6 text-center">
                 <i aria-hidden="true" className="fas fa-cut mb-4 text-[3em] text-accent" />
-                <h1 className="mb-2 font-display text-[calc(1.325rem+0.9vw)] font-bold xl:text-[2rem]">
+                <h1 className="mb-2 font-display text-[calc(1.325rem+0.9vw)] font-bold [overflow-wrap:anywhere] xl:text-[2rem]">
                   BookingApp
                 </h1>
                 <p className="mb-4 leading-loose text-text-secondary">Panel de Administración</p>

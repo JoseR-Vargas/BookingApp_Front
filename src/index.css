@@ -462,6 +462,16 @@
   }
 }
 
+/*
+ * Preline paints today with the same fill as the selected date, so with a date picked two days look
+ * selected. Only the chosen date may be highlighted: today is styled like any other day (unless it
+ * is the selected one, which keeps the selected look).
+ */
+.vc .vc-date[data-vc-date-today]:not([data-vc-date-selected]) {
+  background-color: transparent;
+  color: inherit;
+}
+
 .vc [data-vc-date-disabled] {
   opacity: 0.35;
 }

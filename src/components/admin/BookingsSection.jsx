@@ -24,7 +24,7 @@ export default function BookingsSection({
 
       {/* At <= 576px the legacy row lost its negative margins, so the two columns keep their own 8px inset. */}
       <div className="mb-6 rounded-lg border border-border-subtle bg-bg-secondary p-6 shadow-sm">
-        <div className="grid gap-4 md:grid-cols-2 lte-sm:px-2 lte-sm:pt-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lte-sm:px-2 lte-sm:pt-4">
           <DatePicker
             ariaLabel="Filtrar por fecha"
             className={`${CONTROL_CLASSES} cursor-pointer`}
@@ -37,7 +37,7 @@ export default function BookingsSection({
             value={professional}
             onChange={onProfessionalChange}
           />
-          <div className="flex items-center justify-between md:col-span-2">
+          <div className="flex flex-wrap items-center justify-between gap-2 md:col-span-2">
             <div>
               <span className="text-text-secondary">Total: </span>
               <span

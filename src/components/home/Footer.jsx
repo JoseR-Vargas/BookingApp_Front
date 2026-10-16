@@ -34,7 +34,7 @@ export default function Footer() {
                 <a
                   key={href}
                   href={href}
-                  className="text-xs font-semibold tracking-wider text-text-secondary uppercase transition-colors duration-150 ease-[ease] hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  className="text-xs font-semibold tracking-wider text-text-secondary uppercase transition-colors touch:inline-flex touch:min-h-11 touch:items-center duration-150 ease-[ease] hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   {label}
                 </a>
@@ -47,7 +47,7 @@ export default function Footer() {
                   key={label}
                   href="#"
                   aria-label={label}
-                  className="inline-flex size-[38px] items-center justify-center rounded-full border border-border bg-accent-muted text-[0.85rem] text-accent transition-all duration-300 ease-[ease] hover:-translate-y-0.5 hover:border-accent hover:bg-accent hover:text-text-inverse hover:shadow-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  className="inline-flex size-[38px] touch:size-11 items-center justify-center rounded-full border border-border bg-accent-muted text-[0.85rem] text-accent transition-all duration-300 ease-[ease] hover:-translate-y-0.5 hover:border-accent hover:bg-accent hover:text-text-inverse hover:shadow-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   <i aria-hidden="true" className={`fab ${icon}`} />
                 </a>

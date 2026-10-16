@@ -67,6 +67,18 @@ describe('Sidebar markup', () => {
     expect(screen.getByRole('link', { name: 'Reservas' })).toBeInTheDocument();
   });
 
+  it('ignores the collapsed state on a mobile viewport so the drawer is always full width', () => {
+    stubViewport(true);
+    const mobile = render(<Sidebar {...props} show collapsed />);
+    expect(screen.getByTestId('sidebar')).toHaveAttribute('data-collapsed', 'false');
+    expect(screen.getByText('BookingApp')).not.toHaveClass('hidden');
+    mobile.unmount();
+
+    stubViewport(false);
+    render(<Sidebar {...props} show collapsed />);
+    expect(screen.getByTestId('sidebar')).toHaveAttribute('data-collapsed', 'true');
+  });
+
   it('is rendered open at desktop width and hidden by default only below it (static wrapper classes)', () => {
     stubViewport(false);
     const { container } = render(<Sidebar {...props} />);

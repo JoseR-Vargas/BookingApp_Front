@@ -269,17 +269,25 @@ describe('Admin top bar and navigation', () => {
     expect(sidebar()).toHaveAttribute('data-collapsed', 'false');
   });
 
-  it('toggles both the collapsed and the show state at <= 768px (legacy toggleSidebar)', async () => {
+  // Changed from the legacy "toggles both collapsed and show at <= 768px": the hamburger used to
+  // alternate the drawer between 70px and 260px and left a 70px gutter behind. At <= 768px it now
+  // only opens/closes the drawer, which stays full width (collapsed is a desktop-only state).
+  it('only toggles the drawer (never the collapsed state) at <= 768px', async () => {
     window.innerWidth = 768;
     await loadedAdmin();
 
     await userEvent.click(screen.getByRole('button', { name: 'Toggle sidebar' }));
-    expect(sidebar()).toHaveAttribute('data-collapsed', 'true');
+    expect(sidebar()).toHaveAttribute('data-collapsed', 'false');
     expect(sidebar()).toHaveAttribute('data-show', 'true');
 
     await userEvent.click(screen.getByRole('button', { name: 'Toggle sidebar' }));
     expect(sidebar()).toHaveAttribute('data-collapsed', 'false');
     expect(sidebar()).toHaveAttribute('data-show', 'false');
+
+    // Successive opens keep the same (full) width instead of alternating.
+    await userEvent.click(screen.getByRole('button', { name: 'Toggle sidebar' }));
+    expect(sidebar()).toHaveAttribute('data-collapsed', 'false');
+    expect(sidebar()).toHaveAttribute('data-show', 'true');
   });
 
   it('closes the mobile drawer after navigating, so its backdrop does not block the page', async () => {

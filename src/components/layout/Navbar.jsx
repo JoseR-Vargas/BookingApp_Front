@@ -20,12 +20,12 @@ export default function Navbar({ onReserve }) {
   const closeMenu = () => setOpen(false);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[1030] border-b border-border-subtle bg-bg-secondary py-3 shadow-md">
+    <header className="fixed inset-x-0 top-0 z-[1030] border-b border-border-subtle bg-bg-secondary py-3 shadow-md max-lg:max-h-dvh max-lg:overflow-y-auto max-lg:py-1.5">
       <nav aria-label="Navegación principal">
         <Container className="flex items-center justify-between max-lg:flex-wrap lg:flex-nowrap">
           <a
             href="#"
-            className="order-1 mr-4 flex-1 py-[5px] font-display text-[1.1rem] font-bold whitespace-nowrap text-text-primary transition-colors duration-150 ease-[ease] hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent max-lg:min-w-0 max-lg:overflow-hidden max-lg:text-ellipsis lte-lg:text-[1.2rem] lte-md:text-base lte-sm:text-[0.9rem] lte-400:text-[0.8rem]"
+            className="order-1 mr-4 flex-1 py-[5px] font-display text-[1.1rem] font-bold whitespace-nowrap text-text-primary transition-colors duration-150 ease-[ease] hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent max-lg:min-h-11 max-lg:min-w-0 max-lg:overflow-hidden max-lg:py-0 max-lg:text-ellipsis max-lg:leading-[44px] lte-lg:text-[1.2rem] lte-md:text-base lte-sm:text-[0.9rem] lte-400:text-[0.8rem]"
           >
             <span aria-hidden="true" className="mr-2 text-accent lte-sm:hidden">
               <i className="fas fa-calendar-alt" />
@@ -39,7 +39,7 @@ export default function Navbar({ onReserve }) {
             aria-expanded={open}
             aria-controls={MENU_ID}
             onClick={() => setOpen((value) => !value)}
-            className="order-2 ml-4 shrink-0 cursor-pointer rounded-md px-2 py-1 text-accent/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent lg:hidden"
+            className="order-2 ml-4 flex min-h-11 min-w-11 shrink-0 cursor-pointer items-center justify-center rounded-md px-2 py-1 text-accent/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent lg:hidden"
           >
             <svg viewBox="0 0 30 30" aria-hidden="true" className="block size-[30px]">
               <path
@@ -55,15 +55,15 @@ export default function Navbar({ onReserve }) {
 
           <div
             id={MENU_ID}
-            className={`${open ? 'block' : 'hidden'} grow basis-full items-center lg:flex lg:basis-auto max-lg:order-3 max-lg:mt-4 max-lg:rounded-lg max-lg:border max-lg:border-border-subtle max-lg:p-4`}
+            className={`${open ? 'block' : 'hidden'} grow basis-full items-center lg:flex lg:basis-auto max-lg:order-3 max-lg:mt-2 max-lg:rounded-lg max-lg:border max-lg:border-border-subtle max-lg:p-1`}
           >
-            <ul className="flex list-none flex-col lg:ml-auto lg:flex-row max-lg:gap-2">
+            <ul className="flex list-none flex-col lg:ml-auto lg:flex-row">
               {NAV_LINKS.map(({ href, label }) => (
                 <li key={href} className="max-lg:text-center">
                   <a
                     href={href}
                     onClick={closeMenu}
-                    className="block py-2 font-medium text-text-secondary transition-colors duration-150 ease-[ease] hover:text-accent focus:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent lg:px-2"
+                    className="block py-2 font-medium text-text-secondary max-lg:flex max-lg:min-h-11 max-lg:items-center max-lg:justify-center max-lg:py-0 transition-colors duration-150 ease-[ease] hover:text-accent focus:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent lg:px-2"
                   >
                     {label}
                   </a>
@@ -73,7 +73,7 @@ export default function Navbar({ onReserve }) {
                 <Button
                   size="sm"
                   onClick={onReserve}
-                  className="min-[1000px]:hidden lg:ml-2 lte-md:mt-2.5 lte-md:w-full"
+                  className="min-[1000px]:hidden lg:ml-2 lte-md:mt-1 lte-md:w-full"
                 >
                   <span aria-hidden="true" className="mr-2">
                     <i className="fas fa-calendar-alt" />

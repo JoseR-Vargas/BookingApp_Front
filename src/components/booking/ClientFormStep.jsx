@@ -2,8 +2,10 @@ import { useId } from 'react';
 import { FIELD_LABEL, INPUT_LG, INVALID_FEEDBACK, TEXTAREA } from './fieldStyles.js';
 import StepHeading from './StepHeading.jsx';
 
+// On phones the checkbox grows to 24px (WCAG 2.5.8 minimum) and is centered in a 44px-high row; the whole
+// row (checkbox included) is covered by the label, so it is one big tap area.
 const CHECKBOX =
-  'peer absolute top-[0.25em] left-0 size-[1em] appearance-none rounded-[0.25em] border border-border bg-bg-tertiary bg-contain bg-center bg-no-repeat checked:border-accent checked:bg-accent checked:bg-(image:--icon-check) focus:border-accent focus:shadow-[0_0_0_3px_var(--color-accent-muted)] focus:outline-none group-data-[validated=true]/form:invalid:border-[#dc3545] group-data-[validated=true]/form:valid:border-[#198754] group-data-[validated=true]/form:valid:checked:bg-[#198754]';
+  'peer absolute top-[0.25em] left-0 size-[1em] touch:top-1/2 touch:size-6 touch:-translate-y-1/2 appearance-none rounded-[0.25em] border border-border bg-bg-tertiary bg-contain bg-center bg-no-repeat checked:border-accent checked:bg-accent checked:bg-(image:--icon-check) focus:border-accent focus:shadow-[0_0_0_3px_var(--color-accent-muted)] focus:outline-none group-data-[validated=true]/form:invalid:border-[#dc3545] group-data-[validated=true]/form:valid:border-[#198754] group-data-[validated=true]/form:valid:checked:bg-[#198754]';
 
 /**
  * Step 3: client data. The inputs are uncontrolled and read through the form element
@@ -89,21 +91,23 @@ export default function ClientFormStep({ formRef, validated }) {
           </div>
 
           <div className="md:col-span-2">
-            <div className="relative mb-0.5 block min-h-6 pl-[1.5em]">
+            <div className="relative mb-0.5 block min-h-6 pl-[1.5em] touch:min-h-11 touch:pl-0">
               <input id={termsId} type="checkbox" name="terms" required className={CHECKBOX} />
               <label
                 htmlFor={termsId}
-                className="text-text-secondary group-data-[validated=true]/form:peer-invalid:text-[#dc3545] group-data-[validated=true]/form:peer-valid:text-[#198754]"
+                className="text-text-secondary group-data-[validated=true]/form:peer-invalid:text-[#dc3545] group-data-[validated=true]/form:peer-valid:text-[#198754] touch:flex touch:min-h-11 touch:items-center touch:pl-9"
               >
-                Acepto los{' '}
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent transition-colors duration-150 hover:text-accent-light"
-                >
-                  términos y condiciones
-                </a>
+                <span>
+                  Acepto los{' '}
+                  <a
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-accent transition-colors duration-150 hover:text-accent-light"
+                  >
+                    términos y condiciones
+                  </a>
+                </span>
               </label>
               <div className={INVALID_FEEDBACK}>Debes aceptar los términos y condiciones</div>
             </div>

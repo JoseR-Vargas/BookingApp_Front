@@ -26,7 +26,7 @@ export default function ServicesSection({ onReserve }) {
     <section
       id="servicios"
       aria-labelledby="servicios-heading"
-      className="bg-bg-secondary py-24 lte-md:py-16 lte-sm:py-12"
+      className="scroll-mt-16 bg-bg-secondary py-24 lte-md:py-16 lte-sm:py-12"
     >
       <Container>
         <SectionHeading

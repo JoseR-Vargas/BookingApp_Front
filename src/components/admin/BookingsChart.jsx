@@ -10,6 +10,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { getMonthlyCounts } from '../../utils/adminStats.js';
+import ChartFrame from './ChartFrame.jsx';
 
 // Register only what a line chart needs (keeps the bundle small, unlike chart.js/auto).
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
@@ -18,6 +19,7 @@ const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', '
 
 const OPTIONS = {
   responsive: true,
+  maintainAspectRatio: false,
   plugins: { legend: { display: false } },
   scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
 };
@@ -38,5 +40,9 @@ export default function BookingsChart({ bookings }) {
     };
   }, [bookings]);
 
-  return <Line data={data} options={OPTIONS} />;
+  return (
+    <ChartFrame>
+      <Line data={data} options={OPTIONS} />
+    </ChartFrame>
+  );
 }

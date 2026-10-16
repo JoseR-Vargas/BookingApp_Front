@@ -33,7 +33,7 @@ const isMobileViewport = () => typeof window.matchMedia === 'function' && window
 //  - above it, the media-query utilities force it visible and in place, whatever Preline did;
 //  - [--auto-close:769] closes it when the viewport grows past the drawer range.
 const DRAWER =
-  'hs-overlay [--auto-close:769] fixed top-0 left-0 z-1000 hidden h-screen -translate-x-full transition-transform duration-300 ease-[ease] hs-overlay-open:translate-x-0 [@media(width>768px)]:block! [@media(width>768px)]:translate-x-0!';
+  'hs-overlay [--auto-close:769] fixed top-0 left-0 z-1000 hidden h-screen-dvh -translate-x-full transition-transform duration-300 ease-[ease] hs-overlay-open:translate-x-0 [@media(width>768px)]:block! [@media(width>768px)]:translate-x-0!';
 
 /**
  * Left navigation. `data-collapsed` / `data-show` expose the two independent states of the
@@ -47,11 +47,13 @@ const DRAWER =
  * permanent part of the layout and must not carry overlay key handling (Preline would intercept
  * Enter on its links).
  */
-export default function Sidebar({ collapsed, show, section, onNavigate, onShowChange }) {
-  const width = collapsed ? 'w-sidebar-collapsed' : 'w-sidebar';
+export default function Sidebar({ collapsed: collapsedProp, show, section, onNavigate, onShowChange }) {
   const wrapperRef = useRef(null);
   const pluginRef = useRef(null);
   const isMobile = useSyncExternalStore(subscribeToViewport, isMobileViewport, () => false);
+  // The icon-only rail is a desktop state: the mobile drawer is always full width.
+  const collapsed = collapsedProp && !isMobile;
+  const width = collapsed ? 'w-sidebar-collapsed' : 'w-sidebar';
   const wasMobile = useRef(isMobile);
   const latest = useRef({ show, onShowChange });
   latest.current = { show, onShowChange };
@@ -102,7 +104,7 @@ export default function Sidebar({ collapsed, show, section, onNavigate, onShowCh
         data-testid="sidebar"
         data-collapsed={collapsed}
         data-show={show}
-        className={`h-screen ${width} overflow-y-auto border-r border-border-subtle bg-bg-secondary shadow-md transition-[width] duration-300 ease-[ease]`}
+        className={`h-screen-dvh ${width} overflow-y-auto border-r border-border-subtle bg-bg-secondary shadow-md transition-[width] duration-300 ease-[ease]`}
       >
         <div className="flex items-center gap-3 border-b border-border-subtle p-6">
           <i aria-hidden="true" className="fas fa-calendar-alt text-[1.2rem] text-accent" />

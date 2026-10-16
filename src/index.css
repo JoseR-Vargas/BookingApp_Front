@@ -213,6 +213,15 @@
 @custom-variant lte-md (@media (width <= 768px));
 @custom-variant lte-sm (@media (width <= 576px));
 @custom-variant lte-400 (@media (width <= 400px));
+/* Touch layouts: phones/tablets in portrait (<= 768px) AND coarse-pointer devices in landscape (e.g. 844x390). */
+@custom-variant touch {
+  @media (width <= 768px) {
+    @slot;
+  }
+  @media (pointer: coarse) {
+    @slot;
+  }
+}
 
 /* Transition tokens: no Tailwind namespace, kept as plain variables. */
 @theme static {
@@ -376,7 +385,83 @@
   display: none !important;
 }
 
+/*
+ * Full-height helpers: `100vh` is taller than the visible area on mobile browsers (dynamic toolbar),
+ * `100dvh` tracks it. The vh declaration is the fallback for browsers without dvh support.
+ */
+@utility h-screen-dvh {
+  height: 100vh;
+  @supports (height: 100dvh) {
+    height: 100dvh;
+  }
+}
+
+@utility min-h-screen-dvh {
+  min-height: 100vh;
+  @supports (min-height: 100dvh) {
+    min-height: 100dvh;
+  }
+}
+
+@utility min-h-admin-main {
+  min-height: calc(100vh - var(--spacing-top-nav));
+  @supports (min-height: 100dvh) {
+    min-height: calc(100dvh - var(--spacing-top-nav));
+  }
+}
+
+/*
+ * Phones: toasts sit at the bottom center (see ui/toast.js) and must never swallow a tap meant
+ * for the control underneath (e.g. the modal footer buttons); they dismiss themselves.
+ */
+@media (width <= 576px), (pointer: coarse) and (height <= 500px) {
+  .toastify {
+    pointer-events: none;
+  }
+}
+
 /* Preline's calendar skin has no look for dates outside the allowed range (e.g. before today). */
+/*
+ * Datepicker on narrow screens. The popup can be narrower than 7 x 42px day cells (it is capped by
+ * the booking field's width), which made neighbouring day buttons overlap: cells now shrink to their
+ * grid column (still 42px whenever there is room, so wide layouts are untouched) and stay square.
+ */
+.vc-date {
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.vc-week__day {
+  max-width: 100%;
+}
+
+/* Touch layouts: day cells, header controls and month/year pickers reach the 44px comfortable target. */
+@media (width <= 768px), (pointer: coarse) {
+  .vc-date {
+    width: 2.75rem;
+  }
+
+  .vc-arrow {
+    width: 2.75rem;
+    height: 2.75rem;
+    flex-shrink: 0;
+  }
+
+  .vc-month,
+  .vc-year {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding-inline: 0.25rem;
+  }
+
+  .vc-months__month,
+  .vc-years__year {
+    min-height: 2.75rem;
+    justify-content: center;
+  }
+}
+
 .vc [data-vc-date-disabled] {
   opacity: 0.35;
 }
@@ -409,6 +494,7 @@
     font-weight: 400;
     line-height: var(--leading-normal);
     min-height: 100vh;
+    min-height: 100dvh;
     overflow-x: hidden;
   }
 

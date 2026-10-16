@@ -46,6 +46,7 @@ describe('ReportsSection', () => {
     });
     expect(options).toMatchObject({
       responsive: true,
+      maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
     });
@@ -58,7 +59,11 @@ describe('ReportsSection', () => {
     expect(data.labels).toEqual(['Corte', 'Barba']);
     expect(data.datasets[0].data).toEqual([3, 1]);
     expect(data.datasets[0].backgroundColor).toEqual(['#007bff', '#28a745']);
-    expect(options).toMatchObject({ responsive: true, plugins: { legend: { position: 'bottom' } } });
+    expect(options).toMatchObject({
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom' } },
+    });
   });
 
   it('repeats the palette when there are more services than colors', () => {

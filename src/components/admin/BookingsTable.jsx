@@ -78,7 +78,7 @@ function BookingRow({ booking, onDelete }) {
           title="Eliminar reserva"
           aria-label="Eliminar reserva"
           onClick={() => onDelete(booking)}
-          className="mx-auto size-8 p-0 hover:scale-105 hover:shadow-[0_2px_8px_rgba(224,82,82,0.3)]"
+          className="mx-auto size-8 p-0 touch:size-11 hover:scale-105 hover:shadow-[0_2px_8px_rgba(224,82,82,0.3)]"
         >
           <i aria-hidden="true" className="fas fa-trash text-sm" />
         </Button>

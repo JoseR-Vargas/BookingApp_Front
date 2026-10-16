@@ -12,7 +12,7 @@ export default function Hero({ onReserve }) {
     <section
       id="inicio"
       aria-labelledby="hero-heading"
-      className="relative flex min-h-screen items-center overflow-hidden bg-bg-primary bg-[linear-gradient(135deg,rgba(13,13,13,0.96)_0%,rgba(28,28,28,0.92)_100%)] lte-lg:pt-20 lte-md:pt-[100px] lte-md:pb-[60px] lte-sm:pt-20 lte-sm:pb-10"
+      className="relative scroll-mt-16 flex min-h-screen-dvh items-center overflow-hidden bg-bg-primary bg-[linear-gradient(135deg,rgba(13,13,13,0.96)_0%,rgba(28,28,28,0.92)_100%)] lte-lg:pt-20 lte-md:pt-[100px] lte-md:pb-[60px] lte-sm:pt-20 lte-sm:pb-10"
     >
       <div
         aria-hidden="true"
@@ -21,7 +21,7 @@ export default function Hero({ onReserve }) {
       />
 
       <Container className="relative z-1">
-        <div className="flex min-h-screen items-center">
+        <div className="flex min-h-screen-dvh items-center">
           <div className="w-full text-center">
             <p className="mb-4 text-xs leading-loose font-semibold tracking-widest text-accent uppercase">
               Reservas Online

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 const showToast = vi.fn();
 vi.mock('toastify-js', () => ({ default: vi.fn(() => ({ showToast })) }));
@@ -10,6 +10,14 @@ beforeEach(() => {
   Toastify.mockClear();
   showToast.mockClear();
 });
+
+afterEach(() => {
+  delete window.matchMedia;
+});
+
+const stubViewport = (matches) => {
+  window.matchMedia = vi.fn(() => ({ matches }));
+};
 
 describe('toast', () => {
   it.each([
@@ -47,5 +55,31 @@ describe('toast', () => {
     const { warning } = toast;
     warning('careful', 10000);
     expect(Toastify.mock.calls[0][0]).toMatchObject({ duration: 10000, style: { background: '#ffc107' } });
+  });
+});
+
+describe('toast placement by viewport', () => {
+  it('keeps the top/right placement on wide viewports', () => {
+    stubViewport(false);
+
+    toast.success('hello');
+
+    expect(Toastify.mock.calls[0][0]).toMatchObject({ gravity: 'top', position: 'right' });
+  });
+
+  it('moves to the bottom center on phones (<= 576px) so it never covers the modal header or first fields', () => {
+    stubViewport(true);
+
+    toast.error('boom');
+
+    expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 576px), (pointer: coarse) and (max-height: 500px)');
+    expect(Toastify.mock.calls[0][0]).toMatchObject({
+      gravity: 'bottom',
+      position: 'center',
+      text: 'boom',
+      duration: 3000,
+      stopOnFocus: true,
+      style: { background: '#dc3545' },
+    });
   });
 });

@@ -13,14 +13,14 @@ const VALIDATION_ICON =
   'bg-no-repeat bg-[position:right_calc(0.375em+0.1875rem)_center] bg-[length:calc(0.75em+0.375rem)_calc(0.75em+0.375rem)] group-data-[validated=true]/form:invalid:bg-(image:--icon-field-invalid) group-data-[validated=true]/form:valid:bg-(image:--icon-field-valid) group-data-[validated=true]/form:invalid:pr-[calc(1.5em+0.75rem)] group-data-[validated=true]/form:valid:pr-[calc(1.5em+0.75rem)]';
 
 // Legacy `.form-control.form-control-lg`.
-export const INPUT_LG = `${CONTROL} ${VALIDATION_ICON} px-4 py-2 text-[1.25rem] lte-md:px-3 lte-md:text-base lte-sm:text-[0.9rem]`;
+export const INPUT_LG = `${CONTROL} ${VALIDATION_ICON} px-4 py-2 text-[1.25rem] touch:min-h-11 lte-md:px-3 lte-md:text-base`;
 
 // Legacy `.form-control` (textarea): the icon sits at the top right corner.
-export const TEXTAREA = `${CONTROL} ${VALIDATION_ICON} group-data-[validated=true]/form:invalid:bg-[position:right_calc(0.375em+0.1875rem)_top_calc(0.375em+0.1875rem)] group-data-[validated=true]/form:valid:bg-[position:right_calc(0.375em+0.1875rem)_top_calc(0.375em+0.1875rem)] min-h-[calc(1.5em+0.75rem+2px)] px-3 py-1.5 text-base lte-sm:text-[0.9rem]`;
+export const TEXTAREA = `${CONTROL} ${VALIDATION_ICON} group-data-[validated=true]/form:invalid:bg-[position:right_calc(0.375em+0.1875rem)_top_calc(0.375em+0.1875rem)] group-data-[validated=true]/form:valid:bg-[position:right_calc(0.375em+0.1875rem)_top_calc(0.375em+0.1875rem)] min-h-[calc(1.5em+0.75rem+2px)] px-3 py-1.5 text-base`;
 
 // Legacy `.form-select.form-select-lg` (the 768px media query swaps its padding/min-height).
 export const SELECT_LG =
-  `${CONTROL} touch-manipulation bg-(image:--icon-select-chevron) bg-no-repeat bg-[position:right_0.75rem_center] bg-[length:16px_12px] py-2 pr-9 pl-4 text-[1.25rem] lte-md:min-h-[50px] lte-md:px-4 lte-md:py-3 lte-md:text-[1.1rem] lte-sm:text-[0.9rem] ` +
+  `${CONTROL} touch-manipulation bg-(image:--icon-select-chevron) bg-no-repeat bg-[position:right_0.75rem_center] bg-[length:16px_12px] py-2 pr-9 pl-4 text-[1.25rem] lte-md:min-h-[50px] lte-md:px-4 lte-md:py-3 lte-md:text-[1.1rem] lte-sm:text-base ` +
   // Legacy `.form-select option` colors: free slots green, booked (disabled) slots red.
   '[&>option]:bg-bg-tertiary [&>option:not(:disabled):not([value=""])]:text-success [&>option:disabled]:text-error';
 
@@ -39,4 +39,4 @@ export const DATE_INPUT_RESET =
 // Preline advanced-select skin for the booking form (see ui/Select.jsx): same box as SELECT_LG
 // (`.form-select.form-select-lg`), so the field looks like the native control it replaces.
 export const SELECT_TOGGLE_LG =
-  'relative flex w-full cursor-pointer touch-manipulation items-center rounded-md border border-border-subtle bg-bg-tertiary py-2 pr-9 pl-4 text-left text-[1.25rem] leading-normal text-text-primary transition-[border-color,box-shadow] duration-150 ease-[ease] hs-select-disabled:pointer-events-none hs-select-disabled:opacity-50 hs-select-opened:border-accent focus:border-accent focus:shadow-[0_0_0_3px_var(--color-accent-muted)] focus:outline-none lte-md:min-h-[50px] lte-md:px-4 lte-md:py-3 lte-md:text-[1.1rem] lte-sm:text-[0.9rem]';
+  'relative flex w-full cursor-pointer touch-manipulation items-center rounded-md border border-border-subtle bg-bg-tertiary py-2 pr-9 pl-4 text-left text-[1.25rem] leading-normal text-text-primary transition-[border-color,box-shadow] duration-150 ease-[ease] hs-select-disabled:pointer-events-none hs-select-disabled:opacity-50 hs-select-opened:border-accent focus:border-accent focus:shadow-[0_0_0_3px_var(--color-accent-muted)] focus:outline-none lte-md:min-h-[50px] lte-md:px-4 lte-md:py-3 lte-md:text-[1.1rem] lte-sm:text-base';

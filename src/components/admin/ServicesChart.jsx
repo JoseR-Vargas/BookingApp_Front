@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import { getServiceCounts } from '../../utils/adminStats.js';
+import ChartFrame from './ChartFrame.jsx';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -9,6 +10,7 @@ const PALETTE = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6f42c1
 
 const OPTIONS = {
   responsive: true,
+  maintainAspectRatio: false,
   plugins: { legend: { position: 'bottom' } },
 };
 
@@ -28,5 +30,9 @@ export default function ServicesChart({ bookings }) {
     };
   }, [bookings]);
 
-  return <Doughnut data={data} options={OPTIONS} />;
+  return (
+    <ChartFrame>
+      <Doughnut data={data} options={OPTIONS} />
+    </ChartFrame>
+  );
 }

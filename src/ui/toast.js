@@ -12,13 +12,22 @@ const COLORS = {
   info: '#17a2b8',
 };
 
+// Phones (<= 576px, the `lte-sm` breakpoint, or a touch device in landscape): a top-right toast covers the booking modal's Close
+// button and its first fields, so it goes to the bottom center instead. index.css makes it
+// click-through there.
+const PHONE_QUERY = '(max-width: 576px), (pointer: coarse) and (max-height: 500px)';
+const isPhone = () => typeof window !== 'undefined'
+  && typeof window.matchMedia === 'function'
+  && window.matchMedia(PHONE_QUERY).matches;
+
 function show(message, type, duration) {
   const t = type || 'info';
+  const phone = isPhone();
   Toastify({
     text: message,
     duration: duration || APP_CONFIG.TOAST_DURATION || 3000,
-    gravity: 'top',
-    position: 'right',
+    gravity: phone ? 'bottom' : 'top',
+    position: phone ? 'center' : 'right',
     style: {
       background: COLORS[t] || COLORS.info,
     },

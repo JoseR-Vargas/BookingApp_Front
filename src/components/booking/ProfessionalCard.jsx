@@ -26,7 +26,7 @@ export default function ProfessionalCard({ professional, selected, onSelect }) {
         <p className="mb-2 text-[0.9rem] leading-loose text-text-secondary">
           {professional.specialty}
         </p>
-        <div className="flex justify-center gap-4 text-text-muted lte-sm:flex-col lte-sm:gap-1 lte-sm:text-[0.75rem]">
+        <div className="flex justify-center gap-4 text-text-muted lte-sm:flex-col lte-sm:gap-1 lte-sm:text-sm">
           <small className="text-[0.875em] text-text-secondary">
             <i aria-hidden="true" className="fas fa-star text-accent" /> {professional.rating}
           </small>

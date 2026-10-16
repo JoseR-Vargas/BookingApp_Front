@@ -56,7 +56,7 @@ export default function Login() {
   };
 
   return (
-    <main className="flex h-screen items-center justify-center bg-linear-[135deg,var(--color-bg-primary)_0%,var(--color-bg-tertiary)_100%] px-3">
+    <main className="flex min-h-screen-dvh items-center justify-center bg-linear-[135deg,var(--color-bg-primary)_0%,var(--color-bg-tertiary)_100%] px-3">
       {/* Legacy grid: the row is as wide as the container and its single column is 100% / 50% / 33%. */}
       <div className="-mx-3 flex w-full flex-wrap justify-center">
         <div className="w-full px-3 md:w-1/2 lg:w-1/3">
@@ -113,7 +113,7 @@ export default function Login() {
               <div className="mt-6 text-center">
                 <Link
                   to="/"
-                  className="text-text-secondary no-underline transition-colors duration-150 ease-[ease] hover:text-accent"
+                  className="text-text-secondary no-underline transition-colors duration-150 ease-[ease] hover:text-accent touch:inline-flex touch:min-h-11 touch:items-center"
                 >
                   <i aria-hidden="true" className="fas fa-arrow-left mr-1" /> Volver al inicio
                 </Link>

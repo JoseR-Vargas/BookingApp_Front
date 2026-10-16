@@ -8,7 +8,7 @@ export default function ReportsSection({ bookings }) {
     <section aria-label="Reportes">
       <SectionHeader title="Reportes y Estadísticas" />
 
-      <div className="grid items-start gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
         <Card title="Reservas por Mes">
           <BookingsChart bookings={bookings} />
         </Card>

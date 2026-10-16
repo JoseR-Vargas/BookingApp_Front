@@ -31,7 +31,7 @@ export default function ContactSection({ onReserve }) {
     <section
       id="contacto"
       aria-labelledby="contacto-heading"
-      className="bg-bg-primary py-24 lte-md:py-16 lte-sm:py-12"
+      className="scroll-mt-16 bg-bg-primary py-24 lte-md:py-16 lte-sm:py-12"
     >
       <Container>
         <SectionHeading id="contacto-heading" label="Contacto" title="Encuéntranos" />

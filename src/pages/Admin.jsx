@@ -41,9 +41,12 @@ export default function Admin() {
     })();
   }, [loadDashboard, loadBookings]);
 
+  // At <= 768px the sidebar is an overlay drawer: the hamburger only opens/closes it. Toggling
+  // `collapsed` there used to alternate the drawer between 70px and 260px and left a 70px gutter in
+  // the content, so collapse is a desktop-only state.
   const toggleSidebar = () => {
-    setCollapsed((value) => !value);
     if (window.innerWidth <= MOBILE_MAX_WIDTH) setDrawerOpen((value) => !value);
+    else setCollapsed((value) => !value);
   };
 
   // On mobile the sidebar is a modal drawer: picking a section must dismiss it, otherwise its

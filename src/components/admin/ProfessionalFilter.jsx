@@ -49,7 +49,7 @@ function FilterBody({ professionals, value, onReport }) {
           aria-label="Mostrar profesionales"
           aria-expanded="false"
           data-hs-combo-box-toggle=""
-          className="absolute top-1/2 right-3 flex -translate-y-1/2 cursor-pointer items-center text-text-secondary"
+          className="absolute top-1/2 right-3 flex -translate-y-1/2 cursor-pointer items-center text-text-secondary touch:right-0 touch:h-11 touch:w-11 touch:justify-end touch:pr-3"
         >
           {/* Inline SVG: the control must stay clickable even if the icon font CDN is unreachable. */}
           <svg aria-hidden="true" className="size-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

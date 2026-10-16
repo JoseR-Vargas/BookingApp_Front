@@ -24,7 +24,7 @@ const SIZES = {
   // Hero / section call-to-action (legacy `.btn-hero-primary` / `.btn-hero-outline`).
   lg: 'rounded-sm px-10 py-4 text-sm uppercase tracking-widest lte-md:w-full',
   // Compact navbar button (legacy framework `.btn.btn-primary`).
-  sm: 'rounded-md px-3 py-1.5 text-base tracking-wide',
+  sm: 'rounded-md px-3 py-1.5 text-base tracking-wide touch:min-h-11',
   // Legacy `.btn.btn-sm`.
   xs: 'rounded-md px-2 py-1 text-sm tracking-wide',
   // Full-width call to action (legacy `.btn.btn-lg.w-100`, e.g. the confirmation "Entendido").

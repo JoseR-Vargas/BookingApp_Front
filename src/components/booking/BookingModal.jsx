@@ -205,7 +205,7 @@ export default function BookingModal({ open, onClose }) {
             type="button"
             aria-label="Close"
             onClick={onClose}
-            className="-my-2 -mr-2 box-content size-4 cursor-pointer rounded-md border-0 bg-transparent p-1 text-[#ccc] opacity-70 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-accent"
+            className="-my-2 -mr-2 box-content size-4 cursor-pointer rounded-md border-0 bg-transparent p-1 text-[#ccc] opacity-70 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-accent touch:-my-3 touch:-mr-3 touch:p-[14px]"
           >
             <CloseIcon />
           </button>

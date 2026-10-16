@@ -1,20 +1,28 @@
 import { useRef } from 'react';
 import { usePrelineInstance } from '../../lib/usePrelineInstance.js';
-import Button from '../ui/Button.jsx';
 import { CONTROL_CLASSES } from '../ui/controls.js';
 import { getProfessionalName } from '../../utils/adminStats.js';
 import { formatBookingDate } from '../../utils/format.js';
 import { decodeEntities } from '../../utils/sanitize.js';
-import { EMPTY_CELL, TABLE, TD, TH, TR } from './tableStyles.js';
+import {
+  EMPTY_CELL as EMPTY_CELL_BASE, LINK_BUTTON, TABLE, TABLE_SCROLL, TABLE_WRAPPER, TBODY, TD as TD_BASE,
+  TD_ACTIONS as TD_ACTIONS_BASE, TD_FIRST as TD_FIRST_BASE, TH as TH_BASE, TH_END, TH_START, TR, compact,
+} from './tableStyles.js';
+
+const TH = compact(TH_BASE);
+const TD = compact(TD_BASE);
+const TD_FIRST = compact(TD_FIRST_BASE);
+const TD_ACTIONS = compact(TD_ACTIONS_BASE);
+const EMPTY_CELL = compact(EMPTY_CELL_BASE);
 
 const COLUMNS = ['Cliente', 'Teléfono', 'Servicio', 'Fecha', 'Hora', 'Barbero', 'Notas', 'Acciones'];
 const ACTIONS_COLUMN = COLUMNS.length - 1;
 const PAGE_LENGTH = 10;
 
 // Long notes are truncated to one line; on hover the full text floats over the row (legacy `.notes-cell`).
-const NOTES_CELL = 'group/notes relative max-w-[200px]';
+const NOTES_CELL = 'group/notes relative max-w-[160px]';
 const NOTES_TEXT =
-  'block overflow-hidden text-[0.9rem] text-ellipsis whitespace-nowrap text-text-primary group-hover/notes:absolute group-hover/notes:z-1000 group-hover/notes:max-w-[300px] group-hover/notes:min-w-[200px] group-hover/notes:rounded-md group-hover/notes:border group-hover/notes:border-border group-hover/notes:bg-bg-secondary group-hover/notes:p-2 group-hover/notes:break-words group-hover/notes:whitespace-normal group-hover/notes:shadow-md';
+  'block overflow-hidden text-[0.9rem] text-ellipsis whitespace-nowrap text-foreground group-hover/notes:absolute group-hover/notes:z-1000 group-hover/notes:max-w-[300px] group-hover/notes:min-w-[200px] group-hover/notes:rounded-md group-hover/notes:border group-hover/notes:border-border group-hover/notes:bg-bg-secondary group-hover/notes:p-2 group-hover/notes:break-words group-hover/notes:whitespace-normal group-hover/notes:shadow-md';
 
 // datatables.net strings. `info`/`search`/paging text live in the markup below (Preline's
 // `data-hs-datatable-*` controls), only the table body messages and ARIA hints come from here.
@@ -35,17 +43,17 @@ const PAGE_ARROW = 'inline-flex min-w-10 items-center justify-center gap-x-2 rou
 // keyboard way to sort). Stretched over the header cell it becomes the click target and shows a
 // visible focus ring.
 const SORTABLE =
-  'relative cursor-pointer select-none [&_.dt-column-order]:absolute [&_.dt-column-order]:inset-x-0 [&_.dt-column-order]:top-0 [&_.dt-column-order]:-bottom-px [&_.dt-column-order]:focus-visible:outline-2 [&_.dt-column-order]:focus-visible:-outline-offset-2 [&_.dt-column-order]:focus-visible:outline-accent';
+  `${TH_START} relative cursor-pointer select-none touch:h-11 [&_.dt-column-order]:absolute [&_.dt-column-order]:inset-x-0 [&_.dt-column-order]:top-0 [&_.dt-column-order]:-bottom-px [&_.dt-column-order]:focus-visible:outline-2 [&_.dt-column-order]:focus-visible:-outline-offset-2 [&_.dt-column-order]:focus-visible:outline-accent`;
 
 function BookingRow({ booking, onDelete }) {
   const notes = decodeEntities(booking.notes);
   return (
     <tr className={TR}>
-      <td className={TD}>
+      <td className={TD_FIRST}>
         <div>
           <strong className="font-bold">{decodeEntities(booking.client.name)}</strong>
           <br />
-          <small className="text-[0.875em] text-text-secondary">{decodeEntities(booking.client.email)}</small>
+          <small className="text-[0.875em] text-muted-foreground-1">{decodeEntities(booking.client.email)}</small>
         </div>
       </td>
       <td className={TD}>
@@ -55,7 +63,7 @@ function BookingRow({ booking, onDelete }) {
         <div>
           <strong className="font-bold">{booking.service.name}</strong>
           <br />
-          <small className="text-[0.875em] text-text-secondary">${booking.service.price}</small>
+          <small className="text-[0.875em] text-muted-foreground-1">${booking.service.price}</small>
         </div>
       </td>
       {/* data-order: datatables sorts by the ISO date instead of the localized text. */}
@@ -68,20 +76,20 @@ function BookingRow({ booking, onDelete }) {
             <span className={NOTES_TEXT} title={notes}>{notes}</span>
           </div>
         ) : (
-          <span className="text-text-secondary">Sin notas</span>
+          <span className="text-muted-foreground-1">Sin notas</span>
         )}
       </td>
-      <td className={TD}>
-        <Button
-          variant="danger"
-          size="xs"
+      <td className={TD_ACTIONS}>
+        {/* Preline text-link button (icon only: the column stays narrow). Destructive action, so it keeps the error color instead of the primary gold. */}
+        <button
+          type="button"
           title="Eliminar reserva"
           aria-label="Eliminar reserva"
           onClick={() => onDelete(booking)}
-          className="mx-auto size-8 p-0 touch:size-11 hover:scale-105 hover:shadow-[0_2px_8px_rgba(224,82,82,0.3)]"
+          className={`${LINK_BUTTON} text-error hover:text-destructive-hover focus:text-destructive-hover`}
         >
           <i aria-hidden="true" className="fas fa-trash text-sm" />
-        </Button>
+        </button>
       </td>
     </tr>
   );
@@ -176,30 +184,32 @@ function BookingsDataTable({ bookings, onDelete, viewState }) {
         />
       </div>
 
-      <div className="overflow-x-auto">
-        <table aria-label="Reservas" className={TABLE}>
-          <thead>
-            <tr>
-              {COLUMNS.map((column, index) => (
-                <th
-                  key={column}
-                  scope="col"
-                  className={`${TH} ${index === ACTIONS_COLUMN ? '--exclude-from-ordering text-center' : SORTABLE}`}
-                >
-                  <span className="inline-flex items-center gap-1">
-                    {column}
-                    {index !== ACTIONS_COLUMN && <SortIcon />}
-                  </span>
-                </th>
+      <div className={TABLE_WRAPPER}>
+        <div className={TABLE_SCROLL}>
+          <table aria-label="Reservas" className={TABLE}>
+            <thead>
+              <tr>
+                {COLUMNS.map((column, index) => (
+                  <th
+                    key={column}
+                    scope="col"
+                    className={`${TH} ${index === ACTIONS_COLUMN ? `--exclude-from-ordering ${TH_END}` : SORTABLE}`}
+                  >
+                    <span className="inline-flex items-center gap-1">
+                      {column}
+                      {index !== ACTIONS_COLUMN && <SortIcon />}
+                    </span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className={TBODY}>
+              {bookings.map((booking) => (
+                <BookingRow key={booking._id} booking={booking} onDelete={onDelete} />
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((booking) => (
-              <BookingRow key={booking._id} booking={booking} onDelete={onDelete} />
-            ))}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
@@ -226,21 +236,25 @@ function BookingsDataTable({ bookings, onDelete, viewState }) {
 /** Legacy empty state: a plain table (datatables does not support a colspan row as its only row). */
 function EmptyBookingsTable() {
   return (
-    <div className="overflow-x-auto">
-      <table aria-label="Reservas" className={TABLE}>
-        <thead>
-          <tr>
-            {COLUMNS.map((column) => (
-              <th key={column} className={TH}>{column}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td colSpan={8} className={EMPTY_CELL}>No hay reservas registradas</td>
-          </tr>
-        </tbody>
-      </table>
+    <div className={TABLE_WRAPPER}>
+      <div className={TABLE_SCROLL}>
+        <table aria-label="Reservas" className={TABLE}>
+          <thead>
+            <tr>
+              {COLUMNS.map((column, index) => (
+                <th key={column} scope="col" className={`${TH} ${index === ACTIONS_COLUMN ? TH_END : TH_START}`}>
+                  {column}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className={TBODY}>
+            <tr>
+              <td colSpan={8} className={EMPTY_CELL}>No hay reservas registradas</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

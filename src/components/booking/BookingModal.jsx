@@ -9,6 +9,7 @@ import { useBooking } from '../../state/bookingState.jsx';
 import { toast } from '../../ui/toast.js';
 import Button from '../ui/Button.jsx';
 import Modal from '../ui/Modal.jsx';
+import Spinner from '../ui/Spinner.jsx';
 import ClientFormStep from './ClientFormStep.jsx';
 import ConfirmationModal from './ConfirmationModal.jsx';
 import LoadingModal from './LoadingModal.jsx';
@@ -235,7 +236,7 @@ export default function BookingModal({ open, onClose }) {
             {currentStep === LAST_STEP ? (
               isSubmitting ? (
                 <>
-                  <i aria-hidden="true" className="fas fa-spinner fa-spin mr-2" />
+                  <Spinner className="-my-0.5" barClassName="bg-primary-foreground" />
                   Procesando...
                 </>
               ) : (

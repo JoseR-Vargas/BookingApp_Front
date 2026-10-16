@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/ui/Button.jsx';
 import { CONTROL_CLASSES, LABEL_CLASSES } from '../components/ui/controls.js';
+import Spinner from '../components/ui/Spinner.jsx';
 import { authService } from '../services/authService.js';
 import { toast } from '../ui/toast.js';
 
@@ -98,7 +99,7 @@ export default function Login() {
                 >
                   {pending ? (
                     <>
-                      <i aria-hidden="true" className="fas fa-spinner fa-spin mr-2" />
+                      <Spinner className="-my-0.5" barClassName="bg-primary-foreground" />
                       Iniciando sesión...
                     </>
                   ) : (
